@@ -9,6 +9,7 @@ void Game::init()
 	state = MENU;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	scene.init();
+	menu.init();
 
 }
 
@@ -22,13 +23,19 @@ bool Game::update(int deltaTime)
 void Game::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	scene.render();
+	if (state == MENU) menu.render();
+	else scene.render();
 }
 
 void Game::keyPressed(int key)
 {
-	if(key == 27) // Escape code
+	if (key == 27) { // Escape code
 		bPlay = false;
+		state = MENU;
+	}
+	else {
+		state = PLAY;
+	}
 	keys[key] = true;
 }
 

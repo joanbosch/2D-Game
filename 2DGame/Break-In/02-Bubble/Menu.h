@@ -6,7 +6,12 @@
 #include "ShaderProgram.h"
 #include "TileMap.h"
 #include "Player.h"
+#include "TexturedQuad.h"
+#include "Text.h"
 
+#define PLAY 2
+#define INSTRUCTIONS 3
+#define CREDITS 4
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
@@ -27,12 +32,18 @@ private:
 	void initShaders();
 
 private:
-	TileMap* map;
-	Player* player;
+	//TileMap* map;
+	//Player* player;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
 
+	Texture backgorundImage;
+	TexturedQuad *background;
+
+	int option_selected;
+
+	Text text;
 };
 
 
