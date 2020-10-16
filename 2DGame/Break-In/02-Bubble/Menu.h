@@ -9,9 +9,9 @@
 #include "TexturedQuad.h"
 #include "Text.h"
 
-#define PLAY 2
-#define INSTRUCTIONS 3
-#define CREDITS 4
+#define PLAY 0
+#define INSTRUCTIONS 1
+#define CREDITS 2
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.

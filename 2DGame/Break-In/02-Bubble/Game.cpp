@@ -15,22 +15,37 @@ void Game::init()
 
 bool Game::update(int deltaTime)
 {
-	scene.update(deltaTime);
-	
+	switch (state) {
+		case PLAY:
+			scene.update(deltaTime);
+			break;
+
+		case MENU:
+			menu.update(deltaTime);
+			break;
+	}
+
 	return bPlay;
 }
 
 void Game::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (state == MENU) menu.render();
-	else scene.render();
+	switch (state) {
+	case PLAY:
+		scene.render();
+		break;
+
+	case MENU:
+		menu.render();
+		break;
+	}
 }
 
 void Game::keyPressed(int key)
 {
 	if (key == 27) { // Escape code
-		bPlay = false;
+		//bPlay = false;
 		state = MENU;
 	}
 	else {

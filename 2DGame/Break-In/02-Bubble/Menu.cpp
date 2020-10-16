@@ -3,6 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Menu.h"
 #include "Game.h"
+#include <GL/glut.h>
 
 
 #define SCREEN_X 32
@@ -35,7 +36,7 @@ void Menu::init()
 	currentTime = 0.0f;
 
 	// Select which font you want to use
-	if (!text.init("fonts/OpenSans-Bold.ttf"))
+	if (!text.init("fonts/AnimalCrossing.ttf"))
 		//if(!text.init("fonts/OpenSans-Bold.ttf"))
 		//if(!text.init("fonts/DroidSerif.ttf"))
 		cout << "Could not load font!!!" << endl;
@@ -44,6 +45,18 @@ void Menu::init()
 void Menu::update(int deltaTime)
 {
 	currentTime += deltaTime;
+
+	if (Game::instance().getSpecialKey(GLUT_KEY_UP)) {
+		Game::instance().specialKeyReleased(GLUT_KEY_UP);
+		option_selected += 2;
+		option_selected = option_selected % 3;
+	}
+
+	if (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) {
+		Game::instance().specialKeyReleased(GLUT_KEY_DOWN);
+		option_selected += 1;
+		option_selected = option_selected % 3;
+	}
 }
 
 void Menu::render()
@@ -59,22 +72,26 @@ void Menu::render()
 	background->render(backgorundImage);
 	
 	// Select the correct option that the user has selected.
-	if (option_selected == PLAY) {
-		text.render("PLAY", glm::vec2(260, 380), 20, glm::vec4(1, 1, 1, 1));
-		text.render("INSTRUCTIONS", glm::vec2(220, 420), 14, glm::vec4(1, 1, 1, 1));
-		text.render("CREDITS", glm::vec2(250, 460), 14, glm::vec4(1, 1, 1, 1));
-	}
-	else if (option_selected == INSTRUCTIONS) {
-		text.render("PLAY", glm::vec2(260, 380), 14, glm::vec4(1, 1, 1, 1));
-		text.render("INSTRUCTIONS", glm::vec2(220, 420), 20, glm::vec4(1, 1, 1, 1));
-		text.render("CREDITS", glm::vec2(250, 460), 14, glm::vec4(1, 1, 1, 1));
-	}
-	else if (option_selected == CREDITS) {
-		text.render("PLAY", glm::vec2(260, 380), 14, glm::vec4(1, 1, 1, 1));
-		text.render("INSTRUCTIONS", glm::vec2(220, 420), 14, glm::vec4(1, 1, 1, 1));
-		text.render("CREDITS", glm::vec2(250, 460), 20, glm::vec4(1, 1, 1, 1));
+	switch (option_selected) {
+		case PLAY:
+			text.render("PLAY", glm::vec2(260, 380), 40, glm::vec4(1, 1, 1, 1));
+			text.render("INSTRUCTIONS", glm::vec2(220, 420), 20, glm::vec4(1, 1, 1, 1));
+			text.render("CREDITS", glm::vec2(250, 460), 20, glm::vec4(1, 1, 1, 1));
+			break;
 
+		case INSTRUCTIONS:
+			text.render("PLAY", glm::vec2(260, 380), 20, glm::vec4(1, 1, 1, 1));
+			text.render("INSTRUCTIONS", glm::vec2(220, 420), 40, glm::vec4(1, 1, 1, 1));
+			text.render("CREDITS", glm::vec2(250, 460), 20, glm::vec4(1, 1, 1, 1));
+			break;
+
+		case CREDITS:
+			text.render("PLAY", glm::vec2(260, 380), 20, glm::vec4(1, 1, 1, 1));
+			text.render("INSTRUCTIONS", glm::vec2(220, 420), 20, glm::vec4(1, 1, 1, 1));
+			text.render("CREDITS", glm::vec2(250, 460), 40, glm::vec4(1, 1, 1, 1));
+			break;
 	}
+	
 }
 
 void Menu::initShaders()
