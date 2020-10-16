@@ -6,8 +6,10 @@
 void Game::init()
 {
 	bPlay = true;
+	state = MENU;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	scene.init();
+
 }
 
 bool Game::update(int deltaTime)

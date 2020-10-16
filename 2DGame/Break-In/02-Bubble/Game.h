@@ -8,6 +8,11 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
+#define MENU 1
+#define PLAY 2
+#define INSTRUCTIONS 3
+#define CREDITS 4
+
 
 // Game is a singleton (a class with a single instance) that represents our whole application
 
@@ -48,6 +53,7 @@ private:
 	bool keys[256], specialKeys[256]; // Store key states so that 
 	                                  // we can have access at any time
 
+	int state; // Encode the current state of the game (Menu, Play, Instructions or Credits)
 };
 
 
