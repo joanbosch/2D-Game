@@ -3,6 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Menu.h"
 #include "Game.h"
+#include <GL/glut.h>
 
 
 #define SCREEN_X 32
@@ -14,35 +15,48 @@
 
 Menu::Menu()
 {
-	map = NULL;
-	player = NULL;
 }
 
 Menu::~Menu()
 {
-	if (map != NULL)
-		delete map;
-	if (player != NULL)
-		delete player;
 }
 
 
 void Menu::init()
 {
 	initShaders();
-	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	player = new Player();
-	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-	player->setTileMap(map);
+	glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(640.f, 480.f) };
+	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
+	background = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
+
+	option_selected = PLAY;
+
+	backgorundImage.loadFromFile("images/menu-background.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
+
+	// Select which font you want to use
+	if (!text.init("fonts/AnimalCrossing.ttf"))
+		//if(!text.init("fonts/OpenSans-Bold.ttf"))
+		//if(!text.init("fonts/DroidSerif.ttf"))
+		cout << "Could not load font!!!" << endl;
 }
 
 void Menu::update(int deltaTime)
 {
 	currentTime += deltaTime;
-	player->update(deltaTime);
+
+	if (Game::instance().getSpecialKey(GLUT_KEY_UP)) {
+		Game::instance().specialKeyReleased(GLUT_KEY_UP);
+		option_selected += 2;
+		option_selected = option_selected % 3;
+	}
+
+	if (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) {
+		Game::instance().specialKeyReleased(GLUT_KEY_DOWN);
+		option_selected += 1;
+		option_selected = option_selected % 3;
+	}
 }
 
 void Menu::render()
@@ -55,8 +69,29 @@ void Menu::render()
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
-	map->render();
-	player->render();
+	background->render(backgorundImage);
+	
+	// Select the correct option that the user has selected.
+	switch (option_selected) {
+		case PLAY:
+			text.render("PLAY", glm::vec2(260, 380), 40, glm::vec4(1, 1, 1, 1));
+			text.render("INSTRUCTIONS", glm::vec2(220, 420), 20, glm::vec4(1, 1, 1, 1));
+			text.render("CREDITS", glm::vec2(250, 460), 20, glm::vec4(1, 1, 1, 1));
+			break;
+
+		case INSTRUCTIONS:
+			text.render("PLAY", glm::vec2(260, 380), 20, glm::vec4(1, 1, 1, 1));
+			text.render("INSTRUCTIONS", glm::vec2(220, 420), 40, glm::vec4(1, 1, 1, 1));
+			text.render("CREDITS", glm::vec2(250, 460), 20, glm::vec4(1, 1, 1, 1));
+			break;
+
+		case CREDITS:
+			text.render("PLAY", glm::vec2(260, 380), 20, glm::vec4(1, 1, 1, 1));
+			text.render("INSTRUCTIONS", glm::vec2(220, 420), 20, glm::vec4(1, 1, 1, 1));
+			text.render("CREDITS", glm::vec2(250, 460), 40, glm::vec4(1, 1, 1, 1));
+			break;
+	}
+	
 }
 
 void Menu::initShaders()

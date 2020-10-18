@@ -3,15 +3,18 @@
 
 
 #include "Scene.h"
+#include "Menu.h"
 
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
-#define MENU 1
-#define PLAY 2
-#define INSTRUCTIONS 3
-#define CREDITS 4
+
+#define PLAY 0
+#define INSTRUCTIONS 1
+#define CREDITS 2
+#define MENU 3
+
 
 
 // Game is a singleton (a class with a single instance) that represents our whole application
@@ -49,6 +52,7 @@ public:
 
 private:
 	bool bPlay;                       // Continue to play game?
+	Menu menu;						  // Main Menu of the game
 	Scene scene;                      // Scene to render
 	bool keys[256], specialKeys[256]; // Store key states so that 
 	                                  // we can have access at any time
