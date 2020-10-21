@@ -4,6 +4,8 @@
 
 #include "Scene.h"
 #include "Menu.h"
+#include "Instructions.h"
+#include "Credits.h"
 
 
 #define SCREEN_WIDTH 640
@@ -50,9 +52,14 @@ public:
 	bool getKey(int key) const;
 	bool getSpecialKey(int key) const;
 
+	// Change the state of the game
+	void setState(int s);
+
 private:
 	bool bPlay;                       // Continue to play game?
 	Menu menu;						  // Main Menu of the game
+	Instructions instructions;		  // Instructions of the game
+	Credits credits;				  // Credits of the game
 	Scene scene;                      // Scene to render
 	bool keys[256], specialKeys[256]; // Store key states so that 
 	                                  // we can have access at any time

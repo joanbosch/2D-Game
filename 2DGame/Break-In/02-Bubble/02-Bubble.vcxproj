@@ -14,9 +14,12 @@
     <ClInclude Include="AnimKeyframes.h" />
     <ClInclude Include="Axe.h" />
     <ClInclude Include="Bag.h" />
+    <ClInclude Include="Ball.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Coin.h" />
+    <ClInclude Include="Credits.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Instructions.h" />
     <ClInclude Include="Level1-1.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
@@ -34,9 +37,12 @@
   <ItemGroup>
     <ClCompile Include="Axe.cpp" />
     <ClCompile Include="Bag.cpp" />
+    <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Coin.cpp" />
+    <ClCompile Include="Credits.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Instructions.cpp" />
     <ClCompile Include="Level1-1.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />

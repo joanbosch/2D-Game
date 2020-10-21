@@ -1,9 +1,9 @@
 #include <iostream>
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
-#include "Menu.h"
 #include "Game.h"
 #include <GL/glut.h>
+#include "Credits.h"
 
 
 #define SCREEN_X 32
@@ -13,21 +13,18 @@
 #define INIT_PLAYER_Y_TILES 25
 
 
-Menu::Menu()
+Credits::Credits()
 {
 }
 
-Menu::~Menu()
+Credits::~Credits()
 {
 }
 
 
-void Menu::init()
+void Credits::init()
 {
 	initShaders();
-	bopt = true;
-	count = 0;
-
 	glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(640.f, 480.f) };
 	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 	background = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
@@ -45,14 +42,9 @@ void Menu::init()
 		cout << "Could not load font!!!" << endl;
 }
 
-void Menu::update(int deltaTime)
+void Credits::update(int deltaTime)
 {
 	currentTime += deltaTime;
-	count++;
-	if (count > 35) {
-		count = 0;
-		bopt = !bopt;
-	}
 
 	if (Game::instance().getSpecialKey(GLUT_KEY_UP)) {
 		Game::instance().specialKeyReleased(GLUT_KEY_UP);
@@ -65,21 +57,9 @@ void Menu::update(int deltaTime)
 		option_selected += 1;
 		option_selected = option_selected % 3;
 	}
-	if (Game::instance().getKey(13)) {
-		Game::instance().setState(PLAY);
-	}
-	if (Game::instance().getSpecialKey(GLUT_KEY_F1)) {
-		Game::instance().setState(INSTRUCTIONS);
-	}
-	if (Game::instance().getSpecialKey(GLUT_KEY_F2)) {
-		Game::instance().setState(CREDITS);
-	}
-	if (Game::instance().getSpecialKey(GLUT_KEY_F3)) {
-		Game::instance().setState(CREDITS);
-	}
 }
 
-void Menu::render()
+void Credits::render()
 {
 	glm::mat4 modelview;
 
@@ -90,16 +70,13 @@ void Menu::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	background->render(backgorundImage);
-	
+
 	// Select the correct option that the user has selected.
-	if(bopt) text.render("Press ENTER to START", glm::vec2(220, 360), 20, glm::vec4(1, 1, 1, 1));
-	text.render("Press F1 to see INSTRUCTIONS", glm::vec2(200, 390), 20, glm::vec4(1, 1, 1, 1));
-	text.render("Press F2 to see CREDITS", glm::vec2(220, 420), 20, glm::vec4(1, 1, 1, 1));
-	text.render("Press F3 to see PASSWORDS", glm::vec2(210, 450), 20, glm::vec4(1, 1, 1, 1));
-	
+	text.render("CREDITS MENU! (TODO)", glm::vec2(260, 380), 20, glm::vec4(1, 1, 1, 1));
+
 }
 
-void Menu::initShaders()
+void Credits::initShaders()
 {
 	Shader vShader, fShader;
 

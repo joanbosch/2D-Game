@@ -36,8 +36,8 @@ private:
 	vector<Wood*> woods;
 	vector<Coin*> coins;
 	vector<Bag*> bags;
-
 	Axe* axe;
+
 	TileMap* map;
 	vector<pair<int,int>*> blocks_desp, wood_desp, coin_desp, bag_desp;
 };

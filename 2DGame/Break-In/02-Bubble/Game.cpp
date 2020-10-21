@@ -9,6 +9,8 @@ void Game::init()
 	state = MENU;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	scene.init();
+	instructions.init();
+	credits.init();
 	menu.init();
 
 }
@@ -18,6 +20,14 @@ bool Game::update(int deltaTime)
 	switch (state) {
 		case PLAY:
 			scene.update(deltaTime);
+			break;
+
+		case INSTRUCTIONS:
+			instructions.update(deltaTime);
+			break;
+
+		case CREDITS:
+			credits.update(deltaTime);
 			break;
 
 		case MENU:
@@ -36,6 +46,14 @@ void Game::render()
 		scene.render();
 		break;
 
+	case INSTRUCTIONS:
+		instructions.render();
+		break;
+
+	case CREDITS:
+		credits.render();
+		break;
+
 	case MENU:
 		menu.render();
 		break;
@@ -47,9 +65,6 @@ void Game::keyPressed(int key)
 	if (key == 27) { // Escape code
 		//bPlay = false;
 		state = MENU;
-	}
-	else {
-		state = PLAY;
 	}
 	keys[key] = true;
 }
@@ -90,6 +105,12 @@ bool Game::getSpecialKey(int key) const
 {
 	return specialKeys[key];
 }
+
+void Game::setState(int s)
+{
+	state = s;
+}
+
 
 
 

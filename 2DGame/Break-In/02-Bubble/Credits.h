@@ -1,28 +1,22 @@
-#ifndef _MENU_INCLUDE
-#define _MENU_INCLUDE
+#ifndef _CREDITS_INCLUDE
+#define _CREDITS_INCLUDE
 
 
 #include <glm/glm.hpp>
 #include "ShaderProgram.h"
-#include "TileMap.h"
-#include "Player.h"
 #include "TexturedQuad.h"
 #include "Text.h"
-
-#define PLAY 0
-#define INSTRUCTIONS 1
-#define CREDITS 2
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
 
 
-class Menu
+class Credits
 {
 
 public:
-	Menu();
-	~Menu();
+	Credits();
+	~Credits();
 
 	void init();
 	void update(int deltaTime);
@@ -32,20 +26,17 @@ private:
 	void initShaders();
 
 private:
-	//TileMap* map;
-	//Player* player;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
 
 	Texture backgorundImage;
-	TexturedQuad *background;
+	TexturedQuad* background;
 
 	int option_selected;
-	int count;
-	int bopt;
+
 	Text text;
 };
 
 
-#endif // _MENU_INCLUDE
+#endif // _CREDITS_INCLUDE

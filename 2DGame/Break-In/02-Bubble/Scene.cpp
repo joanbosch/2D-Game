@@ -37,7 +37,7 @@ void Scene::init()
 	backgorundImage.loadFromFile("images/bkgLvl1.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
 	map = TileMap::createTileMap("levels/level1_1_new.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	player = new Player();
+	player = new Ball();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
