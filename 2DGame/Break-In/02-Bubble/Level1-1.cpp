@@ -9,7 +9,7 @@
 #define NUM_BLOCKS 20
 #define NUM_COINS 0
 #define NUM_BAGS 0
-#define NUM_WOODS 30
+#define NUM_WOODS 8
 
 
 #define SCREEN_X 32
@@ -53,7 +53,7 @@ void Level11::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, T
 
 	axe = new Axe();
 	axe->init(glm::ivec2(tileMapPos[0], tileMapPos[1]), shaderProgram);
-	axe->setPosition(glm::vec2(6*map->getTileSize(), 6*map->getTileSize()));
+	axe->setPosition(glm::vec2(6*map->getTileSize(), 5*map->getTileSize()));
 	axe->setTileMap(map);
 	tileMapDispl = tileMapPos;
 
@@ -97,26 +97,26 @@ void Level11::render()
 
 void Level11::initDesplBlocks()
 {
+	blocks_desp.push_back(new std::pair<int, int>(2, 13));
 	blocks_desp.push_back(new std::pair<int, int>(2, 14));
-	blocks_desp.push_back(new std::pair<int, int>(2, 15));
+	blocks_desp.push_back(new std::pair<int, int>(4, 12));
 	blocks_desp.push_back(new std::pair<int, int>(4, 13));
-	blocks_desp.push_back(new std::pair<int, int>(4, 14));
+	blocks_desp.push_back(new std::pair<int, int>(6, 11));
 	blocks_desp.push_back(new std::pair<int, int>(6, 12));
-	blocks_desp.push_back(new std::pair<int, int>(6, 13));
+	blocks_desp.push_back(new std::pair<int, int>(8, 7));
 	blocks_desp.push_back(new std::pair<int, int>(8, 8));
-	blocks_desp.push_back(new std::pair<int, int>(8, 9));
+	blocks_desp.push_back(new std::pair<int, int>(10, 7));
 	blocks_desp.push_back(new std::pair<int, int>(10, 8));
-	blocks_desp.push_back(new std::pair<int, int>(10, 9));
+	blocks_desp.push_back(new std::pair<int, int>(12, 7));
 	blocks_desp.push_back(new std::pair<int, int>(12, 8));
-	blocks_desp.push_back(new std::pair<int, int>(12, 9));
+	blocks_desp.push_back(new std::pair<int, int>(14, 7));
 	blocks_desp.push_back(new std::pair<int, int>(14, 8));
-	blocks_desp.push_back(new std::pair<int, int>(14, 9));
+	blocks_desp.push_back(new std::pair<int, int>(20, 13));
 	blocks_desp.push_back(new std::pair<int, int>(20, 14));
-	blocks_desp.push_back(new std::pair<int, int>(20, 15));
+	blocks_desp.push_back(new std::pair<int, int>(18, 12));
 	blocks_desp.push_back(new std::pair<int, int>(18, 13));
-	blocks_desp.push_back(new std::pair<int, int>(18, 14));
+	blocks_desp.push_back(new std::pair<int, int>(16, 11));
 	blocks_desp.push_back(new std::pair<int, int>(16, 12));
-	blocks_desp.push_back(new std::pair<int, int>(16, 13));
 }
 
 void Level11::initDesplWoods()
@@ -130,34 +130,6 @@ void Level11::initDesplWoods()
 	wood_desp.push_back(new std::pair<int, int>(13,0));
 	wood_desp.push_back(new std::pair<int, int>(14,0));
 	wood_desp.push_back(new std::pair<int, int>(15,0));
-
-	// Wood level blocks
-	wood_desp.push_back(new std::pair<int, int>(1,14));
-	wood_desp.push_back(new std::pair<int, int>(2,13));
-	wood_desp.push_back(new std::pair<int, int>(3,13));
-	wood_desp.push_back(new std::pair<int, int>(4,12));
-	wood_desp.push_back(new std::pair<int, int>(5,12));
-	wood_desp.push_back(new std::pair<int, int>(6,11));
-	wood_desp.push_back(new std::pair<int, int>(7,11));
-
-	wood_desp.push_back(new std::pair<int, int>(4,4));
-	wood_desp.push_back(new std::pair<int, int>(5,4));
-	wood_desp.push_back(new std::pair<int, int>(6,5));
-	wood_desp.push_back(new std::pair<int, int>(7,5));
-
-	wood_desp.push_back(new std::pair<int, int>(16,5));
-	wood_desp.push_back(new std::pair<int, int>(17,5));
-	wood_desp.push_back(new std::pair<int, int>(18,4));
-	wood_desp.push_back(new std::pair<int, int>(19,4));
-
-	wood_desp.push_back(new std::pair<int, int>(16,11));
-	wood_desp.push_back(new std::pair<int, int>(17,11));
-	wood_desp.push_back(new std::pair<int, int>(18,12));
-	wood_desp.push_back(new std::pair<int, int>(19,12));
-	wood_desp.push_back(new std::pair<int, int>(20,13));
-	wood_desp.push_back(new std::pair<int, int>(21,13));
-	wood_desp.push_back(new std::pair<int, int>(22,14));
-	
 }
 
 void Level11::initDesplCoins()
