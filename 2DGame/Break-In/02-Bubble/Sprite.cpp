@@ -106,5 +106,23 @@ void Sprite::setPosition(const glm::vec2 &pos)
 	position = pos;
 }
 
+bool Sprite::ballCollision(glm::vec2 ballPos, glm::vec2 ballSize, glm::vec2 spritePosition, glm::vec2 spriteSize)
+{
+	int minx_ball, miny_ball, maxx_ball, maxy_ball;
+	int minx_block, miny_block, maxx_block, maxy_block;
+
+	minx_ball = ballPos.x;
+	miny_ball = ballPos.y;
+	maxx_ball = ballPos.x + ballSize.x;
+	maxy_ball = ballPos.y + ballSize.y;
+
+	minx_block = spritePosition.x;
+	miny_block = spritePosition.y;
+	maxx_block = spritePosition.x + spriteSize.x;
+	maxy_block = spritePosition.y + spriteSize.y;
+
+	return (minx_ball < maxx_block) && (minx_block < maxx_ball) && (miny_ball < maxy_block) && (miny_block < maxy_ball);
+}
+
 
 

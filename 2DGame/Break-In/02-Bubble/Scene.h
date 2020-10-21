@@ -34,7 +34,7 @@ private:
 
 private:
 	TileMap *map;
-	Ball *player;
+	Ball *ball;
 	Level11* level11;
 	
 	ShaderProgram texProgram;
