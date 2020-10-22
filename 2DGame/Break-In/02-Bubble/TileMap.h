@@ -3,6 +3,7 @@
 
 
 #include <glm/glm.hpp>
+#include <vector>
 #include "Texture.h"
 #include "ShaderProgram.h"
 
@@ -33,6 +34,10 @@ public:
 	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const;
 	bool collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size, int* posY) const;
 	
+	bool ballCollision(const glm::ivec2& pos, const glm::ivec2& size) const;
+	vector<bool> reviseCollisions(const glm::ivec2& pos, const glm::ivec2& size) const;
+	glm::vec2 getNormalVector(const glm::ivec2& pos, const glm::ivec2& size, float angle) const;
+
 	void setBallPos(glm::vec2 pos);
 	glm::vec2 getBallPos();
 

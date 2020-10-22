@@ -26,6 +26,10 @@ public:
 private:
 	bool bJumping;
 	glm::ivec2 tileMapDispl, posPlayer;
+	float x_pos, y_pos;
+
+	float angle, vel; // Vel -> pixels/second, angle-> angle that the ball is going on.
+
 	int jumpAngle, startY;
 	Texture spritesheet;
 	Sprite* sprite;

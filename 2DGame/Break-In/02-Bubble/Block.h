@@ -20,10 +20,14 @@ public:
 
 	void setTileMap(TileMap* tileMap);
 	void setPosition(const glm::vec2& pos);
+	bool getBallColidad();
+	glm::vec2 getN();
 
 private:
 
 	bool visible;
+	bool ballColided;
+
 	int level;
 	glm::ivec2 tileMapDispl, posPlayer;
 	int jumpAngle, startY;

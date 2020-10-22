@@ -67,6 +67,9 @@ void Level11::update(int deltaTime)
 
 	for (int i = 0; i < NUM_BLOCKS; ++i) {
 		blocks[i]->update(deltaTime);
+		bool aux = blocks[i]->getBallColidad();
+		ballColided |= aux;
+		if (aux) N = blocks[i]->getN();
 	}
 	for (int i = 0; i < NUM_WOODS; ++i) {
 		woods[i]->update(deltaTime);

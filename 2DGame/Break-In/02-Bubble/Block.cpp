@@ -15,6 +15,7 @@ enum PlayerAnims
 void Block::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
 	visible = true;
+	ballColided = false;
 	spritesheet.loadFromFile("images/Orange_Block.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(32, 16), glm::vec2(1, 1), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(1);
@@ -30,11 +31,9 @@ void Block::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 void Block::update(int deltaTime)
 {
-	bool colide = sprite->ballCollision(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(32, 16));
-	visible = visible && !colide;
-	if (colide) {
-		//sprite->computeNormalVector(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(32, 16));
-	}
+	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(32, 16));
+	ballColided &= visible;
+	visible = visible && !ballColided;
 	sprite->update(deltaTime);
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
@@ -55,7 +54,15 @@ void Block::setPosition(const glm::vec2& pos)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
+bool Block::getBallColidad()
+{
+	return ballColided;
+}
 
+glm::vec2 Block::getN()
+{
+	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(16, 16));
+}
 
 
 
