@@ -16,7 +16,19 @@ void Block::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
 	visible = true;
 	ballColided = false;
-	spritesheet.loadFromFile("images/Orange_Block.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	level = 2;
+	switch (level)
+	{
+	case 0:
+		spritesheet.loadFromFile("images/Orange_Block.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		break;
+	case 1:
+		spritesheet.loadFromFile("images/Green_Block.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		break;
+	case 2:
+		spritesheet.loadFromFile("images/Blue_Block.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		break;
+	}
 	sprite = Sprite::createSprite(glm::ivec2(32, 16), glm::vec2(1, 1), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(1);
 
@@ -32,8 +44,26 @@ void Block::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 void Block::update(int deltaTime)
 {
 	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(32, 16));
+	if (ballColided) {
+		--level;
+		switch (level)
+		{
+		case 0:
+			spritesheet.loadFromFile("images/Orange_Block.png", TEXTURE_PIXEL_FORMAT_RGBA);
+			break;
+		case 1:
+			spritesheet.loadFromFile("images/Green_Block.png", TEXTURE_PIXEL_FORMAT_RGBA);
+			break;
+		case 2:
+			spritesheet.loadFromFile("images/Blue_Block.png", TEXTURE_PIXEL_FORMAT_RGBA);
+			break;
+		}
+		if (level < 0) {
+			visible = false;
+		}
+	}
+
 	ballColided &= visible;
-	visible = visible && !ballColided;
 	sprite->update(deltaTime);
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
