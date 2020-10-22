@@ -245,6 +245,10 @@ vector<bool> TileMap::reviseCollisions(const glm::ivec2& pos, const glm::ivec2& 
 			i++;
 		}
 	}
+	for (int a = i+1; a < 4; ++a) {
+		collision[a] = collision[a - 2];
+	}
+
 	return collision;
 }
 

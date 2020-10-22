@@ -68,6 +68,8 @@ glm::vec2 Wood::getN()
 	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(16, 16));
 }
 
+void Wood::setVisibility(bool v) { visible = v; }
+
 
 
 

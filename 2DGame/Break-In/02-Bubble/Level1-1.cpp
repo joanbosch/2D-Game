@@ -72,6 +72,7 @@ void Level11::update(int deltaTime)
 		if (aux) N = blocks[i]->getN();
 	}
 	for (int i = 0; i < NUM_WOODS; ++i) {
+		if (!axe->isVisible()) woods[i]->setVisibility(false);
 		woods[i]->update(deltaTime);
 		bool aux = woods[i]->getBallColidad();
 		ballColided |= aux;
@@ -84,6 +85,9 @@ void Level11::update(int deltaTime)
 		bags[i]->update(deltaTime);
 	}
 	axe->update(deltaTime);
+	bool aux = axe->getBallColided();
+	ballColided |= aux;
+	if (aux) N = axe->getN();
 
 }
 

@@ -20,7 +20,7 @@ enum PlayerAnims
 void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
 	bJumping = false;
-	vel = 2;
+	vel = 4;
 	angle = 32.f;
 	spritesheet.loadFromFile("images/ball.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(1, 1), &spritesheet, &shaderProgram);
@@ -48,33 +48,6 @@ void Ball::update(int deltaTime)
 		posPlayer.x = int(x_pos);
 		posPlayer.y = int(y_pos);
 	}
-
-	/*if (map->collisionMoveUp(posPlayer, glm::ivec2(16, 16), &posPlayer.y)) {
-		treatCollision(glm::vec2(0, -1));
-		x_pos -= x1;
-		y_pos += y1;
-		posPlayer.x = int(x_pos);
-		posPlayer.y = int(y_pos);
-
-	} else if (map->collisionMoveDown(posPlayer, glm::ivec2(16, 16), &posPlayer.y)) {
-		treatCollision(glm::vec2(0, 1));
-		x_pos -= x1;
-		y_pos += y1;
-		posPlayer.x = int(x_pos);
-		posPlayer.y = int(y_pos);
-	} else if (map->collisionMoveLeft(posPlayer, glm::ivec2(16, 16))) {
-		treatCollision(glm::vec2(1, 0));
-		x_pos -= x1;
-		y_pos += y1;
-		posPlayer.x = int(x_pos);
-		posPlayer.y = int(y_pos);
-	} else if (map->collisionMoveRight(posPlayer, glm::ivec2(16, 16))) {
-		treatCollision(glm::vec2(-1, 0));
-		x_pos -= x1;
-		y_pos += y1;
-		posPlayer.x = int(x_pos);
-		posPlayer.y = int(y_pos);
-	}*/
 	
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
