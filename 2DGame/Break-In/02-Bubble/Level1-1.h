@@ -24,6 +24,7 @@ public:
 	void render();
 
 	bool ballHasColided();
+	glm::vec2 getN();
 
 private:
 	void initDesplBlocks();

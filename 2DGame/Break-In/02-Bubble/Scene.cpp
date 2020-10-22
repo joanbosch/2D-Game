@@ -66,6 +66,9 @@ void Scene::update(int deltaTime)
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
 	level11->update(deltaTime);
+	if (level11->ballHasColided()) {
+		ball->treatCollision(level11->getN());
+	}
 }
 
 void Scene::render()
@@ -82,9 +85,6 @@ void Scene::render()
 	map->render();
 	ball->render();
 	level11->render();
-	/*if (level11->ballHasColided()) {
-		ball->
-	}*/
 	
 
 	// Rendender text

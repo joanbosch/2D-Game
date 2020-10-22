@@ -20,8 +20,9 @@ public:
 
 	void setTileMap(TileMap* tileMap);
 	void setPosition(const glm::vec2& pos);
-	glm::vec2 getPosition();
 
+	glm::vec2 getPosition();
+	void treatCollision(glm::vec2 N);
 private:
 	bool bJumping;
 	glm::ivec2 tileMapDispl, posPlayer;

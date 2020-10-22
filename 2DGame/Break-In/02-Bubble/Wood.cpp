@@ -19,6 +19,7 @@ enum PlayerAnims
 
 void Wood::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
+	ballColided = false;
 	visible = true;
 	bJumping = false;
 	spritesheet.loadFromFile("images/Wood.png", TEXTURE_PIXEL_FORMAT_RGBA);
@@ -36,12 +37,7 @@ void Wood::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 void Wood::update(int deltaTime)
 {
-	bool colide = sprite->ballCollision(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(16, 16));
-	ballColided = !colide;
-	if (colide) {
-		glm::vec2 N = sprite->computeNormalVector(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(16, 16));
-	}
-		
+	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(16, 16));
 	sprite->update(deltaTime);	
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
@@ -65,6 +61,11 @@ void Wood::setPosition(const glm::vec2& pos)
 bool Wood::getBallColidad()
 {
 	return ballColided;
+}
+
+glm::vec2 Wood::getN()
+{
+	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(16, 16));
 }
 
 

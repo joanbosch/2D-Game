@@ -93,5 +93,13 @@ glm::vec2 Ball::getPosition()
 	return posPlayer;
 }
 
+void Ball::treatCollision(glm::vec2 N)
+{
+	if (N.x == 1) posPlayer.x += 2;
+	if (N.x == -1) posPlayer.x -= 2;
+	if (N.y == 1) posPlayer.y -= 2;
+	if (N.y == -1) posPlayer.y += 2;
+}
+
 
 

@@ -21,6 +21,7 @@ public:
 	void setTileMap(TileMap* tileMap);
 	void setPosition(const glm::vec2& pos);
 	bool getBallColidad();
+	glm::vec2 getN();
 
 private:
 	bool bJumping;
