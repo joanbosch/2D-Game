@@ -82,6 +82,9 @@ void Scene::render()
 	map->render();
 	ball->render();
 	level11->render();
+	/*if (level11->ballHasColided()) {
+		ball->
+	}*/
 	
 
 	// Rendender text

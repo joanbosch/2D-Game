@@ -30,7 +30,11 @@ void Block::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 void Block::update(int deltaTime)
 {
-	visible = visible && !sprite->ballCollision(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(32, 16));
+	bool colide = sprite->ballCollision(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(32, 16));
+	visible = visible && !colide;
+	if (colide) {
+		//sprite->computeNormalVector(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(32, 16));
+	}
 	sprite->update(deltaTime);
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }

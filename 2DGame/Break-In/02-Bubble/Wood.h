@@ -20,6 +20,7 @@ public:
 
 	void setTileMap(TileMap* tileMap);
 	void setPosition(const glm::vec2& pos);
+	bool getBallColidad();
 
 private:
 	bool bJumping;
@@ -29,6 +30,8 @@ private:
 	Sprite* sprite;
 	TileMap* map;
 
+	bool visible;
+	bool ballColided;
 };
 
 

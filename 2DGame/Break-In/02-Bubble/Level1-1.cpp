@@ -60,13 +60,15 @@ void Level11::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, T
 }
 
 void Level11::update(int deltaTime)
-
 {
+	ballColided = false;
+
 	for (int i = 0; i < NUM_BLOCKS; ++i) {
 		blocks[i]->update(deltaTime);
 	}
 	for (int i = 0; i < NUM_WOODS; ++i) {
 		woods[i]->update(deltaTime);
+		ballColided |= woods[i]->getBallColidad();
 	}
 	for (int i = 0; i < NUM_COINS; ++i) {
 		coins[i]->update(deltaTime);
@@ -93,6 +95,11 @@ void Level11::render()
 		bags[i]->render();
 	}
 	axe->render();
+}
+
+bool Level11::ballHasColided()
+{
+	return ballColided;
 }
 
 void Level11::initDesplBlocks()
@@ -122,7 +129,7 @@ void Level11::initDesplBlocks()
 void Level11::initDesplWoods()
 {
 	// The first 8 sprites are to hide the arrows to change of level.
-	wood_desp.push_back(new std::pair<int, int>(8,0));
+	wood_desp.push_back(new std::pair<int, int>(8,6));
 	wood_desp.push_back(new std::pair<int, int>(9,0));
 	wood_desp.push_back(new std::pair<int, int>(10,0));
 	wood_desp.push_back(new std::pair<int, int>(11,0));

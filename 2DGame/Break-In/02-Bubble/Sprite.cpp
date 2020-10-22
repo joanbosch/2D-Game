@@ -124,5 +124,73 @@ bool Sprite::ballCollision(glm::vec2 ballPos, glm::vec2 ballSize, glm::vec2 spri
 	return (minx_ball < maxx_block) && (minx_block < maxx_ball) && (miny_ball < maxy_block) && (miny_block < maxy_ball);
 }
 
+glm::vec2 Sprite::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm::vec2 spritePosition, glm::vec2 spriteSize)
+{
+	int minx_ball, miny_ball, maxx_ball, maxy_ball;
+	int minx_block, miny_block, maxx_block, maxy_block;
+
+	minx_ball = ballPos.x;
+	miny_ball = ballPos.y;
+	maxx_ball = ballPos.x + ballSize.x;
+	maxy_ball = ballPos.y + ballSize.y;
+
+	minx_block = spritePosition.x;
+	miny_block = spritePosition.y;
+	maxx_block = spritePosition.x + spriteSize.x;
+	maxy_block = spritePosition.y + spriteSize.y;
+
+	if (minx_block <= maxx_ball && maxx_ball < maxx_block) 
+	{
+		if (miny_block <= miny_ball && miny_ball < maxy_block)
+		{
+			if (glm::abs((glm::min(maxy_ball, maxy_block)) - miny_ball) > glm::abs(glm::max(minx_block, minx_ball) - maxx_ball))
+			{
+				return glm::vec2(-1, 0);
+			}
+			else 
+			{
+				return glm::vec2(0, -1);
+			}
+		}
+		else
+		{
+			if (glm::abs(maxx_ball - glm::max(minx_ball, minx_block)) > glm::abs(maxy_ball - miny_block))
+			{
+				return glm::vec2(0, 1);
+			}
+			else
+			{
+				return glm::vec2(-1, 0); 
+			}
+		}
+	}
+	else
+	{
+		if (miny_block <= miny_ball && miny_ball <= maxy_block)
+		{
+			if (glm::abs(maxy_block - miny_ball) > glm::abs(glm::min(maxx_block, maxx_ball) - minx_ball))
+			{
+				return glm::vec2(1, 0);
+			}
+			else
+			{
+				return glm::vec2(0, -1); 
+			}
+		}
+		else 
+		{
+			if (glm::abs(maxx_block - glm::max(minx_block, minx_ball)) > glm::abs(glm::min(maxy_block, maxy_ball) - max(miny_block, miny_ball)))
+			{
+				return glm::vec2(0, 1);
+			}
+			else
+			{
+				return glm::vec2(1, 0);
+			}
+			
+		}
+	}
+}
+
 
 
