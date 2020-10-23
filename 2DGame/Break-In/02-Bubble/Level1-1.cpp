@@ -66,17 +66,22 @@ void Level11::update(int deltaTime)
 	ballColided = false;
 
 	for (int i = 0; i < NUM_BLOCKS; ++i) {
-		blocks[i]->update(deltaTime);
-		bool aux = blocks[i]->getBallColidad();
-		ballColided |= aux;
-		if (aux) N = blocks[i]->getN();
+		if (!ballColided) {
+			blocks[i]->update(deltaTime);
+			bool aux = blocks[i]->getBallColidad();
+			ballColided |= aux;
+			if (aux) N = blocks[i]->getN();
+		}
+		
 	}
 	for (int i = 0; i < NUM_WOODS; ++i) {
 		if (!axe->isVisible()) woods[i]->setVisibility(false);
-		woods[i]->update(deltaTime);
-		bool aux = woods[i]->getBallColidad();
-		ballColided |= aux;
-		if (aux) N = woods[i]->getN();
+		if (!ballColided) {
+			woods[i]->update(deltaTime);
+			bool aux = woods[i]->getBallColidad();
+			ballColided |= aux;
+			if (aux) N = woods[i]->getN();
+		}
 	}
 	for (int i = 0; i < NUM_COINS; ++i) {
 		coins[i]->update(deltaTime);
@@ -84,11 +89,12 @@ void Level11::update(int deltaTime)
 	for (int i = 0; i < NUM_BAGS; ++i) {
 		bags[i]->update(deltaTime);
 	}
-	axe->update(deltaTime);
-	bool aux = axe->getBallColided();
-	ballColided |= aux;
-	if (aux) N = axe->getN();
-
+	if (!ballColided) {
+		axe->update(deltaTime);
+		bool aux = axe->getBallColided();
+		ballColided |= aux;
+		if (aux) N = axe->getN();
+	}
 }
 
 void Level11::render()

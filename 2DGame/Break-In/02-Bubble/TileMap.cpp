@@ -234,6 +234,7 @@ vector<bool> TileMap::reviseCollisions(const glm::ivec2& pos, const glm::ivec2& 
 	x1 = (pos.x + size.x - 1) / tileSize;
 	y0 = pos.y / tileSize;
 	y1 = (pos.y + size.y - 1) / tileSize;
+	//if (y0 = y1) ++y1;
 	vector<bool> collision(4, false);
 	int i = 0;
 	for (int x = x0; x <= x1; x++)
@@ -245,7 +246,7 @@ vector<bool> TileMap::reviseCollisions(const glm::ivec2& pos, const glm::ivec2& 
 			i++;
 		}
 	}
-	for (int a = i+1; a < 4; ++a) {
+	for (int a = i + 1; a < 4; ++a) {
 		collision[a] = collision[a - 2];
 	}
 
