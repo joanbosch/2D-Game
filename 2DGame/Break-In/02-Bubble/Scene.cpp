@@ -9,7 +9,7 @@
 #define SCREEN_Y 42
 
 #define INIT_PLAYER_X_TILES 12
-#define INIT_PLAYER_Y_TILES 22
+#define INIT_PLAYER_Y_TILES 20
 
 
 Scene::Scene()
@@ -40,6 +40,12 @@ void Scene::init()
 	backgorundImage.loadFromFile("images/bkgLvl1.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
 	map = TileMap::createTileMap("levels/level1_1_new.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+
+	player = new Player();
+	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	player->setTileMap(map);
+
 	ball = new Ball();
 	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
@@ -69,6 +75,7 @@ void Scene::update(int deltaTime)
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
 	level11->update(deltaTime);
+	player->update(deltaTime);
 	if (level11->ballHasColided()) {
 		ball->treatCollision(level11->getN());
 	}
