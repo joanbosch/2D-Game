@@ -16,6 +16,7 @@ Scene::Scene()
 {
 	map = NULL;
 	ball = NULL;
+	player = NULL;
 }
 
 Scene::~Scene()
@@ -24,6 +25,8 @@ Scene::~Scene()
 		delete map;
 	if(ball != NULL)
 		delete ball;
+	if (player != NULL)
+		delete player;
 }
 
 
@@ -85,6 +88,7 @@ void Scene::render()
 	map->render();
 	ball->render();
 	level11->render();
+	player->render();
 	
 
 	// Rendender text
