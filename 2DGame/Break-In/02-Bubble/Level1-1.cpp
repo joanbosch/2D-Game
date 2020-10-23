@@ -23,6 +23,8 @@ void Level11::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, T
 	initDesplBags();
 
 	bJumping = false;
+	ballColided = false;
+
 	for (int i = 0; i < NUM_BLOCKS; ++i) {
 		blocks.push_back(new Block());
 		blocks[i]->init(glm::ivec2(tileMapPos[0], tileMapPos[1]), shaderProgram);
@@ -60,13 +62,26 @@ void Level11::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, T
 }
 
 void Level11::update(int deltaTime)
-
 {
+	ballColided = false;
+
 	for (int i = 0; i < NUM_BLOCKS; ++i) {
-		blocks[i]->update(deltaTime);
+		if (!ballColided) {
+			blocks[i]->update(deltaTime);
+			bool aux = blocks[i]->getBallColidad();
+			ballColided |= aux;
+			if (aux) N = blocks[i]->getN();
+		}
+		
 	}
 	for (int i = 0; i < NUM_WOODS; ++i) {
-		woods[i]->update(deltaTime);
+		if (!axe->isVisible()) woods[i]->setVisibility(false);
+		if (!ballColided) {
+			woods[i]->update(deltaTime);
+			bool aux = woods[i]->getBallColidad();
+			ballColided |= aux;
+			if (aux) N = woods[i]->getN();
+		}
 	}
 	for (int i = 0; i < NUM_COINS; ++i) {
 		coins[i]->update(deltaTime);
@@ -74,8 +89,12 @@ void Level11::update(int deltaTime)
 	for (int i = 0; i < NUM_BAGS; ++i) {
 		bags[i]->update(deltaTime);
 	}
-	axe->update(deltaTime);
-
+	if (!ballColided) {
+		axe->update(deltaTime);
+		bool aux = axe->getBallColided();
+		ballColided |= aux;
+		if (aux) N = axe->getN();
+	}
 }
 
 void Level11::render()
@@ -93,6 +112,18 @@ void Level11::render()
 		bags[i]->render();
 	}
 	axe->render();
+}
+
+bool Level11::ballHasColided()
+{
+	return ballColided;
+}
+
+
+
+glm::vec2 Level11::getN()
+{
+	return N;
 }
 
 void Level11::initDesplBlocks()

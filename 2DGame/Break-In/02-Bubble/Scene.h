@@ -34,8 +34,9 @@ private:
 
 private:
 	TileMap *map;
-	Ball *player;
-	Level11* level11;
+	Ball *ball;
+	Level11 *level11;
+	Player *player;
 	
 	ShaderProgram texProgram;
 	float currentTime;

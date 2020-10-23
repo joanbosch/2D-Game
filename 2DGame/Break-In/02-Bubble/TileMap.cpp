@@ -185,30 +185,144 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 	return false;
 }
 
-bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const
+bool TileMap::collisionMoveDown(const glm::ivec2& pos, const glm::ivec2& size, int* posY) const
 {
 	int x0, x1, y;
-	
+
 	x0 = pos.x / tileSize;
 	x1 = (pos.x + size.x - 1) / tileSize;
 	y = (pos.y + size.y - 1) / tileSize;
-	for(int x=x0; x<=x1; x++)
+	for (int x = x0; x <= x1; x++)
 	{
-		if(map[y*mapSize.x+x] != 0)
+		if (map[y * mapSize.x + x] != 0)
 		{
-			if(*posY - tileSize * y + size.y <= 4)
+			if (*posY - tileSize * y + size.y <= 4)
 			{
-				*posY = tileSize * y - size.y;
+				//*posY = tileSize * y - size.y;
 				return true;
 			}
 		}
 	}
-	
 	return false;
 }
 
+bool TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size, int* posY) const
+{
+	int x0, x1, y;
+
+	x0 = pos.x / tileSize;
+	x1 = (pos.x + size.x - 1) / tileSize;
+	y = pos.y / tileSize;
+	for (int x = x0; x <= x1; x++)
+	{
+		if (map[y * mapSize.x + x] != 0)
+		{
+			//if (*posY - tileSize * y + size.y <= 4)
+			//{
+				//*posY = tileSize * y + size.y;
+				return true;
+			//}
+		}
+	}
+	return false;
+}
+
+vector<bool> TileMap::reviseCollisions(const glm::ivec2& pos, const glm::ivec2& size) const
+{
+	int x0, x1, y0, y1;
+	x0 = pos.x / tileSize;
+	x1 = (pos.x + size.x - 1) / tileSize;
+	y0 = pos.y / tileSize;
+	y1 = (pos.y + size.y - 1) / tileSize;
+	//if (y0 = y1) ++y1;
+	vector<bool> collision(4, false);
+	int i = 0;
+	for (int x = x0; x <= x1; x++)
+	{
+		for (int y = y0; y <= y1; y++)
+		{
+			if (map[y * mapSize.x + x] != 0)
+				collision[i] = true;
+			i++;
+		}
+	}
+	for (int a = i + 1; a < 4; ++a) {
+		collision[a] = collision[a - 2];
+	}
+
+	return collision;
+}
+
+glm::vec2 TileMap::getNormalVector(const glm::ivec2& pos, const glm::ivec2& size, float angle) const
+{
+	vector<bool> c = reviseCollisions(pos, size);
+	if (!c[3] && !c[2] && !c[1] && c[0]) { // Case 0001
+		return glm::vec2(1,-1);
+	} 
+	else if (!c[3] && !c[2] && c[1] && !c[0]) { // Case 0010
+		return glm::vec2(1, 1);
+	} 
+	else if(!c[3] && !c[2] && c[1] && c[0]) { // Case 0011
+		return glm::vec2(1, 0);
+	}
+	else if (!c[3] && c[2] && !c[1] && !c[0]) { // case 0100
+		return glm::vec2(-1, -1);
+	}
+	else if (!c[3] && c[2] && !c[1] && c[0]) { // Case 0101
+		return glm::vec2(0, -1);
+	}
+	else if (!c[3] && c[2] && c[1] && !c[0]) { // Case 0110
+		if (angle < 180) return glm::vec2(-1,1);
+		else return glm::vec2(1, -1);
+	}
+	else if (!c[3] && c[2] && c[1] && c[0]) { // Case 0111
+		return glm::vec2(1, -1);
+	}
+	else if (c[3] && !c[2] && !c[1] && !c[0]) { // Case 1000
+		return glm::vec2(-1, 1);
+	}
+	else if (c[3] && !c[2] && !c[1] && c[0]) { // Case 1001
+		if (angle < 180) return glm::vec2(1, 1);
+		else return glm::vec2(-1, -1);
+	}
+	else if (c[3] && !c[2] && c[1] && !c[0]) { // Case 1010
+		return glm::vec2(0, 1);
+	}
+	else if (c[3] && !c[2] && c[1] && c[0]) { // Case 1011
+		return glm::vec2(1, 1);
+	}
+	else if (c[3] && c[2] && !c[1] && !c[0]) { // Case 1100
+		return glm::vec2(-1, 0);
+	}
+	else if (c[3] && c[2] && !c[1] && c[0]) { // Case 1101
+		return glm::vec2(-1, -1);
+	}
+	else if (c[3] && c[2] && c[1] && !c[0]) { // Case 1110
+		return glm::vec2(-1, 1);
+	}
 
 
+}
+
+bool TileMap::ballCollision(const glm::ivec2& pos, const glm::ivec2& size) const
+{
+	vector<bool> col = reviseCollisions(pos, size);
+	bool ret = false;
+	for (int i = 0; i < col.size(); i++) {
+		ret |= col[i];
+	}
+	return ret;
+}
+
+void TileMap::setBallPos(glm::vec2 pos)
+{
+	ballPos = pos;
+}
+
+glm::vec2 TileMap::getBallPos()
+{
+	return ballPos;
+}
 
 
 

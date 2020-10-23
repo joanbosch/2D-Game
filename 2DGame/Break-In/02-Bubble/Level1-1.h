@@ -23,6 +23,9 @@ public:
 	void update(int deltaTime);
 	void render();
 
+	bool ballHasColided();
+	glm::vec2 getN();
+
 private:
 	void initDesplBlocks();
 	void initDesplWoods();
@@ -31,6 +34,9 @@ private:
 	bool bJumping;
 	glm::ivec2 tileMapDispl, posPlayer;
 	int jumpAngle, startY;
+
+	bool ballColided;
+	glm::vec2 N;
 
 	vector<Block*> blocks;
 	vector<Wood*> woods;

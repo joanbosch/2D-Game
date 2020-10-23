@@ -20,8 +20,10 @@ enum PlayerAnims
 void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
 	bJumping = false;
+	vel = 4;
+	angle = 110.f;
 	spritesheet.loadFromFile("images/ball.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(1, 1), &spritesheet, &shaderProgram);
+	sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(1, 1), &spritesheet, &shaderProgram);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 
@@ -30,65 +32,23 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 void Ball::update(int deltaTime)
 {
 	sprite->update(deltaTime);
-	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
-	{
-		/*if (sprite->animation() != MOVE_LEFT)
-			sprite->changeAnimation(MOVE_LEFT);*/
-		posPlayer.x -= 2;
-		if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
-		{
-			posPlayer.x += 2;
-			/*sprite->changeAnimation(STAND_LEFT);*/
-		}
-	}
-	else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
-	{
-		/*if (sprite->animation() != MOVE_RIGHT)
-			sprite->changeAnimation(MOVE_RIGHT);*/
-		posPlayer.x += 2;
-		if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
-		{
-			posPlayer.x -= 2;
-			/*sprite->changeAnimation(STAND_RIGHT);*/
-		}
-	}
-	else
-	{
-		/*if (sprite->animation() == MOVE_LEFT)
-			sprite->changeAnimation(STAND_LEFT);
-		else if (sprite->animation() == MOVE_RIGHT)
-			sprite->changeAnimation(STAND_RIGHT);*/
-	}
+	int rel = cos(3.14159f * angle / 180.f) / sin(3.14159f * angle / 180.f);
+	float x1 = vel * cos(3.14159f * angle / 180.f);
+	float y1 = vel * sin(3.14159f * angle / 180.f);
 
-	if (bJumping)
-	{
-		jumpAngle += JUMP_ANGLE_STEP;
-		if (jumpAngle == 180)
-		{
-			bJumping = false;
-			posPlayer.y = startY;
-		}
-		else
-		{
-			posPlayer.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
-			if (jumpAngle > 90)
-				bJumping = !map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y);
-		}
-	}
-	else
-	{
-		posPlayer.y += FALL_STEP;
-		if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y))
-		{
-			if (Game::instance().getSpecialKey(GLUT_KEY_UP))
-			{
-				bJumping = true;
-				jumpAngle = 0;
-				startY = posPlayer.y;
-			}
-		}
-	}
+	x_pos += x1;
+	y_pos -= y1;
 
+	posPlayer.x = int(x_pos);
+	posPlayer.y = int(y_pos);
+	if (map->ballCollision(posPlayer, glm::ivec2(16, 16))) {
+		treatCollision(map->getNormalVector(posPlayer, glm::ivec2(16, 16), angle));
+		x_pos -= x1;
+		y_pos += y1;
+		posPlayer.x = int(x_pos);
+		posPlayer.y = int(y_pos);
+	}
+	
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
@@ -105,9 +65,28 @@ void Ball::setTileMap(TileMap* tileMap)
 void Ball::setPosition(const glm::vec2& pos)
 {
 	posPlayer = pos;
+	x_pos = float(posPlayer.x);
+	y_pos = float(posPlayer.y);
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
+glm::vec2 Ball::getPosition()
+{
+	return posPlayer;
+}
+
+void Ball::treatCollision(glm::vec2 N)
+{
+	glm::vec2 v = glm::vec2(cos(3.14159f * angle / 180.f), sin(3.14159f * angle / 180.f));
+	glm::vec2 initial = glm::normalize(glm::vec2(1, 0));
+	float dn = 2 * glm::dot(v, glm::normalize(N));
+	glm::vec2 ref = v - N * dn;
+
+
+	float ang_mid = atan2((initial.x * ref.y) - (ref.x * initial.y), (initial.x * ref.x) + (initial.y * ref.y));
+	if (ang_mid < 0) angle = 360 + ((ang_mid) * 180.f / 3.14159f);
+	else angle = (ang_mid) * 180.f / 3.14159f;
+}
 
 
 
