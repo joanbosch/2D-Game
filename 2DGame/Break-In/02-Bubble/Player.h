@@ -19,6 +19,9 @@ public:
 	void render();
 
 	void setPosition(const glm::vec2& pos);
+	glm::vec2 getPosition() { return posPlayer; };
+
+	void setVisibility(bool vis);
 
 private:
 	glm::ivec2 tileMapDispl, posPlayer, playerSize;
@@ -26,7 +29,7 @@ private:
 	Sprite* sprite;
 	TileMap* map;
 
-
+	bool visible;
 };
 
 

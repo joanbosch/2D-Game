@@ -49,6 +49,8 @@ private:
 
 	Text text;
 
+	void scroll(int direction);
+
 	int money;
 	int points;
 	int lives;
@@ -56,6 +58,10 @@ private:
 	int room;
 
 	float left, right, bottom, top;
+
+	int prev_top, next_top;
+	int scroll_delay;
+	bool scrolling;
 
 };
 

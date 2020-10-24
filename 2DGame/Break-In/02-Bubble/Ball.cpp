@@ -26,6 +26,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(1, 1), &spritesheet, &shaderProgram);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+	visible = true;
 
 }
 
@@ -54,7 +55,7 @@ void Ball::update(int deltaTime)
 
 void Ball::render()
 {
-	sprite->render();
+	if (visible) sprite->render();
 }
 
 void Ball::setTileMap(TileMap* tileMap)
@@ -86,6 +87,11 @@ void Ball::treatCollision(glm::vec2 N)
 	float ang_mid = atan2((initial.x * ref.y) - (ref.x * initial.y), (initial.x * ref.x) + (initial.y * ref.y));
 	if (ang_mid < 0) angle = 360 + ((ang_mid) * 180.f / 3.14159f);
 	else angle = (ang_mid) * 180.f / 3.14159f;
+}
+
+void Ball::setVisibility(bool vis)
+{
+	visible = vis;
 }
 
 

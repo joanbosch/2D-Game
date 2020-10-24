@@ -58,6 +58,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 
 	map = tileMap;
+	visible = true;
 }
 
 void Player::update(int deltaTime)
@@ -113,11 +114,16 @@ void Player::update(int deltaTime)
 
 void Player::render()
 {
-	sprite->render();
+	if (visible) sprite->render();
 }
 
 void Player::setPosition(const glm::vec2& pos)
 {
 	posPlayer = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+}
+
+void Player::setVisibility(bool vis)
+{
+	visible = vis;
 }

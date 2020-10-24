@@ -23,6 +23,8 @@ public:
 
 	glm::vec2 getPosition();
 	void treatCollision(glm::vec2 N);
+	void setVisibility(bool vis);
+
 private:
 	bool bJumping;
 	glm::ivec2 tileMapDispl, posPlayer;
@@ -34,6 +36,8 @@ private:
 	Texture spritesheet;
 	Sprite* sprite;
 	TileMap* map;
+
+	bool visible;
 
 };
 
