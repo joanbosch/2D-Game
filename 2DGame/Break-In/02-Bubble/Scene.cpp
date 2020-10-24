@@ -8,7 +8,7 @@
 #define SCREEN_X 32
 #define SCREEN_Y 42
 
-#define INIT_PLAYER_X_TILES 12
+#define INIT_PLAYER_X_TILES 11
 #define INIT_PLAYER_Y_TILES 20
 
 #define SCROLL_VEL 16
@@ -44,10 +44,10 @@ void Scene::init()
 	background = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 	backgroundImage.loadFromFile("images/bkgLvl1.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	//glm::vec2 geom2[2] = { glm::vec2(left, top), glm::vec2(right, 42.f) };
-	//glm::vec2 texCoords2[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 0.09f) };
-	//topBar = TexturedQuad::createTexturedQuad(geom2, texCoords2, texProgram);
-	//topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	glm::vec2 geom2[2] = { glm::vec2(left, top), glm::vec2(right, bottom) };
+	// glm::vec2 texCoords2[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
+	topBar = TexturedQuad::createTexturedQuad(geom2, texCoords, texProgram);
+	topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
 	map = TileMap::createTileMap("levels/lvl1.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 
@@ -62,7 +62,7 @@ void Scene::init()
 
 	ball = new Ball();
 	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
+	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + 1.5f + INIT_PLAYER_Y_TILES * map->getTileSize()));
 	ball->setTileMap(map);
 
 	// level11 = new Level11();
@@ -105,8 +105,8 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	background->render(backgroundImage);
-	// topBar->render(topBarImage);
 	map->render();
+	topBar->render(topBarImage);
 	entities->render();
 	ball->render();
 	player->render();

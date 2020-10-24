@@ -44,8 +44,8 @@ private:
 
 	Texture backgroundImage;
 	TexturedQuad *background;
-	/*Texture topBarImage;
-	TexturedQuad* topBar;*/
+	Texture topBarImage;
+	TexturedQuad* topBar;
 
 	Text text;
 
