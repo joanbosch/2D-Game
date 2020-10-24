@@ -10,7 +10,7 @@
 #include "Player.h"
 #include "TexturedQuad.h"
 #include "Text.h"
-#include "Level1-1.h"
+#include "Entities.h"
 #include "Ball.h"
 
 // Scene contains all the entities of our game.
@@ -35,15 +35,17 @@ private:
 private:
 	TileMap *map;
 	Ball *ball;
-	Level11 *level11;
+	Entities *entities;
 	Player *player;
 	
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
 
-	Texture backgorundImage;
+	Texture backgroundImage;
 	TexturedQuad *background;
+	/*Texture topBarImage;
+	TexturedQuad* topBar;*/
 
 	Text text;
 
@@ -52,6 +54,8 @@ private:
 	int lives;
 	int bank;
 	int room;
+
+	float left, right, bottom, top;
 
 };
 

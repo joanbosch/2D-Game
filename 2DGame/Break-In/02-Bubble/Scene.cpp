@@ -11,6 +11,7 @@
 #define INIT_PLAYER_X_TILES 12
 #define INIT_PLAYER_Y_TILES 20
 
+#define SCROLL_VEL 16
 
 Scene::Scene()
 {
@@ -33,39 +34,51 @@ Scene::~Scene()
 void Scene::init()
 {
 	initShaders();
-	glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(640.f, 480.f) };
+	left = 0.f;
+	right = float(SCREEN_WIDTH - 1);
+	bottom = float((2.6 * SCREEN_HEIGHT) - 1);
+	top = float((1.6 * SCREEN_HEIGHT) - 1);
+
+	glm::vec2 geom[2] = { glm::vec2(left, top), glm::vec2(right, bottom) };
 	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 	background = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
+	backgroundImage.loadFromFile("images/bkgLvl1.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	backgorundImage.loadFromFile("images/bkgLvl1.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	//glm::vec2 geom2[2] = { glm::vec2(left, top), glm::vec2(right, 42.f) };
+	//glm::vec2 texCoords2[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 0.09f) };
+	//topBar = TexturedQuad::createTexturedQuad(geom2, texCoords2, texProgram);
+	//topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	map = TileMap::createTileMap("levels/level1_1_new.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	map = TileMap::createTileMap("levels/lvl1.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+
+	entities = new Entities();
+	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
 
 	player = new Player();
-	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-	player->setTileMap(map);
+	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
+	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
+
+	player->setPlayerArea(top);
 
 	ball = new Ball();
 	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 	ball->setTileMap(map);
 
-	level11 = new Level11();
-	level11->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
+	// level11 = new Level11();
+	// level11->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
 
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
+	// init camera position
+	projection = glm::ortho(left, right, bottom, top);
 	currentTime = 0.0f;
 
 	if (!text.init("fonts/AnimalCrossing.ttf"))
-		//if(!text.init("fonts/OpenSans-Bold.ttf"))
-		//if(!text.init("fonts/DroidSerif.ttf"))
 		cout << "Could not load font!!!" << endl;
 
 	money = 0;
 	points = 0;
 	lives = 4;
-	bank = 0;
+	bank = 1;
 	room = 1;
 }
 
@@ -74,10 +87,10 @@ void Scene::update(int deltaTime)
 	currentTime += deltaTime;
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
-	level11->update(deltaTime);
+	entities->update(deltaTime);
 	player->update(deltaTime);
-	if (level11->ballHasColided()) {
-		ball->treatCollision(level11->getN());
+	if (entities->ballHasColided()) {
+		ball->treatCollision(entities->getN());
 	}
 }
 
@@ -91,13 +104,13 @@ void Scene::render()
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
-	background->render(backgorundImage);
+	background->render(backgroundImage);
+	// topBar->render(topBarImage);
 	map->render();
+	entities->render();
 	ball->render();
-	level11->render();
 	player->render();
 	
-
 	// Rendender text
 	text.render("MONEY", glm::vec2(455, 42+30), 40, glm::vec4(1, 0.81, 0.3, 1));
 	text.render( to_string_zeros(money, 8), glm::vec2(455, 42 + 2 * 33), 30, glm::vec4(1, 1, 1, 1));
@@ -123,6 +136,9 @@ string Scene::to_string_zeros(int number, int num_zeros)
 	std::string s = ss.str();
 	return s;
 }
+
+
+
 void Scene::initShaders()
 {
 	Shader vShader, fShader;

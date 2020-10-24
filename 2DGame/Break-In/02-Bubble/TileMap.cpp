@@ -7,7 +7,6 @@
 
 using namespace std;
 
-
 TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program)
 {
 	TileMap *map = new TileMap(levelFile, minCoords, program);
@@ -78,17 +77,59 @@ bool TileMap::loadLevel(const string &levelFile)
 	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
 	
 	map = new int[mapSize.x * mapSize.y];
+	entities = new vector<infoEntities>();
+	int k = 0;
 	for(int j=0; j<mapSize.y; j++)
 	{
-		for(int i=0; i<mapSize.x; i++)
+		for (int i = 0; i < mapSize.x; i++)
 		{
-			//fin.get(tile);
+			ENTITIES_TYPES type = GREEN_BLOCK;
 			fin >> tile;
-			/*if(tile == ' ')
-				map[j*mapSize.x+i] = 0;
-			else
-				map[j*mapSize.x+i] = tile - int('0');*/
 			map[j * mapSize.x + i] = tile;
+			if (tile == 1) map[j * mapSize.x + i] = tile;
+			else {
+				map[j * mapSize.x + i] = 0;
+				// save sprites position
+				switch (tile) {
+				case 2: // woods sprites
+					type = WOOD;
+					break;
+				case 3: // orange block
+					type = ORANGE_BLOCK;
+					break;
+				case 4: // green block
+					type = GREEN_BLOCK;
+					break;
+				case 5: // blue block
+					type = BLUE_BLOCK;
+					break;
+				case 6: // single coin
+					type = SINGLE_COIN;
+					break;
+				case 7: // bags
+					type = COINS_BAG;
+					break;
+				case 8: // multiple coins
+					type = MULTIPLE_COINS;
+					break;
+				case 9: // diamond
+					type = DIAMOND;
+					break;
+				case 10: // alarm
+					type = ALARM;
+					break;
+				case 11: // axe
+					type = AXE;
+					break;
+				}
+				if (tile != 0) {
+					entities->push_back(infoEntities());
+					(*entities)[k].x = i;
+					(*entities)[k].y = j;
+					(*entities)[k].type = type;
+					++k;
+				}
+			}
 		}
 		//fin.get(tile);
 #ifndef _WIN32
@@ -323,30 +364,3 @@ glm::vec2 TileMap::getBallPos()
 {
 	return ballPos;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

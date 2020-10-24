@@ -13,6 +13,15 @@
 // it builds a single VBO that contains all tiles. As a result the render
 // method draws the whole map independently of what is visible.
 
+enum ENTITIES_TYPES {
+	WOOD, ORANGE_BLOCK, GREEN_BLOCK, BLUE_BLOCK, SINGLE_COIN, COINS_BAG, MULTIPLE_COINS, DIAMOND, ALARM, AXE
+};
+
+struct infoEntities {
+	int x;
+	int y;
+	ENTITIES_TYPES type;
+};
 
 class TileMap
 {
@@ -41,6 +50,9 @@ public:
 	void setBallPos(glm::vec2 pos);
 	glm::vec2 getBallPos();
 
+	infoEntities getEntity(int i) { return (*entities)[i]; };
+	int getNEntities() { return entities->size(); };
+
 private:
 	bool loadLevel(const string &levelFile);
 	void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
@@ -56,6 +68,8 @@ private:
 	int *map;
 
 	glm::vec2 ballPos;
+
+	vector<infoEntities> *entities;
 };
 
 
