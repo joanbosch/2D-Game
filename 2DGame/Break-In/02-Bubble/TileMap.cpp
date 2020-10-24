@@ -19,6 +19,7 @@ TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProg
 {
 	loadLevel(levelFile);
 	prepareArrays(minCoords, program);
+	setPlayableArea(1 * tileSize, 2 * tileSize, 20.5 * tileSize, 20 * tileSize);
 }
 
 TileMap::~TileMap()
@@ -188,6 +189,16 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 	glBufferData(GL_ARRAY_BUFFER, 24 * nTiles * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 	posLocation = program.bindVertexAttribute("position", 2, 4*sizeof(float), 0);
 	texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4*sizeof(float), (void *)(2*sizeof(float)));
+}
+
+void TileMap::setPlayableArea(int minxcoord, int minycoord, int maxxcoord, int maxycoord)
+{
+	playerArea = playableArea();
+	playerArea.minx = minxcoord;
+	playerArea.miny = minycoord;
+	playerArea.maxx = maxxcoord;
+	playerArea.maxy = maxycoord;
+
 }
 
 // Collision tests for axis aligned bounding boxes.

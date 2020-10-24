@@ -19,7 +19,6 @@ public:
 	void render();
 
 	void setPosition(const glm::vec2& pos);
-	void setPlayerArea(float top);
 
 private:
 	glm::ivec2 tileMapDispl, posPlayer, playerSize;
@@ -27,7 +26,6 @@ private:
 	Sprite* sprite;
 	TileMap* map;
 
-	int minx, miny, maxx, maxy;
 
 };
 

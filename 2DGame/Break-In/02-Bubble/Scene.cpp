@@ -50,6 +50,7 @@ void Scene::init()
 	topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
 	map = TileMap::createTileMap("levels/lvl1.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	map->setPlayableArea(1 * map->getTileSize(), top + 2 * map->getTileSize(), 20.5 * map->getTileSize(), top + 20 * map->getTileSize());
 
 	entities = new Entities();
 	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
@@ -57,8 +58,6 @@ void Scene::init()
 	player = new Player();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
-
-	player->setPlayerArea(top);
 
 	ball = new Ball();
 	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -92,6 +91,10 @@ void Scene::update(int deltaTime)
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
 	}
+
+	//check if ball is out of room
+	glm::vec2 ballPos = map->getBallPos();
+
 }
 
 void Scene::render()

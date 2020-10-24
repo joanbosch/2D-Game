@@ -58,17 +58,14 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 
 	map = tileMap;
-
-	// set playable area
-	minx = 1 * map->getTileSize();
-	miny = 2 * map->getTileSize();
-	maxx = 20.5 * map->getTileSize();
-	maxy = 20 * map->getTileSize();
-
 }
 
 void Player::update(int deltaTime)
 {
+	int minx = map->getPlayableArea().minx;
+	int miny = map->getPlayableArea().miny;
+	int maxx = map->getPlayableArea().maxx;
+	int maxy = map->getPlayableArea().maxy;
 	sprite->update(deltaTime);
 	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 	{
@@ -123,11 +120,4 @@ void Player::setPosition(const glm::vec2& pos)
 {
 	posPlayer = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
-}
-
-
-void Player::setPlayerArea(float top) 
-{
-	miny = (2 * map->getTileSize()) + top;
-	maxy = (20 * map->getTileSize()) + top;
 }

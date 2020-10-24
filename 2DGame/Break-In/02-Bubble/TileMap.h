@@ -23,6 +23,13 @@ struct infoEntities {
 	ENTITIES_TYPES type;
 };
 
+struct playableArea {
+	int minx;
+	int miny;
+	int maxx;
+	int maxy;
+};
+
 class TileMap
 {
 
@@ -37,6 +44,8 @@ public:
 	void free();
 	
 	int getTileSize() const { return tileSize; }
+	playableArea getPlayableArea() { return playerArea; };
+	void setPlayableArea(int minxcoord, int minycoord, int maxxcoord, int maxycoord);
 
 	bool collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const;
@@ -70,6 +79,9 @@ private:
 	glm::vec2 ballPos;
 
 	vector<infoEntities> *entities;
+
+	playableArea playerArea;
+
 };
 
 
