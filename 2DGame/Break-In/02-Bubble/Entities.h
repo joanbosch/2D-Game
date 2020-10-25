@@ -9,12 +9,13 @@
 #include "Wood.h"
 #include "Coin.h"
 #include "Bag.h"
+#include <vector>
 
 class Entities
 {
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* map);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap);
 	void update(int deltaTime);
 	void render();
 

@@ -20,7 +20,6 @@ TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProg
 	loadLevel(levelFile);
 	prepareArrays(minCoords, program);
 	setPlayableArea(1 * tileSize, 2 * tileSize, 20.5 * tileSize, 20 * tileSize);
-	setActualRoom(1);
 }
 
 TileMap::~TileMap()
@@ -379,5 +378,5 @@ glm::vec2 TileMap::getBallPos()
 
 void TileMap::setActualRoom(int room)
 {
-	actualRoom = room;
+	sublvl = room;
 }

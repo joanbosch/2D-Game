@@ -1,7 +1,6 @@
 #include <cmath>
 #include <iostream>
 #include <ostream>
-#include <vector>
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include "Game.h"
@@ -12,9 +11,11 @@ using namespace std;
 #define SCREEN_X 32
 #define SCREEN_Y 42
 
-void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* map)
+void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap)
 {
 	ballColided = false;
+
+	map = tileMap;
 
 	int numEntities = map->getNEntities();
 
@@ -116,7 +117,7 @@ void Entities::update(int deltaTime)
 {
 	ballColided = false;
 
-	for (size_t i = 0; i < blocks->size(); ++i) {
+	for (int i = 0; i < blocks->size(); ++i) {
 		if (!ballColided) {
 			(*blocks)[i]->update(deltaTime);
 			bool aux = (*blocks)[i]->getBallColidad();
@@ -125,64 +126,84 @@ void Entities::update(int deltaTime)
 		}
 		
 	}
-	for (size_t i = 0; i < woods->size(); ++i) {
-		if (!(*axes)[i]->isVisible()) (*woods)[i]->setVisibility(false);
+
+	int room = 3 - map->getActualRoom();
+	// update woods panels
+	int num_woods = 2;
+	switch (room)
+	{
+	case 0:		// actually room 3
+		num_woods = 8;
+		break;
+	case 1:		// actually room 2
+		num_woods = 6;
+		break;
+	case 2:		// actually room 1
+		num_woods = 4;
+		break;
+	}
+	for (int i = 0; i < num_woods; ++i) {
+		int pos = room * num_woods + i;
+		if (!(*axes)[room]->isVisible()) (*woods)[pos]->setVisibility(false);
 		if (!ballColided) {
-			(*woods)[i]->update(deltaTime);
-			bool aux = (*woods)[i]->getBallColidad();
+			(*woods)[pos]->update(deltaTime);
+			bool aux = (*woods)[pos]->getBallColidad();
 			ballColided |= aux;
-			if (aux) N = (*woods)[i]->getN();
+			if (aux) N = (*woods)[pos]->getN();
 		}
 	}
-	for (size_t i = 0; i < single_coins->size(); ++i) {
+
+	for (int i = 0; i < single_coins->size(); ++i) {
 		(*single_coins)[i]->update(deltaTime);
 	}
-	for (size_t i = 0; i < bags->size(); ++i) {
+	for (int i = 0; i < bags->size(); ++i) {
 		(*bags)[i]->update(deltaTime);
 	}
 	/*
-	for (size_t i = 0; i < multiple_coins->size(); ++i) {
+	for (int i = 0; i < multiple_coins->size(); ++i) {
 		(*multiple_coins)[i]->update(deltaTime);
 	}
-	for (size_t i = 0; i < diamonds->size(); ++i) {
+	for (int i = 0; i < diamonds->size(); ++i) {
 		(*diamonds)[i]->update(deltaTime);
 	}
 	*/
-	if (!ballColided) {
-		int room = 3 - map->getActualRoom();
-		(*axes)[room]->update(deltaTime);
-		bool aux = (*axes)[room]->getBallColided();
-		ballColided |= aux;
-		if (aux) N = (*axes)[room]->getN();
+	for (int i = 0; i < axes->size(); ++i) {
+		if (!ballColided) {
+			(*axes)[i]->update(deltaTime);
+			bool aux = (*axes)[i]->getBallColided();
+			ballColided |= aux;
+			if (aux) N = (*axes)[i]->getN();
+		}
 	}
+
 }
 
 void Entities::render()
 {
-	for (size_t i = 0; i < blocks->size(); ++i) {
+	for (int i = 0; i < blocks->size(); ++i) {
 		(*blocks)[i]->render();
 	}
-	for (size_t i = 0; i < woods->size(); ++i) {
+	for (int i = 0; i < woods->size(); ++i) {
 		(*woods)[i]->render();
 	}
-	for (size_t i = 0; i < single_coins->size(); ++i) {
+	for (int i = 0; i < single_coins->size(); ++i) {
 		(*single_coins)[i]->render();
 	}
-	for (size_t i = 0; i < bags->size(); ++i) {
+	for (int i = 0; i < bags->size(); ++i) {
 		(*bags)[i]->render();
 	}
 	/*
-	for (size_t i = 0; i < multiple_coins->size(); ++i) {
+	for (int i = 0; i < multiple_coins->size(); ++i) {
 		(*multiple_coins)[i]->render();
 	}
-	for (size_t i = 0; i < diamonds->size(); ++i) {
+	for (int i = 0; i < diamonds->size(); ++i) {
 		(*diamonds)[i]->render();
 	}
-	for (size_t i = 0; i < alarms->size(); ++i) {
+	for (int i = 0; i < alarms->size(); ++i) {
 		alarms->render();
 		}
 	*/
-	for (size_t i = 0; i < axes->size(); ++i) {
+	for (int i = 0; i < axes->size(); ++i) {
 		(*axes)[i]->render();
 	}
 }

@@ -8,7 +8,7 @@
 #define SCREEN_X 32
 #define SCREEN_Y 42
 
-#define INIT_PLAYER_X_TILES 11
+#define INIT_PLAYER_X_TILES 10
 #define INIT_PLAYER_Y_TILES 20
 
 #define SCROLL_VEL 6
@@ -48,6 +48,7 @@ void Scene::init()
 	topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
 	map = TileMap::createTileMap("levels/lvl1.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	map->setActualRoom(1);
 	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), int(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 
 	entities = new Entities();
@@ -83,7 +84,7 @@ void Scene::update(int deltaTime)
 	currentTime += deltaTime;
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
-	// entities->update(deltaTime);
+	entities->update(deltaTime);
 	player->update(deltaTime);
 
 	//check if ball is going to next/previous room & scroll
@@ -187,6 +188,7 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 		scrolling = true;
 		next_margin = top + dir * 24 * map->getTileSize();
 		room -= dir;
+		map->setActualRoom(room);
 	}
 	else {
 		if ( (dir == -1 && top > next_margin) || (dir == 1 && top < next_margin)) scroll(dir);
