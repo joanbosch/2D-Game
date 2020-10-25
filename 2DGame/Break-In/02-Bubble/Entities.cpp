@@ -116,7 +116,7 @@ void Entities::update(int deltaTime)
 {
 	ballColided = false;
 
-	for (int i = 0; i < blocks->size(); ++i) {
+	for (size_t i = 0; i < blocks->size(); ++i) {
 		if (!ballColided) {
 			(*blocks)[i]->update(deltaTime);
 			bool aux = (*blocks)[i]->getBallColidad();
@@ -125,7 +125,7 @@ void Entities::update(int deltaTime)
 		}
 		
 	}
-	for (int i = 0; i < woods->size(); ++i) {
+	for (size_t i = 0; i < woods->size(); ++i) {
 		if (!(*axes)[i]->isVisible()) (*woods)[i]->setVisibility(false);
 		if (!ballColided) {
 			(*woods)[i]->update(deltaTime);
@@ -134,17 +134,17 @@ void Entities::update(int deltaTime)
 			if (aux) N = (*woods)[i]->getN();
 		}
 	}
-	for (int i = 0; i < single_coins->size(); ++i) {
+	for (size_t i = 0; i < single_coins->size(); ++i) {
 		(*single_coins)[i]->update(deltaTime);
 	}
-	for (int i = 0; i < bags->size(); ++i) {
+	for (size_t i = 0; i < bags->size(); ++i) {
 		(*bags)[i]->update(deltaTime);
 	}
 	/*
-	for (int i = 0; i < multiple_coins->size(); ++i) {
+	for (size_t i = 0; i < multiple_coins->size(); ++i) {
 		(*multiple_coins)[i]->update(deltaTime);
 	}
-	for (int i = 0; i < diamonds->size(); ++i) {
+	for (size_t i = 0; i < diamonds->size(); ++i) {
 		(*diamonds)[i]->update(deltaTime);
 	}
 	*/
@@ -159,30 +159,30 @@ void Entities::update(int deltaTime)
 
 void Entities::render()
 {
-	for (int i = 0; i < blocks->size(); ++i) {
+	for (size_t i = 0; i < blocks->size(); ++i) {
 		(*blocks)[i]->render();
 	}
-	for (int i = 0; i < woods->size(); ++i) {
+	for (size_t i = 0; i < woods->size(); ++i) {
 		(*woods)[i]->render();
 	}
-	for (int i = 0; i < single_coins->size(); ++i) {
+	for (size_t i = 0; i < single_coins->size(); ++i) {
 		(*single_coins)[i]->render();
 	}
-	for (int i = 0; i < bags->size(); ++i) {
+	for (size_t i = 0; i < bags->size(); ++i) {
 		(*bags)[i]->render();
 	}
 	/*
-	for (int i = 0; i < multiple_coins->size(); ++i) {
+	for (size_t i = 0; i < multiple_coins->size(); ++i) {
 		(*multiple_coins)[i]->render();
 	}
-	for (int i = 0; i < diamonds->size(); ++i) {
+	for (size_t i = 0; i < diamonds->size(); ++i) {
 		(*diamonds)[i]->render();
 	}
-	for (int i = 0; i < alarms->size(); ++i) {
+	for (size_t i = 0; i < alarms->size(); ++i) {
 		alarms->render();
 		}
 	*/
-	for (int i = 0; i < axes->size(); ++i) {
+	for (size_t i = 0; i < axes->size(); ++i) {
 		(*axes)[i]->render();
 	}
 }

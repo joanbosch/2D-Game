@@ -44,13 +44,11 @@ void Scene::init()
 	background = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 	backgroundImage.loadFromFile("images/bkgLvl1.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	// glm::vec2 geom2[2] = { glm::vec2(left, top), glm::vec2(right, bottom) };
-	// glm::vec2 texCoords2[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 	topBar = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 	topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
 	map = TileMap::createTileMap("levels/lvl1.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	map->setPlayableArea(1 * map->getTileSize(), top + 2 * map->getTileSize(), 20.5 * map->getTileSize(), top + 20 * map->getTileSize());
+	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), int(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 
 	entities = new Entities();
 	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
@@ -169,6 +167,12 @@ void Scene::scroll(int direction)
 	top += direction * SCROLL_VEL;
 	bottom += direction * SCROLL_VEL;
 	projection = glm::ortho(left, right, bottom, top);
+
+	//scroll background image too
+	glm::vec2 geom[2] = { glm::vec2(left, top), glm::vec2(right, bottom) };
+	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
+	background->setPosition(geom, texCoords, texProgram);
+	topBar->setPosition(geom, texCoords, texProgram);
 }
 
 void Scene::changeRoom(int dir, glm::vec2 ballPos)
@@ -188,7 +192,7 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 		if ( (dir == -1 && top > next_margin) || (dir == 1 && top < next_margin)) scroll(dir);
 		else {
 			scrolling = false;
-			map->setPlayableArea(1 * map->getTileSize(), top + 2 * map->getTileSize(), 20.5 * map->getTileSize(), top + 20 * map->getTileSize());
+			map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), int(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 			
 			glm::vec2 playerPos = player->getPosition();
 			player->setPosition(glm::vec2(playerPos.x, playerPos.y + dir * 24 * map->getTileSize()));

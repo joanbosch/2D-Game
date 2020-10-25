@@ -43,10 +43,8 @@ private:
 	float currentTime;
 	glm::mat4 projection;
 
-	Texture backgroundImage;
-	TexturedQuad *background;
-	Texture topBarImage;
-	TexturedQuad* topBar;
+	Texture backgroundImage, topBarImage;
+	TexturedQuad *background, *topBar;
 
 	Text text;
 
@@ -60,7 +58,7 @@ private:
 
 	float left, right, bottom, top;
 
-	int next_margin, prev_vel;
+	float next_margin, prev_vel;
 	bool scrolling;
 
 };
