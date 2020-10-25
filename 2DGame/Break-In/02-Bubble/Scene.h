@@ -31,6 +31,7 @@ public:
 private:
 	void initShaders();
 	string to_string_zeros(int number, int num_zeros);
+	void changeRoom(int direction, glm::vec2 ballPos);
 
 private:
 	TileMap *map;
@@ -59,8 +60,7 @@ private:
 
 	float left, right, bottom, top;
 
-	int prev_top, next_top;
-	int scroll_delay;
+	int next_margin, prev_vel;
 	bool scrolling;
 
 };

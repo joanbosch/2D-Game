@@ -34,9 +34,9 @@ private:
 	/* TODO: implement these sprites too
 	vector<MultipleCoins*> *multiple_coins;
 	vector<Diamond*> *diamonds;
-	Alarm* alarm;
+	vector<Alarm*> alarms;
 	*/
-	Axe *axe;
+	vector<Axe*> *axes;
 
 	TileMap *map;
 	// vector<pair<int,int>*> blocks_desp, wood_desp, coin_desp, bag_desp;

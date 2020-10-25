@@ -62,6 +62,9 @@ public:
 	infoEntities getEntity(int i) { return (*entities)[i]; };
 	int getNEntities() { return entities->size(); };
 
+	void setActualRoom(int room);
+	int getActualRoom() { return actualRoom; };
+
 private:
 	bool loadLevel(const string &levelFile);
 	void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
@@ -81,6 +84,7 @@ private:
 	vector<infoEntities> *entities;
 
 	playableArea playerArea;
+	int actualLvl, actualRoom;
 
 };
 

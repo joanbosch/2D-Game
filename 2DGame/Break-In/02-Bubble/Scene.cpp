@@ -82,60 +82,40 @@ void Scene::init()
 
 void Scene::update(int deltaTime)
 {
-	prev_top = top;
 	currentTime += deltaTime;
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
 	// entities->update(deltaTime);
 	player->update(deltaTime);
+
+	//check if ball is going to next/previous room & scroll
+	glm::vec2 ballPos = ball->getPosition();
+	int miny = map->getPlayableArea().miny;
+	int maxy = map->getPlayableArea().maxy;
+
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
 	}
 
-	//check if ball is going to next/previous room
-	glm::vec2 ballPos = ball->getPosition();
-	int miny = map->getPlayableArea().miny;
-	int maxy = map->getPlayableArea().maxy;
-	if (ballPos.y + 16 < miny) { // ball touched upper border
+	if (ballPos.y + 16 < miny) { // ball touched top border
 		if (room <= 3) {
-			if (!scrolling) {
-				// TODO: set player and ball invisible
-				player->setVisibility(false);
-				ball->setVisibility(false);
-				scrolling = true;
-				next_top = top - 24*map->getTileSize();
-				++room;
-			} 
+			changeRoom(-1, ballPos);
+		}
+	}
+	if (ballPos.y > (maxy + 2.7 * map->getTileSize()) ) {   // ball touches bottom border
+		if (room == 1 && !scrolling) {
+			ball->setVelocity(0);
+			// TODO: set dead animation in player
+			if (lives == 0) {
+				// TODO: gameover
+			}
 			else {
-				if (top > next_top) scroll(-1);
-				else {
-					scrolling = false;
-					map->setPlayableArea(1 * map->getTileSize(), top + 2 * map->getTileSize(), 20.5 * map->getTileSize(), top + 20 * map->getTileSize());
-					glm::vec2 playerPos = player->getPosition();
-					player->setPosition(glm::vec2(playerPos.x, playerPos.y - 24 * map->getTileSize()));
-					player->setVisibility(true);
-					ball->setVisibility(true);
-					// TODO: set player and ball visible && update positions (sum or rest scrolled)
-				}
+				ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 4));
+				--lives;
 			}
 		}
-		else; // next lvl
+		else changeRoom(1, ballPos);
 	}
-	//if (ballPos.y > maxy) {
-	//	if (room == 1) {
-	//		// TODO: dead
-	//		if (lives == 1) // TODO: game over;
-	//		else {
-	//			// TODO: player dead animation
-	//			--lives;
-	//		}
-	//	}
-	//	else {
-	//		// TODO: set player and ball invisible
-	//		scroll(1);
-	//		// TODO: set player and ball visible && update positions (sum or rest scrolled)
-	//	}
-	//}
 
 }
 
@@ -189,6 +169,36 @@ void Scene::scroll(int direction)
 	top += direction * SCROLL_VEL;
 	bottom += direction * SCROLL_VEL;
 	projection = glm::ortho(left, right, bottom, top);
+}
+
+void Scene::changeRoom(int dir, glm::vec2 ballPos)
+{
+	if (!scrolling) {
+		player->setVisibility(false);
+
+		ball->setVisibility(false);
+		prev_vel = ball->getVelocity();
+		ball->setVelocity(0);
+
+		scrolling = true;
+		next_margin = top + dir * 24 * map->getTileSize();
+		room -= dir;
+	}
+	else {
+		if ( (dir == -1 && top > next_margin) || (dir == 1 && top < next_margin)) scroll(dir);
+		else {
+			scrolling = false;
+			map->setPlayableArea(1 * map->getTileSize(), top + 2 * map->getTileSize(), 20.5 * map->getTileSize(), top + 20 * map->getTileSize());
+			
+			glm::vec2 playerPos = player->getPosition();
+			player->setPosition(glm::vec2(playerPos.x, playerPos.y + dir * 24 * map->getTileSize()));
+			player->setVisibility(true);
+
+			ball->setPosition(glm::vec2(ballPos.x, ballPos.y + dir * 5 * map->getTileSize()));
+			ball->setVelocity(prev_vel);
+			ball->setVisibility(true);
+		}
+	}
 }
 
 void Scene::initShaders()

@@ -26,6 +26,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 	multiple_coins = new vector<MultipleCoins>();
 	diamonds = new vector<Diamonds>();
 	*/
+	axes = new vector<Axe*>();
 
 
 	for (int i = 0; i < numEntities; ++i) {
@@ -92,19 +93,21 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 			diamonds->push_back(diam);
 		}
 		else if (entityType == ALARM) {
-			alarm = new Alarm();
+			Alarm* alarm = new Alarm();
 			alarm->init(tilemap, shaderProgram);
 			alarm->setPosition(glm::vec2(map->getEntity(i).x *map->getTileSize(), map->getEntity(i).y *map->getTileSize()));
 			alarm->setTileMap(map);
 			tileMapDispl = tileMapPos;
+			alarms->push_back(alarm);
 		}
 		*/
 		else if (entityType == AXE) {
-			axe = new Axe();
+			Axe* axe = new Axe();
 			axe->init(tilemap, shaderProgram);
 			axe->setPosition(glm::vec2(map->getEntity(i).x *map->getTileSize(), map->getEntity(i).y *map->getTileSize()));
 			axe->setTileMap(map);
 			tileMapDispl = tileMapPos;
+			axes->push_back(axe);
 		}
 	}
 }
@@ -123,7 +126,7 @@ void Entities::update(int deltaTime)
 		
 	}
 	for (int i = 0; i < woods->size(); ++i) {
-		if (!axe->isVisible()) (*woods)[i]->setVisibility(false);
+		if (!(*axes)[i]->isVisible()) (*woods)[i]->setVisibility(false);
 		if (!ballColided) {
 			(*woods)[i]->update(deltaTime);
 			bool aux = (*woods)[i]->getBallColidad();
@@ -146,10 +149,11 @@ void Entities::update(int deltaTime)
 	}
 	*/
 	if (!ballColided) {
-		axe->update(deltaTime);
-		bool aux = axe->getBallColided();
+		int room = 3 - map->getActualRoom();
+		(*axes)[room]->update(deltaTime);
+		bool aux = (*axes)[room]->getBallColided();
 		ballColided |= aux;
-		if (aux) N = axe->getN();
+		if (aux) N = (*axes)[room]->getN();
 	}
 }
 
@@ -168,15 +172,19 @@ void Entities::render()
 		(*bags)[i]->render();
 	}
 	/*
-	for(int i = 0; i < multiple_coins->size(); ++i) {
+	for (int i = 0; i < multiple_coins->size(); ++i) {
 		(*multiple_coins)[i]->render();
 	}
-	for(int i = 0; i < diamonds->size(); ++i) {
+	for (int i = 0; i < diamonds->size(); ++i) {
 		(*diamonds)[i]->render();
 	}
-	alarm->render();
+	for (int i = 0; i < alarms->size(); ++i) {
+		alarms->render();
+		}
 	*/
-	axe->render();
+	for (int i = 0; i < axes->size(); ++i) {
+		(*axes)[i]->render();
+	}
 }
 
 bool Entities::ballHasColided()

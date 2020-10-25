@@ -21,7 +21,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
 	bJumping = false;
 	vel = 4;
-	angle = 110.f;
+	angle = 70.f;
 	spritesheet.loadFromFile("images/ball.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(1, 1), &spritesheet, &shaderProgram);
 	tileMapDispl = tileMapPos;
@@ -33,7 +33,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 void Ball::update(int deltaTime)
 {
 	sprite->update(deltaTime);
-	int rel = cos(3.14159f * angle / 180.f) / sin(3.14159f * angle / 180.f);
+	float rel = cos(3.14159f * angle / 180.f) / sin(3.14159f * angle / 180.f);
 	float x1 = vel * cos(3.14159f * angle / 180.f);
 	float y1 = vel * sin(3.14159f * angle / 180.f);
 
@@ -92,6 +92,16 @@ void Ball::treatCollision(glm::vec2 N)
 void Ball::setVisibility(bool vis)
 {
 	visible = vis;
+}
+
+float Ball::getVelocity()
+{
+	return vel;
+}
+
+void Ball::setVelocity(float v)
+{
+	vel = v;
 }
 
 
