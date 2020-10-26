@@ -127,6 +127,7 @@ void Entities::update(int deltaTime)
 		
 	}
 
+	// AXES -> 2 habitacions nomes REPENSAR
 	//int room = 3 - map->getActualRoom();
 	//// update woods panels
 	//int num_woods = 2;
