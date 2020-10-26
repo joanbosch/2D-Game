@@ -127,31 +127,31 @@ void Entities::update(int deltaTime)
 		
 	}
 
-	int room = 3 - map->getActualRoom();
-	// update woods panels
-	int num_woods = 2;
-	switch (room)
-	{
-	case 0:		// actually room 3
-		num_woods = 8;
-		break;
-	case 1:		// actually room 2
-		num_woods = 6;
-		break;
-	case 2:		// actually room 1
-		num_woods = 4;
-		break;
-	}
-	for (int i = 0; i < num_woods; ++i) {
-		int pos = room * num_woods + i;
-		if (!(*axes)[room]->isVisible()) (*woods)[pos]->setVisibility(false);
-		if (!ballColided) {
-			(*woods)[pos]->update(deltaTime);
-			bool aux = (*woods)[pos]->getBallColidad();
-			ballColided |= aux;
-			if (aux) N = (*woods)[pos]->getN();
-		}
-	}
+	//int room = 3 - map->getActualRoom();
+	//// update woods panels
+	//int num_woods = 2;
+	//switch (room)
+	//{
+	//case 0:		// actually room 3
+	//	num_woods = 4;
+	//	break;
+	//case 1:		// actually room 2
+	//	num_woods = 6;
+	//	break;
+	//case 2:		// actually room 1
+	//	num_woods = 8;
+	//	break;
+	//}
+	//for (int i = 0; i < num_woods; ++i) {
+	//	int pos = room * num_woods + i;
+	//	if (!(*axes)[room]->isVisible()) (*woods)[pos]->setVisibility(false);
+	//	if (!ballColided) {
+	//		(*woods)[pos]->update(deltaTime);
+	//		bool aux = (*woods)[pos]->getBallColidad();
+	//		ballColided |= aux;
+	//		if (aux) N = (*woods)[pos]->getN();
+	//	}
+	//}
 
 	for (int i = 0; i < single_coins->size(); ++i) {
 		(*single_coins)[i]->update(deltaTime);

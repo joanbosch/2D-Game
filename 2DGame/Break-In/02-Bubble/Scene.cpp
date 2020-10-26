@@ -84,7 +84,7 @@ void Scene::update(int deltaTime)
 	currentTime += deltaTime;
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
-	entities->update(deltaTime);
+	// entities->update(deltaTime);
 	player->update(deltaTime);
 
 	//check if ball is going to next/previous room & scroll
