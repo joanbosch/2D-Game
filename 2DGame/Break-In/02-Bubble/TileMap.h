@@ -13,6 +13,22 @@
 // it builds a single VBO that contains all tiles. As a result the render
 // method draws the whole map independently of what is visible.
 
+enum ENTITIES_TYPES {
+	WOOD, ORANGE_BLOCK, GREEN_BLOCK, BLUE_BLOCK, SINGLE_COIN, COINS_BAG, MULTIPLE_COINS, DIAMOND, ALARM, AXE
+};
+
+struct infoEntities {
+	int x;
+	int y;
+	ENTITIES_TYPES type;
+};
+
+struct playableArea {
+	int minx;
+	int miny;
+	int maxx;
+	int maxy;
+};
 
 class TileMap
 {
@@ -28,6 +44,8 @@ public:
 	void free();
 	
 	int getTileSize() const { return tileSize; }
+	playableArea getPlayableArea() { return playerArea; };
+	void setPlayableArea(int minxcoord, int minycoord, int maxxcoord, int maxycoord);
 
 	bool collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const;
@@ -41,6 +59,12 @@ public:
 	void setBallPos(glm::vec2 pos);
 	glm::vec2 getBallPos();
 
+	infoEntities getEntity(int i) { return (*entities)[i]; };
+	int getNEntities() { return entities->size(); };
+
+	void setActualRoom(int room);
+	int getActualRoom() const { return sublvl; };
+
 private:
 	bool loadLevel(const string &levelFile);
 	void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
@@ -50,12 +74,17 @@ private:
 	GLuint vbo;
 	GLint posLocation, texCoordLocation;
 	glm::ivec2 position, mapSize, tilesheetSize;
-	int tileSize, blockSize;
+	int tileSize, blockSize, sublvl;
 	Texture tilesheet;
 	glm::vec2 tileTexSize;
 	int *map;
 
 	glm::vec2 ballPos;
+
+	vector<infoEntities> *entities;
+
+	playableArea playerArea;
+
 };
 
 

@@ -8,9 +8,10 @@
 #define SCREEN_X 32
 #define SCREEN_Y 42
 
-#define INIT_PLAYER_X_TILES 12
+#define INIT_PLAYER_X_TILES 10
 #define INIT_PLAYER_Y_TILES 20
 
+#define SCROLL_VEL 6
 
 Scene::Scene()
 {
@@ -33,40 +34,49 @@ Scene::~Scene()
 void Scene::init()
 {
 	initShaders();
-	glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(640.f, 480.f) };
+	left = 0.f;
+	right = float(SCREEN_WIDTH - 1);
+	bottom = float((2.6 * SCREEN_HEIGHT) - 1);
+	top = float((1.6 * SCREEN_HEIGHT) - 1);
+
+	glm::vec2 geom[2] = { glm::vec2(left, top), glm::vec2(right, bottom) };
 	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 	background = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
+	backgroundImage.loadFromFile("images/bkgLvl1.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	backgorundImage.loadFromFile("images/bkgLvl1.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	topBar = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
+	topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	map = TileMap::createTileMap("levels/level1_1_new.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	map = TileMap::createTileMap("levels/lvl1.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	map->setActualRoom(1);
+	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), int(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
+
+	entities = new Entities();
+	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
 
 	player = new Player();
-	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-	player->setTileMap(map);
+	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
+	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 
 	ball = new Ball();
 	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + 1.5f + INIT_PLAYER_Y_TILES * map->getTileSize()));
 	ball->setTileMap(map);
 
-	level11 = new Level11();
-	level11->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
-
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
+	// init camera position
+	projection = glm::ortho(left, right, bottom, top);
 	currentTime = 0.0f;
 
 	if (!text.init("fonts/AnimalCrossing.ttf"))
-		//if(!text.init("fonts/OpenSans-Bold.ttf"))
-		//if(!text.init("fonts/DroidSerif.ttf"))
 		cout << "Could not load font!!!" << endl;
 
 	money = 0;
 	points = 0;
 	lives = 4;
-	bank = 0;
+	bank = 1;
 	room = 1;
+
+	scrolling = false;
 }
 
 void Scene::update(int deltaTime)
@@ -74,11 +84,38 @@ void Scene::update(int deltaTime)
 	currentTime += deltaTime;
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
-	level11->update(deltaTime);
+	// entities->update(deltaTime);
 	player->update(deltaTime);
-	if (level11->ballHasColided()) {
-		ball->treatCollision(level11->getN());
+
+	//check if ball is going to next/previous room & scroll
+	glm::vec2 ballPos = ball->getPosition();
+	int miny = map->getPlayableArea().miny;
+	int maxy = map->getPlayableArea().maxy;
+
+	if (entities->ballHasColided()) {
+		ball->treatCollision(entities->getN());
 	}
+
+	if (ballPos.y + 16 < miny) { // ball touched top border
+		if (room <= 3) {
+			changeRoom(-1, ballPos);
+		}
+	}
+	if (ballPos.y > (maxy + 2.7 * map->getTileSize()) ) {   // ball touches bottom border
+		if (room == 1 && !scrolling) {
+			ball->setVelocity(0);
+			// TODO: set dead animation in player
+			if (lives == 0) {
+				// TODO: gameover
+			}
+			else {
+				ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 4));
+				--lives;
+			}
+		}
+		else changeRoom(1, ballPos);
+	}
+
 }
 
 void Scene::render()
@@ -88,16 +125,18 @@ void Scene::render()
 	texProgram.use();
 	texProgram.setUniformMatrix4f("projection", projection);
 	texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
+
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
-	background->render(backgorundImage);
+
+	background->render(backgroundImage);
 	map->render();
+	topBar->render(topBarImage);
+	entities->render();
 	ball->render();
-	level11->render();
 	player->render();
 	
-
 	// Rendender text
 	text.render("MONEY", glm::vec2(455, 42+30), 40, glm::vec4(1, 0.81, 0.3, 1));
 	text.render( to_string_zeros(money, 8), glm::vec2(455, 42 + 2 * 33), 30, glm::vec4(1, 1, 1, 1));
@@ -123,6 +162,51 @@ string Scene::to_string_zeros(int number, int num_zeros)
 	std::string s = ss.str();
 	return s;
 }
+
+void Scene::scroll(int direction)
+{
+	top += direction * SCROLL_VEL;
+	bottom += direction * SCROLL_VEL;
+	projection = glm::ortho(left, right, bottom, top);
+
+	//scroll background image too
+	glm::vec2 geom[2] = { glm::vec2(left, top), glm::vec2(right, bottom) };
+	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
+	background->setPosition(geom, texCoords, texProgram);
+	topBar->setPosition(geom, texCoords, texProgram);
+}
+
+void Scene::changeRoom(int dir, glm::vec2 ballPos)
+{
+	if (!scrolling) {
+		player->setVisibility(false);
+
+		ball->setVisibility(false);
+		prev_vel = ball->getVelocity();
+		ball->setVelocity(0);
+
+		scrolling = true;
+		next_margin = top + dir * 24 * map->getTileSize();
+		room -= dir;
+		map->setActualRoom(room);
+	}
+	else {
+		if ( (dir == -1 && top > next_margin) || (dir == 1 && top < next_margin)) scroll(dir);
+		else {
+			scrolling = false;
+			map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), int(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
+			
+			glm::vec2 playerPos = player->getPosition();
+			player->setPosition(glm::vec2(playerPos.x, playerPos.y + dir * 24 * map->getTileSize()));
+			player->setVisibility(true);
+
+			ball->setPosition(glm::vec2(ballPos.x, ballPos.y + dir * 5 * map->getTileSize()));
+			ball->setVelocity(prev_vel);
+			ball->setVisibility(true);
+		}
+	}
+}
+
 void Scene::initShaders()
 {
 	Shader vShader, fShader;

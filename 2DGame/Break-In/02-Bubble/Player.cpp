@@ -12,7 +12,7 @@ enum PlayerAnims
 };
 
 
-void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
+void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap)
 {
 	playerSize = glm::ivec2(38, 64);
 	spritesheet.loadFromFile("images/player.png", TEXTURE_PIXEL_FORMAT_RGBA);
@@ -57,15 +57,17 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 
+	map = tileMap;
+	visible = true;
 }
 
 void Player::update(int deltaTime)
 {
+	int minx = map->getPlayableArea().minx;
+	int miny = map->getPlayableArea().miny;
+	int maxx = map->getPlayableArea().maxx;
+	int maxy = map->getPlayableArea().maxy;
 	sprite->update(deltaTime);
-	int minx = 1 * map->getTileSize();
-	int miny = 2 * map->getTileSize();
-	int maxx = 20.5 * map->getTileSize();
-	int maxy = 20 * map->getTileSize();
 	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 	{
 		/*if(sprite->animation() != DEAD)
@@ -112,16 +114,16 @@ void Player::update(int deltaTime)
 
 void Player::render()
 {
-	sprite->render();
-}
-
-void Player::setTileMap(TileMap* tileMap)
-{
-	map = tileMap;
+	if (visible) sprite->render();
 }
 
 void Player::setPosition(const glm::vec2& pos)
 {
 	posPlayer = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+}
+
+void Player::setVisibility(bool vis)
+{
+	visible = vis;
 }

@@ -14,12 +14,14 @@ class Player
 {
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap);
 	void update(int deltaTime);
 	void render();
 
-	void setTileMap(TileMap* tileMap);
 	void setPosition(const glm::vec2& pos);
+	glm::vec2 getPosition() { return posPlayer; };
+
+	void setVisibility(bool vis);
 
 private:
 	glm::ivec2 tileMapDispl, posPlayer, playerSize;
@@ -27,6 +29,7 @@ private:
 	Sprite* sprite;
 	TileMap* map;
 
+	bool visible;
 };
 
 
