@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Game.h"
 
+#define ESCALAT 2.f
 
 enum PlayerAnims
 {
@@ -14,9 +15,9 @@ enum PlayerAnims
 
 void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap)
 {
-	playerSize = glm::ivec2(38, 64);
+	playerSize = glm::ivec2(38 * ESCALAT, 64 * ESCALAT);
 	spritesheet.loadFromFile("images/player.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(64, 64), glm::vec2(0.2, 0.33), &spritesheet, &shaderProgram);
+	sprite = Sprite::createSprite(glm::ivec2(64 * ESCALAT, 64 * ESCALAT), glm::vec2(0.2, 0.33), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(10);
 
 	sprite->setAnimationSpeed(LOOK_FRONT, 8);
@@ -72,40 +73,40 @@ void Player::update(int deltaTime)
 	{
 		/*if(sprite->animation() != DEAD)
 			sprite->changeAnimation(DEAD);*/
-		posPlayer.x -= 2;
+		posPlayer.x -= 4;
 		if (posPlayer.x < minx)
 		{
-			posPlayer.x += 2;
+			posPlayer.x += 4;
 		}
 	}
 	if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
 	{
 		/*if(sprite->animation() != LOOK_RIGHT)
 			sprite->changeAnimation(LOOK_RIGHT);*/
-		posPlayer.x += 2;
+		posPlayer.x += 4;
 		if (posPlayer.x > maxx)
 		{
-			posPlayer.x -= 2;
+			posPlayer.x -= 4;
 		}
 	}
 	if (Game::instance().getSpecialKey(GLUT_KEY_UP))
 	{
 		/*if (sprite->animation() != LOOK_TOP)
 			sprite->changeAnimation(LOOK_TOP);*/
-		posPlayer.y -= 2;
+		posPlayer.y -= 4;
 		if (posPlayer.y < miny)
 		{
-			posPlayer.y += 2;
+			posPlayer.y += 4;
 		}
 	}
 	if (Game::instance().getSpecialKey(GLUT_KEY_DOWN))
 	{
 		/*if (sprite->animation() != LOOK_BOTTOM)
 			sprite->changeAnimation(LOOK_BOTTOM);*/
-		posPlayer.y += 2;
+		posPlayer.y += 4;
 		if (posPlayer.y > maxy)
 		{
-			posPlayer.y -= 2;
+			posPlayer.y -= 4;
 		}
 	}
 

@@ -12,6 +12,8 @@
 #define INIT_PLAYER_X_TILES 4
 #define INIT_PLAYER_Y_TILES 25
 
+#define ESCALAT 2.f
+
 
 Menu::Menu()
 {
@@ -28,7 +30,7 @@ void Menu::init()
 	bopt = true;
 	count = 0;
 
-	glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(640.f, 480.f) };
+	glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(SCREEN_WIDTH, SCREEN_HEIGHT) };
 	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 	background = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 
@@ -92,10 +94,10 @@ void Menu::render()
 	background->render(backgorundImage);
 	
 	// Select the correct option that the user has selected.
-	if(bopt) text.render("Press ENTER to START", glm::vec2(220, 360), 20, glm::vec4(1, 1, 1, 1));
-	text.render("Press F1 to see INSTRUCTIONS", glm::vec2(200, 390), 20, glm::vec4(1, 1, 1, 1));
-	text.render("Press F2 to see CREDITS", glm::vec2(220, 420), 20, glm::vec4(1, 1, 1, 1));
-	text.render("Press F3 to see PASSWORDS", glm::vec2(210, 450), 20, glm::vec4(1, 1, 1, 1));
+	if(bopt) text.render("Press ENTER to START", glm::vec2(220* ESCALAT, 360* ESCALAT), 20* ESCALAT, glm::vec4(1, 1, 1, 1));
+	text.render("Press F1 to see INSTRUCTIONS", glm::vec2(200* ESCALAT, 390* ESCALAT), 20* ESCALAT, glm::vec4(1, 1, 1, 1));
+	text.render("Press F2 to see CREDITS", glm::vec2(220* ESCALAT, 420* ESCALAT), 20* ESCALAT, glm::vec4(1, 1, 1, 1));
+	text.render("Press F3 to see PASSWORDS", glm::vec2(210* ESCALAT, 450* ESCALAT), 20* ESCALAT, glm::vec4(1, 1, 1, 1));
 	
 }
 

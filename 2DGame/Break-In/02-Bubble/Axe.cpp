@@ -10,6 +10,7 @@
 #define JUMP_HEIGHT 96
 #define FALL_STEP 4
 
+#define ESCALAT 2.f
 
 enum PlayerAnims
 {
@@ -23,7 +24,7 @@ void Axe::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	ballColided = false;
 	visible = true;
 	spritesheet.loadFromFile("images/Axe.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(1, 1), &spritesheet, &shaderProgram);
+	sprite = Sprite::createSprite(glm::ivec2(32 * ESCALAT, 32 * ESCALAT), glm::vec2(1, 1), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(1);
 
 	sprite->setAnimationSpeed(VISIBLE, 8);

@@ -4,15 +4,17 @@
 #include "Scene.h"
 #include "Game.h"
 
+#define ESCALAT 2.f
 
-#define SCREEN_X 32
-#define SCREEN_Y 42
+#define SCREEN_X 32 * ESCALAT
+#define SCREEN_Y 42 * ESCALAT
 
 #define INIT_PLAYER_X_TILES 10
 #define INIT_PLAYER_Y_TILES 20
 
-#define SCROLL_VEL 6
 
+
+#define SCROLL_VEL 6
 Scene::Scene()
 {
 	map = NULL;
@@ -49,7 +51,7 @@ void Scene::init()
 
 	map = TileMap::createTileMap("levels/lvl1.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	map->setActualRoom(1);
-	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), int(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
+	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 
 	entities = new Entities();
 	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
@@ -96,12 +98,12 @@ void Scene::update(int deltaTime)
 		ball->treatCollision(entities->getN());
 	}
 
-	if (ballPos.y + 16 < miny) { // ball touched top border
+	if (ballPos.y + 32 < miny) { // ball touched top border
 		if (room <= 3) {
 			changeRoom(-1, ballPos);
 		}
 	}
-	if (ballPos.y > (maxy + 2.7 * map->getTileSize()) ) {   // ball touches bottom border
+	if (ballPos.y > (maxy + 5.4 * map->getTileSize()) ) {   // ball touches bottom border
 		if (room == 1 && !scrolling) {
 			ball->setVelocity(0);
 			// TODO: set dead animation in player
@@ -138,20 +140,20 @@ void Scene::render()
 	player->render();
 	
 	// Rendender text
-	text.render("MONEY", glm::vec2(455, 42+30), 40, glm::vec4(1, 0.81, 0.3, 1));
-	text.render( to_string_zeros(money, 8), glm::vec2(455, 42 + 2 * 33), 30, glm::vec4(1, 1, 1, 1));
+	text.render("MONEY", glm::vec2(455*ESCALAT, (42+30)*ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+	text.render( to_string_zeros(money, 8), glm::vec2(455*ESCALAT, (42 + 2 * 33) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
 
-	text.render("POINTS", glm::vec2(455, 42 + 3*39.6), 40, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(points, 8), glm::vec2(455 , 42 + 4 * 38), 30, glm::vec4(1, 1, 1, 1));
+	text.render("POINTS", glm::vec2(455 * ESCALAT, (42 + 3*39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+	text.render(to_string_zeros(points, 8), glm::vec2(455 * ESCALAT, (42 + 4 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
 
-	text.render("LIVES", glm::vec2(455, 42 + 5 * 39.6), 40, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(lives, 2), glm::vec2(455, 42 + 6 * 38), 30, glm::vec4(1, 1, 1, 1));
+	text.render("LIVES", glm::vec2(455 * ESCALAT, (42 + 5 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+	text.render(to_string_zeros(lives, 2), glm::vec2(455 * ESCALAT, (42 + 6 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
 
-	text.render("BANK", glm::vec2(455, 42 + 7 * 39.6), 40, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(bank,2), glm::vec2(455, 42 + 8 * 38.5), 30, glm::vec4(1, 1, 1, 1));
+	text.render("BANK", glm::vec2(455 * ESCALAT, (42 + 7 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+	text.render(to_string_zeros(bank,2), glm::vec2(455 * ESCALAT, (42 + 8 * 38.5) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
 
-	text.render("ROOM", glm::vec2(455, 42 + 9 * 39.6), 40, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(room,2), glm::vec2(455, 42 + 10 * 39), 30, glm::vec4(1, 1, 1, 1));
+	text.render("ROOM", glm::vec2(455 * ESCALAT, (42 + 9 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+	text.render(to_string_zeros(room,2), glm::vec2(455 * ESCALAT, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
 	
 }
 
@@ -194,7 +196,7 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 		if ( (dir == -1 && top > next_margin) || (dir == 1 && top < next_margin)) scroll(dir);
 		else {
 			scrolling = false;
-			map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), int(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
+			map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 			
 			glm::vec2 playerPos = player->getPosition();
 			player->setPosition(glm::vec2(playerPos.x, playerPos.y + dir * 24 * map->getTileSize()));

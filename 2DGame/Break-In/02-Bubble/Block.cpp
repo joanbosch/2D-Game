@@ -5,6 +5,7 @@
 #include "Block.h"
 #include "Game.h"
 
+#define ESCALAT 2.f
 
 enum PlayerAnims
 {
@@ -29,7 +30,7 @@ void Block::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 		spritesheet.loadFromFile("images/Blue_Block.png", TEXTURE_PIXEL_FORMAT_RGBA);
 		break;
 	}
-	sprite = Sprite::createSprite(glm::ivec2(32, 16), glm::vec2(1, 1), &spritesheet, &shaderProgram);
+	sprite = Sprite::createSprite(glm::ivec2(32 * ESCALAT, 16 * ESCALAT), glm::vec2(1, 1), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(1);
 
 	sprite->setAnimationSpeed(VISIBLE, 8);

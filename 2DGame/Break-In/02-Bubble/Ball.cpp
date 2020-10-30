@@ -10,6 +10,7 @@
 #define JUMP_HEIGHT 96
 #define FALL_STEP 4
 
+#define ESCALAT 2.f
 
 enum PlayerAnims
 {
@@ -23,7 +24,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	vel = 4;
 	angle = 70.f;
 	spritesheet.loadFromFile("images/ball.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(1, 1), &spritesheet, &shaderProgram);
+	sprite = Sprite::createSprite(glm::ivec2(16 * ESCALAT, 16 * ESCALAT), glm::vec2(1, 1), &spritesheet, &shaderProgram);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 	visible = true;
