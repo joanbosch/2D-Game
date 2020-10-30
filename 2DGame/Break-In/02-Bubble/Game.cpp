@@ -12,6 +12,7 @@ void Game::init()
 	instructions.init();
 	credits.init();
 	menu.init();
+	password.init();
 
 }
 
@@ -32,6 +33,10 @@ bool Game::update(int deltaTime)
 
 		case MENU:
 			menu.update(deltaTime);
+			break;
+
+		case PASSWORD:
+			password.update(deltaTime);
 			break;
 	}
 
@@ -56,6 +61,10 @@ void Game::render()
 
 	case MENU:
 		menu.render();
+		break;
+
+	case PASSWORD:
+		password.render();
 		break;
 	}
 }

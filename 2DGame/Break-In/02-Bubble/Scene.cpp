@@ -194,6 +194,7 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 
 void Scene::loadLvl(int lvl)
 {
+	bank = lvl;
 	map = TileMap::createTileMap("levels/lvl"+to_string(lvl)+".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	map->setActualRoom(1);
 	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());

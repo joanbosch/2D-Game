@@ -34,16 +34,11 @@ void Menu::init()
 	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 	background = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 
-	option_selected = PLAY;
-
 	backgorundImage.loadFromFile("images/menu-background.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
 
-	// Select which font you want to use
 	if (!text.init("fonts/AnimalCrossing.ttf"))
-		//if(!text.init("fonts/OpenSans-Bold.ttf"))
-		//if(!text.init("fonts/DroidSerif.ttf"))
 		cout << "Could not load font!!!" << endl;
 }
 
@@ -66,7 +61,7 @@ void Menu::update(int deltaTime)
 		Game::instance().setState(CREDITS);
 	}
 	if (Game::instance().getSpecialKey(GLUT_KEY_F3)) {
-		Game::instance().setState(CREDITS);
+		Game::instance().setState(PASSWORD);
 	}
 }
 
@@ -82,7 +77,7 @@ void Menu::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	background->render(backgorundImage);
 	
-	// Select the correct option that the user has selected.
+
 	if(bopt) text.render("Press ENTER to START", glm::vec2(220* ESCALAT, 360* ESCALAT), 20* ESCALAT, glm::vec4(1, 1, 1, 1));
 	text.render("Press F1 to see INSTRUCTIONS", glm::vec2(200* ESCALAT, 390* ESCALAT), 20* ESCALAT, glm::vec4(1, 1, 1, 1));
 	text.render("Press F2 to see CREDITS", glm::vec2(220* ESCALAT, 420* ESCALAT), 20* ESCALAT, glm::vec4(1, 1, 1, 1));
