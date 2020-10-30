@@ -86,7 +86,7 @@ void Scene::update(int deltaTime)
 	currentTime += deltaTime;
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
-	// entities->update(deltaTime);
+	entities->update(deltaTime);
 	player->update(deltaTime);
 
 	//check if ball is going to next/previous room & scroll
@@ -103,7 +103,7 @@ void Scene::update(int deltaTime)
 			changeRoom(-1, ballPos);
 		}
 	}
-	if (ballPos.y > (maxy + 5.4 * map->getTileSize()) ) {   // ball touches bottom border
+	if (ballPos.y > (maxy + 2.7 * map->getTileSize()) ) {   // ball touches bottom border
 		if (room == 1 && !scrolling) {
 			ball->setVelocity(0);
 			// TODO: set dead animation in player

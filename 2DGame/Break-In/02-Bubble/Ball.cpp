@@ -43,8 +43,8 @@ void Ball::update(int deltaTime)
 
 	posPlayer.x = int(x_pos);
 	posPlayer.y = int(y_pos);
-	if (map->ballCollision(posPlayer, glm::ivec2(16, 16))) {
-		treatCollision(map->getNormalVector(posPlayer, glm::ivec2(16, 16), angle));
+	if (map->ballCollision(posPlayer, glm::ivec2(16 * ESCALAT, 16 * ESCALAT))) {
+		treatCollision(map->getNormalVector(posPlayer, glm::ivec2(16 * ESCALAT, 16 * ESCALAT), angle));
 		x_pos -= x1;
 		y_pos += y1;
 		posPlayer.x = int(x_pos);
