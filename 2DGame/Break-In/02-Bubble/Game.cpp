@@ -112,6 +112,11 @@ void Game::setState(int s)
 }
 
 
+void Game::setLvl(int l)
+{
+	scene.loadLvl(l);
+}
+
 
 
 

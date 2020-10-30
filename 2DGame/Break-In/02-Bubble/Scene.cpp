@@ -15,6 +15,7 @@
 
 
 #define SCROLL_VEL 6
+
 Scene::Scene()
 {
 	map = NULL;
@@ -49,21 +50,7 @@ void Scene::init()
 	topBar = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 	topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	map = TileMap::createTileMap("levels/lvl1.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	map->setActualRoom(1);
-	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
-
-	entities = new Entities();
-	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
-
-	player = new Player();
-	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
-
-	ball = new Ball();
-	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + 1.5f + INIT_PLAYER_Y_TILES * map->getTileSize()));
-	ball->setTileMap(map);
+	loadLvl(1);
 
 	// init camera position
 	projection = glm::ortho(left, right, bottom, top);
@@ -72,11 +59,7 @@ void Scene::init()
 	if (!text.init("fonts/AnimalCrossing.ttf"))
 		cout << "Could not load font!!!" << endl;
 
-	money = 0;
-	points = 0;
-	lives = 4;
-	bank = 1;
-	room = 1;
+	initVariables();
 
 	scrolling = false;
 }
@@ -207,6 +190,34 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 			ball->setVisibility(true);
 		}
 	}
+}
+
+void Scene::loadLvl(int lvl)
+{
+	map = TileMap::createTileMap("levels/lvl"+to_string(lvl)+".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	map->setActualRoom(1);
+	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
+
+	entities = new Entities();
+	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
+
+	player = new Player();
+	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
+	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
+
+	ball = new Ball();
+	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + 1.5f + INIT_PLAYER_Y_TILES * map->getTileSize()));
+	ball->setTileMap(map);
+}
+
+void Scene::initVariables()
+{
+	money = 0;
+	points = 0;
+	lives = 4;
+	bank = 1;
+	room = 1;
 }
 
 void Scene::initShaders()

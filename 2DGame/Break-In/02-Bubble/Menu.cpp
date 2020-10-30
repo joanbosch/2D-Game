@@ -55,19 +55,8 @@ void Menu::update(int deltaTime)
 		count = 0;
 		bopt = !bopt;
 	}
-
-	if (Game::instance().getSpecialKey(GLUT_KEY_UP)) {
-		Game::instance().specialKeyReleased(GLUT_KEY_UP);
-		option_selected += 2;
-		option_selected = option_selected % 3;
-	}
-
-	if (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) {
-		Game::instance().specialKeyReleased(GLUT_KEY_DOWN);
-		option_selected += 1;
-		option_selected = option_selected % 3;
-	}
 	if (Game::instance().getKey(13)) {
+		Game::instance().setLvl(1);
 		Game::instance().setState(PLAY);
 	}
 	if (Game::instance().getSpecialKey(GLUT_KEY_F1)) {

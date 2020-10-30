@@ -27,6 +27,8 @@ public:
 	void init();
 	void update(int deltaTime);
 	void render();
+	void loadLvl(int lvl);
+	void initVariables();
 
 private:
 	void initShaders();
