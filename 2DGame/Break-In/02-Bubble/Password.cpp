@@ -28,7 +28,7 @@ void Password::init()
 	initShaders();
 	bopt = true;
 	count = 0;
-	slashPos = 700;
+	underscorePos = 700;
 	pwd = "";
 
 	glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(SCREEN_WIDTH, SCREEN_HEIGHT) };
@@ -58,41 +58,39 @@ void Password::update(int deltaTime)
 			if (Game::instance().getKey(i)) {
 				Game::instance().keyReleased(i);
 				pwd += (char)i;
-				addSlashSpace(i);
+				addUnderscoreSpace(i);
 			}
 		}
 		for (int i = 'a'; i <= 'z'; ++i) {
 			if (Game::instance().getKey(i)) {
 				Game::instance().keyReleased(i);
 				pwd += (char)i - 32;
-				addSlashSpace(i);
+				addUnderscoreSpace(i);
 			}
 		}
 	}
 	else {
 		if (Game::instance().getKey(13)) {
 			pwd = "";
-			slashPos = 700;
+			underscorePos = 700;
 		}
 	}
 	//look if password is valid, if valid switch case and load selected lvl and change game state, else pws = ""
 	if (Game::instance().getKey(13)) {
-		slashPos = 700;
-		if (pwd == "EASY") {
-			pwd = "";
+		underscorePos = 700;
+		if (pwd == "NEWLEAF") {
 			Game::instance().setLvl(1);
 			Game::instance().setState(PLAY);
 		}
 		else if (pwd == "TOMNOOK") {
-			pwd = "";
 			Game::instance().setLvl(2);
 			Game::instance().setState(PLAY);
 		}
 		else if (pwd == "ANTONI") {
-			pwd = "";
 			Game::instance().setLvl(3);
 			Game::instance().setState(PLAY);
 		}
+		pwd = "";
 	}
 }
 
@@ -111,50 +109,50 @@ void Password::render()
 	// Select the correct option that the user has selected.
 	text.render("ENTER  PASSWORD   :  ", glm::vec2(260, 380 * ESCALAT), 25 * ESCALAT, glm::vec4(1, 1, 1, 1));
 	text.render(pwd, glm::vec2(700, 380 * ESCALAT), 25 * ESCALAT, glm::vec4(1, 1, 1, 1));
-	if (bopt && (pwd.size() != 8)) text.render("_", glm::vec2(slashPos , 380 * ESCALAT), 25 * ESCALAT, glm::vec4(1, 1, 1, 1));
+	if (bopt && (pwd.size() != 8)) text.render("_", glm::vec2(underscorePos , 380 * ESCALAT), 25 * ESCALAT, glm::vec4(1, 1, 1, 1));
 
 }
 
-void Password::addSlashSpace(int key)
+void Password::addUnderscoreSpace(int key)
 {
 	if (key == 'i' || key == 'I') {
-		slashPos += 16;
+		underscorePos += 16;
 	}
 	else if (key == 's' || key == 'S') {
-		slashPos += 20;
+		underscorePos += 20;
 	}
 	else if (key == 'j' || key == 'J') {
-		slashPos += 22;
+		underscorePos += 22;
 	}
 	else if (key == 'z' || key == 'Z') {
-		slashPos += 23;
+		underscorePos += 23;
 	}
 	else if (key == 'w' || key == 'W') {
-		slashPos += 35;
+		underscorePos += 35;
 	}
 	else if (key == 'q' || key == 'Q') {
-		slashPos += 31;
+		underscorePos += 31;
 	}
 	else if (key == 'm' || key == 'M') {
-		slashPos += 32;
+		underscorePos += 32;
 	}
 	else if (key == 'h' || key == 'H' || key == 'o' || key == 'O') {
-		slashPos += 29;
+		underscorePos += 29;
 	}
 	else if (key == 'g' || key == 'G' || key == 'n' || key == 'N' || key == 'u' || key == 'U') {
-		slashPos += 28;
+		underscorePos += 28;
 	}
 	else if (key == 'b' || key == 'B' || key == 'f' || key == 'F' || key == 'l' || key == 'L') {
-		slashPos += 24;
+		underscorePos += 24;
 	}
 	else if (key == 'd' || key == 'D' || key == 't' || key == 'T' || key == 'y' || key == 'Y') {
-		slashPos += 28;
+		underscorePos += 28;
 	}
 	else if (key == 'a' || key == 'A' || key == 'k' || key == 'K' || key == 'v' || key == 'V' || key == 'x' || key == 'X') {
-		slashPos += 27;
+		underscorePos += 27;
 	}
 	else {
-		slashPos += 25;
+		underscorePos += 25;
 	}
 }
 

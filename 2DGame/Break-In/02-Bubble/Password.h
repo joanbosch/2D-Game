@@ -24,7 +24,7 @@ public:
 
 private:
 	void initShaders();
-	void addSlashSpace(int key);
+	void addUnderscoreSpace(int key);
 
 private:
 	ShaderProgram texProgram;
@@ -34,7 +34,7 @@ private:
 	Texture backgorundImage;
 	TexturedQuad* background;
 
-	int count, slashPos;
+	int count, underscorePos;
 	bool bopt;
 	string pwd;
 	Text text;
