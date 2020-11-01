@@ -1,28 +1,22 @@
-#ifndef _MENU_INCLUDE
-#define _MENU_INCLUDE
+#ifndef _PASSWORD_INCLUDE
+#define _PASSWORD_INCLUDE
 
 
 #include <glm/glm.hpp>
 #include "ShaderProgram.h"
-#include "TileMap.h"
-#include "Player.h"
 #include "TexturedQuad.h"
 #include "Text.h"
-
-#define PLAY 0
-#define INSTRUCTIONS 1
-#define CREDITS 2
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
 
 
-class Menu
+class Password
 {
 
 public:
-	Menu();
-	~Menu();
+	Password();
+	~Password();
 
 	void init();
 	void update(int deltaTime);
@@ -30,21 +24,22 @@ public:
 
 private:
 	void initShaders();
+	void addUnderscoreSpace(int key);
 
 private:
-	//TileMap* map;
-	//Player* player;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
 
 	Texture backgorundImage;
-	TexturedQuad *background;
+	TexturedQuad* background;
 
-	int count;
+	int count, underscorePos;
 	bool bopt;
+	string pwd;
 	Text text;
 };
 
 
-#endif // _MENU_INCLUDE
+#endif // _PASSWORD_INCLUDE
+
