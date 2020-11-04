@@ -80,6 +80,9 @@ void Scene::update(int deltaTime)
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
 	}
+	if (player->getBallColided()) {
+		ball->setNewDirection(player->getN());
+	}
 
 	if (ballPos.y + 32 < miny) { // ball touched top border
 		if (room <= 3) {

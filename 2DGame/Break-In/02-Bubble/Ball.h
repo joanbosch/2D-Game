@@ -23,6 +23,7 @@ public:
 
 	glm::vec2 getPosition();
 	void treatCollision(glm::vec2 N);
+	void setNewDirection(glm::vec2 ref);
 	void setVisibility(bool vis);
 	float getVelocity();
 	void setVelocity(float v);

@@ -21,8 +21,8 @@ enum PlayerAnims
 void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
 	bJumping = false;
-	vel = 4;
-	angle = 70.f;
+	vel = 8;
+	angle = 60.f;
 	spritesheet.loadFromFile("images/ball.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(16 * ESCALAT, 16 * ESCALAT), glm::vec2(1, 1), &spritesheet, &shaderProgram);
 	tileMapDispl = tileMapPos;
@@ -80,10 +80,19 @@ glm::vec2 Ball::getPosition()
 void Ball::treatCollision(glm::vec2 N)
 {
 	glm::vec2 v = glm::vec2(cos(3.14159f * angle / 180.f), sin(3.14159f * angle / 180.f));
-	glm::vec2 initial = glm::normalize(glm::vec2(1, 0));
-	float dn = 2 * glm::dot(v, glm::normalize(N));
+	glm::vec2 initial = glm::normalize(glm::vec2(1.f, 0.f));
+	float dn = 2.f * glm::dot(v, glm::normalize(N));
 	glm::vec2 ref = v - N * dn;
 
+
+	float ang_mid = atan2((initial.x * ref.y) - (ref.x * initial.y), (initial.x * ref.x) + (initial.y * ref.y));
+	if (ang_mid < 0) angle = 360 + ((ang_mid) * 180.f / 3.14159f);
+	else angle = (ang_mid) * 180.f / 3.14159f;
+}
+
+void Ball::setNewDirection(glm::vec2 ref)
+{
+	glm::vec2 initial = glm::normalize(glm::vec2(1.f, 0.f));
 
 	float ang_mid = atan2((initial.x * ref.y) - (ref.x * initial.y), (initial.x * ref.x) + (initial.y * ref.y));
 	if (ang_mid < 0) angle = 360 + ((ang_mid) * 180.f / 3.14159f);

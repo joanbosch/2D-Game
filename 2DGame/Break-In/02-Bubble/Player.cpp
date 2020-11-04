@@ -60,6 +60,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 
 	map = tileMap;
 	visible = true;
+	ballColided = false;
 }
 
 void Player::update(int deltaTime)
@@ -68,6 +69,13 @@ void Player::update(int deltaTime)
 	int miny = map->getPlayableArea().miny;
 	int maxx = map->getPlayableArea().maxx;
 	int maxy = map->getPlayableArea().maxy;
+
+	glm::vec2 posBar = posPlayer;
+	posBar.y += 28;
+
+	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posBar, glm::ivec2(38 * ESCALAT, 10 * ESCALAT));
+	ballColided &= visible;
+
 	sprite->update(deltaTime);
 	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 	{
@@ -124,6 +132,88 @@ void Player::setPosition(const glm::vec2& pos)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
+bool Player::getBallColided()
+{
+	return ballColided;
+}
+
+glm::vec2 Player::getN()
+{
+	glm::vec2 posBar = posPlayer;
+	posBar.y += 28;
+	return computeNormalVector(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posBar, glm::ivec2(38 * ESCALAT, 10 * ESCALAT));
+}
+
+
+glm::vec2 Player::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm::vec2 spritePosition, glm::vec2 spriteSize)
+{
+	int minx_ball, miny_ball, maxx_ball, maxy_ball;
+	int minx_block, miny_block, maxx_block, maxy_block;
+
+	minx_ball = ballPos.x;
+	miny_ball = ballPos.y;
+	maxx_ball = ballPos.x + ballSize.x;
+	maxy_ball = ballPos.y + ballSize.y;
+
+	int midx_ball = (maxx_ball - minx_ball) / 2 + minx_ball;
+
+	minx_block = spritePosition.x;
+	miny_block = spritePosition.y;
+	maxx_block = spritePosition.x + spriteSize.x;
+	maxy_block = spritePosition.y + spriteSize.y;
+
+	int midx_block = (maxx_block - minx_block) / 2 + minx_block;
+
+	int dist;
+	float alpha;
+
+	if (minx_block <= maxx_ball && maxx_ball < maxx_block)
+	{
+		if (miny_block <= miny_ball && miny_ball < maxy_block)
+		{
+			if (glm::abs((glm::min(maxy_ball, maxy_block)) - miny_ball) > glm::abs(glm::max(minx_block, minx_ball) - maxx_ball))
+				return glm::vec2(-1, 0);
+			else
+				// NO POT ARRIBAR MAI AQUI
+				return glm::vec2(0, -1);
+		}
+		else
+		{
+			if (glm::abs(maxx_ball - glm::max(minx_ball, minx_block)) > glm::abs(maxy_ball - miny_block))
+				// TODO
+			{
+				dist = midx_ball - minx_block;
+			    alpha = (dist * 3.141592f) / 72.f + 3.141592f / 2.f;
+				return glm::vec2(- glm::sin(alpha), 1);
+			}
+			else
+				return glm::vec2(-1, 0);
+		}
+	}
+	else
+	{
+		if (miny_block <= miny_ball && miny_ball <= maxy_block)
+		{
+			if (glm::abs(maxy_block - miny_ball) > glm::abs(glm::min(maxx_block, maxx_ball) - minx_ball))
+				return glm::vec2(1, 0);
+			else
+				// NO POT ARRIBAR MAI AQUI
+				return glm::vec2(0, -1);
+		}
+		else
+		{
+			if (glm::abs(maxx_block - glm::max(minx_block, minx_ball)) > glm::abs(glm::min(maxy_block, maxy_ball) - max(miny_block, miny_ball)))
+			{
+				// TODO
+				dist = minx_ball - minx_block;
+			    alpha = (dist * 3.141592f) / 72.f + 3.141592f / 2.f;
+				return glm::vec2(- glm::sin(alpha), 1);
+			}
+			else
+				return glm::vec2(1, 0);
+		}
+	}
+}
 void Player::setVisibility(bool vis)
 {
 	visible = vis;

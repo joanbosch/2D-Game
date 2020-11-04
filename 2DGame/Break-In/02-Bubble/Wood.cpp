@@ -38,7 +38,7 @@ void Wood::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 void Wood::update(int deltaTime)
 {
-	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(16, 16));
+	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posPlayer, glm::vec2(16 * ESCALAT, 16 * ESCALAT));
 	sprite->update(deltaTime);	
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
@@ -66,7 +66,7 @@ bool Wood::getBallColidad()
 
 glm::vec2 Wood::getN()
 {
-	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(16, 16));
+	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posPlayer, glm::vec2(16 * ESCALAT, 16 * ESCALAT));
 }
 
 void Wood::setVisibility(bool v) { visible = v; }
