@@ -143,7 +143,7 @@ void Scene::update(int deltaTime)
 	// KEYS TO CHANGE THE ROOM!
 	if (Game::instance().getSpecialKey(104)) { // RePág KEY. GO TO THE NEXT ROOM.
 		if (!lastRPValue) {
-			if (room <= 3 && !scrolling) changeRoom(-1, ballPos);
+			if (room <= 3) changeRoom(-1, ballPos);
 			lastRPValue = true;
 		}
 	}
