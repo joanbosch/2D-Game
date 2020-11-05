@@ -44,7 +44,7 @@ void Block::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 void Block::update(int deltaTime)
 {
-	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(32, 16));
+	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posPlayer, glm::vec2(32 * ESCALAT, 16 * ESCALAT));
 	ballColided &= visible;
 	if (ballColided) {
 		--level;
@@ -91,7 +91,7 @@ bool Block::getBallColidad()
 
 glm::vec2 Block::getN()
 {
-	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(16, 16));
+	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), map->getBallAngle(), posPlayer, glm::vec2(32 * ESCALAT, 16 * ESCALAT));
 }
 
 

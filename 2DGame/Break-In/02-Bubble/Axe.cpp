@@ -37,7 +37,7 @@ void Axe::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 void Axe::update(int deltaTime)
 {
-	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(32, 32));
+	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posPlayer, glm::vec2(32 * ESCALAT, 32 * ESCALAT));
 	ballColided &= visible;
 	visible = visible && !ballColided;
 	sprite->update(deltaTime);
@@ -67,7 +67,7 @@ bool Axe::getBallColided()
 
 glm::vec2 Axe::getN()
 {
-	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16, 16), posPlayer, glm::vec2(16, 16));
+	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), map->getBallAngle(), posPlayer, glm::vec2(32 * ESCALAT, 32 * ESCALAT));
 }
 
 bool Axe::isVisible()

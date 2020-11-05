@@ -34,7 +34,7 @@ public:
 	
 	void setPosition(const glm::vec2 &pos);
 	bool ballCollision(glm::vec2 ballPos, glm::vec2 ballSize, glm::vec2 spritePosition, glm::vec2 spriteSize);
-	glm::vec2 computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm::vec2 spritePosition, glm::vec2 spriteSize);
+	glm::vec2 computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, float ballAngle, glm::vec2 spritePosition, glm::vec2 spriteSize);
 
 private:
 	Texture *texture;
