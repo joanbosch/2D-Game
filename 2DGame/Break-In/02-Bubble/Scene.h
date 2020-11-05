@@ -24,10 +24,9 @@ public:
 	Scene();
 	~Scene();
 
-	void init();
+	void init(int lvl);
 	void update(int deltaTime);
 	void render();
-	void loadLvl(int lvl);
 	void initVariables();
 
 private:
@@ -61,9 +60,9 @@ private:
 	float left, right, bottom, top;
 
 	float next_margin, prev_vel;
-	bool scrolling;
+	bool scrolling, scrollingUp;
 	bool godMode;
-	bool lastGValue, lastRPValue, lastAPValue;
+	bool lastGValue, lastRPValue;
 };
 
 

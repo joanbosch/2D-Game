@@ -23,6 +23,7 @@ public:
 	bool getBallColidad();
 	glm::vec2 getN();
 	void setVisibility(bool v);
+	bool isVisible();
 
 private:
 	bool bJumping;
