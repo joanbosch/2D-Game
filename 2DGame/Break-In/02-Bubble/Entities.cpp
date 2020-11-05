@@ -33,7 +33,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 	diamonds = new vector<Diamond*>();
 	alarms = new vector<Alarm*>();
 	axes = new vector<Axe*>();
-
+	moneyEntities = 0;
 
 	for (int i = 0; i < numEntities; ++i) {
 		int entityType = map->getEntity(i).type;
@@ -76,6 +76,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 			coin->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			coin->setTileMap(map);
 			single_coins->push_back(coin);
+			moneyEntities++;
 		}
 		else if (entityType == COINS_BAG) {
 			Bag* bag = new Bag();
@@ -83,6 +84,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 			bag->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			bag->setTileMap(map);
 			bags->push_back(bag);
+			moneyEntities++;
 		}
 		else if (entityType == MULTIPLE_COINS) {
 			MultipleCoins *coins = new MultipleCoins();
@@ -90,6 +92,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 			coins->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			coins->setTileMap(map);
 			multiple_coins->push_back(coins);
+			moneyEntities++;
 		}
 		else if (entityType == DIAMOND) {
 			Diamond *diam = new Diamond();
@@ -97,6 +100,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 			diam->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			diam->setTileMap(map);
 			diamonds->push_back(diam);
+			moneyEntities++;
 		}
 		else if (entityType == ALARM) {
 			Alarm* alarm = new Alarm();
@@ -177,7 +181,10 @@ void Entities::update(int deltaTime)
 			bool aux = (*single_coins)[i]->getBallColided();
 			ballColided |= aux;
 			if (aux) {
-				if (!(*single_coins)[i]->isVisible()) coins += COIN_MONEY;
+				if (!(*single_coins)[i]->isVisible()) {
+					coins += COIN_MONEY;
+					moneyEntities--;
+				}
 				N = (*single_coins)[i]->getN();
 			}
 		}
@@ -188,7 +195,10 @@ void Entities::update(int deltaTime)
 			bool aux = (*bags)[i]->getBallColided();
 			ballColided |= aux;
 			if (aux) {
-				if (!(*bags)[i]->isVisible()) coins += BAG_MONEY;
+				if (!(*bags)[i]->isVisible()) {
+					coins += BAG_MONEY;
+					moneyEntities--;
+				}
 				N = (*bags)[i]->getN();
 			}
 		}
@@ -199,7 +209,10 @@ void Entities::update(int deltaTime)
 			bool aux = (*multiple_coins)[i]->getBallColided();
 			ballColided |= aux;
 			if (aux) {
-				if (!(*multiple_coins)[i]->isVisible()) coins += SOME_COINS_MONEY;
+				if (!(*multiple_coins)[i]->isVisible()) {
+					coins += SOME_COINS_MONEY;
+					moneyEntities--;
+				}
 				N = (*multiple_coins)[i]->getN();
 			}
 		}
@@ -210,7 +223,10 @@ void Entities::update(int deltaTime)
 			bool aux = (*diamonds)[i]->getBallColided();
 			ballColided |= aux;
 			if (aux) {
-				if (!(*diamonds)[i]->isVisible()) coins += DIAMON_MONEY;
+				if (!(*diamonds)[i]->isVisible()) {
+					coins += DIAMON_MONEY;
+					moneyEntities--;
+				}
 				N = (*diamonds)[i]->getN();
 			}
 		}
@@ -274,6 +290,11 @@ int Entities::getNewCoins()
 int Entities::getNewPoints()
 {
 	return points;
+}
+
+int Entities::getRemainingMoneyEntities()
+{
+	return moneyEntities;
 }
 
 

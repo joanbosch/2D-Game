@@ -27,11 +27,12 @@ public:
 
 	int getNewCoins();
 	int getNewPoints();
+	int getRemainingMoneyEntities();
 private:
 	glm::ivec2 tileMapDispl, posPlayer;
 
 	bool ballColided;
-	int coins, points;
+	int coins, points, moneyEntities;
 	glm::vec2 N;
 
 	vector<Block*> *blocks;
