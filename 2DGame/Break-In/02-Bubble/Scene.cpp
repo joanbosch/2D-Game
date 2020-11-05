@@ -12,9 +12,8 @@
 #define INIT_PLAYER_X_TILES 10
 #define INIT_PLAYER_Y_TILES 20
 
-
-
 #define SCROLL_VEL 6
+#define TIME_TO_SRTART 3000
 
 Scene::Scene()
 {
@@ -81,7 +80,7 @@ void Scene::update(int deltaTime)
 	}
 	else lastGValue = false;
 
-
+	if (currentTime >= TIME_TO_SRTART) ball->setGameStarted(true);
 
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
@@ -260,8 +259,10 @@ void Scene::loadLvl(int lvl)
 
 	ball = new Ball();
 	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + 1.5f + INIT_PLAYER_Y_TILES * map->getTileSize()));
+	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, - 8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 	ball->setTileMap(map);
+	ball->setGameStarted(false);
+	currentTime = 0.f;
 }
 
 void Scene::initVariables()

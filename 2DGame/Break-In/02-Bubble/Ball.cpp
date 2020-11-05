@@ -22,36 +22,77 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
 	bJumping = false;
 	vel = 4;
-	angle = 60.f;
+	angle = 90.f;
 	spritesheet.loadFromFile("images/ball.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(16 * ESCALAT, 16 * ESCALAT), glm::vec2(1, 1), &spritesheet, &shaderProgram);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 	visible = true;
+	gameStarted = false;
 
 }
 
 void Ball::update(int deltaTime)
 {
 	sprite->update(deltaTime);
-	float rel = cos(3.14159f * angle / 180.f) / sin(3.14159f * angle / 180.f);
-	float x1 = vel * cos(3.14159f * angle / 180.f);
-	float y1 = vel * sin(3.14159f * angle / 180.f);
 
-	x_pos += x1;
-	y_pos -= y1;
+	if (gameStarted) {
+		float rel = cos(3.14159f * angle / 180.f) / sin(3.14159f * angle / 180.f);
+		float x1 = vel * cos(3.14159f * angle / 180.f);
+		float y1 = vel * sin(3.14159f * angle / 180.f);
 
-	posPlayer.x = int(x_pos);
-	posPlayer.y = int(y_pos);
-	if (map->ballCollision(posPlayer, glm::ivec2(16 * ESCALAT, 16 * ESCALAT))) {
-		treatCollision(map->getNormalVector(posPlayer, glm::ivec2(16 * ESCALAT, 16 * ESCALAT), angle));
-		x_pos -= x1;
-		y_pos += y1;
+		x_pos += x1;
+		y_pos -= y1;
+
 		posPlayer.x = int(x_pos);
 		posPlayer.y = int(y_pos);
+		if (map->ballCollision(posPlayer, glm::ivec2(16 * ESCALAT, 16 * ESCALAT))) {
+			treatCollision(map->getNormalVector(posPlayer, glm::ivec2(16 * ESCALAT, 16 * ESCALAT), angle));
+			x_pos -= x1;
+			y_pos += y1;
+			posPlayer.x = int(x_pos);
+			posPlayer.y = int(y_pos);
+		}
 	}
-	
+	else {
+
+		int minx = map->getPlayableArea().minx;
+		int miny = map->getPlayableArea().miny;
+		int maxx = map->getPlayableArea().maxx;
+		int maxy = map->getPlayableArea().maxy;
+		if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
+		{
+			posPlayer.x -= 4;
+			if (posPlayer.x < minx)
+			{
+				posPlayer.x += 4;
+			}
+		}
+		if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
+		{
+			posPlayer.x += 4;
+			if (posPlayer.x > maxx)
+			{
+				posPlayer.x -= 4;
+			}
+		}
+		if (Game::instance().getSpecialKey(GLUT_KEY_UP))
+		{
+			gameStarted = true;
+		}
+		if (Game::instance().getSpecialKey(GLUT_KEY_DOWN))
+		{
+			posPlayer.y += 4;
+			if (posPlayer.y > maxy)
+			{
+				posPlayer.y -= 4;
+			}
+		}
+		x_pos = float(posPlayer.x);
+		y_pos = float(posPlayer.y);
+	}
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+	
 }
 
 void Ball::render()
@@ -117,6 +158,11 @@ float Ball::getAngle()
 void Ball::setVelocity(float v)
 {
 	vel = v;
+}
+
+void Ball::setGameStarted(bool s)
+{
+	this->gameStarted = s;
 }
 
 

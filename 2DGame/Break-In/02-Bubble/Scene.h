@@ -64,7 +64,6 @@ private:
 	bool scrolling;
 	bool godMode;
 	bool lastGValue, lastRPValue, lastAPValue;
-
 };
 
 

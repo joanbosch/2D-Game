@@ -28,6 +28,7 @@ public:
 	float getVelocity();
 	float getAngle();
 	void setVelocity(float v);
+	void setGameStarted(bool s);
 
 private:
 	bool bJumping;
@@ -41,7 +42,7 @@ private:
 	Sprite* sprite;
 	TileMap* map;
 
-	bool visible;
+	bool visible, gameStarted;
 
 };
 

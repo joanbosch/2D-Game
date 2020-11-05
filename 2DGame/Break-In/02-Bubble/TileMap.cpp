@@ -299,14 +299,18 @@ vector<bool> TileMap::reviseCollisions(const glm::ivec2& pos, const glm::ivec2& 
 		}
 	}
 	if (x0 == x1) {
-		for (int a = i + 1; a < 4; ++a) {
-			collision[a] = collision[a - 2];
+		if (collision[0] || collision[1] || collision[2] || collision[3]) {
+			for (int a = i + 1; a < 4; ++a) {
+				collision[a] = collision[a - 2];
+			}
 		}
 	}
 	else if (y0 == y1) {
-		collision[2] = collision[1];
-		collision[3] = collision[1];
-		collision[1] = collision[0];
+		if (collision[0] || collision[1] || collision[2] || collision[3]) {
+			collision[2] = collision[1];
+			collision[3] = collision[1];
+			collision[1] = collision[0];
+		}
 	}
 
 	return collision;
@@ -316,16 +320,25 @@ glm::vec2 TileMap::getNormalVector(const glm::ivec2& pos, const glm::ivec2& size
 {
 	vector<bool> c = reviseCollisions(pos, size);
 	if (!c[3] && !c[2] && !c[1] && c[0]) { // Case 0001
-		return glm::vec2(1,-1);
+		//return glm::vec2(1,-1);
+		if(angle < 90) return glm::vec2(0, -1);
+		else if (angle <= 180) return glm::vec2(1, -1);
+		else return glm::vec2(1, 0);
 	} 
 	else if (!c[3] && !c[2] && c[1] && !c[0]) { // Case 0010
-		return glm::vec2(1, 1);
+		//return glm::vec2(1, 1);
+		if (angle < 180) return glm::vec2(1, 0);
+		else if (angle <= 240) return glm::vec2(1, 1);
+		else return glm::vec2(0, 1);
 	} 
 	else if(!c[3] && !c[2] && c[1] && c[0]) { // Case 0011
 		return glm::vec2(1, 0);
 	}
 	else if (!c[3] && c[2] && !c[1] && !c[0]) { // case 0100
-		return glm::vec2(-1, -1);
+		//return glm::vec2(-1, -1);
+		if (angle < 90) return glm::vec2(-1, -1);
+		else if (angle <= 180) return glm::vec2(0, -1);
+		else return glm::vec2(-1, 0);
 	}
 	else if (!c[3] && c[2] && !c[1] && c[0]) { // Case 0101
 		return glm::vec2(0, -1);
@@ -338,7 +351,10 @@ glm::vec2 TileMap::getNormalVector(const glm::ivec2& pos, const glm::ivec2& size
 		return glm::vec2(1, -1);
 	}
 	else if (c[3] && !c[2] && !c[1] && !c[0]) { // Case 1000
-		return glm::vec2(-1, 1);
+		//return glm::vec2(-1, 1);
+		if (angle < 90) return glm::vec2(-1, 0);
+		else if (angle <= 240) return glm::vec2(0, 1);
+		else return glm::vec2(-1, 1);
 	}
 	else if (c[3] && !c[2] && !c[1] && c[0]) { // Case 1001
 		if (angle < 180) return glm::vec2(1, 1);
