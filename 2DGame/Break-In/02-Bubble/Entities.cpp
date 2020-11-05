@@ -33,6 +33,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 	multiple_coins = new vector<MultipleCoins>();
 	diamonds = new vector<Diamonds>();
 	*/
+	alarms = new vector<Alarm*>();
 	axes = new vector<Axe*>();
 
 
@@ -99,7 +100,8 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 			diam->setTileMap(map);
 			diamonds->push_back(diam);
 		}
-		/*else if (entityType == ALARM) {
+		*/
+		else if (entityType == ALARM) {
 			Alarm* alarm = new Alarm();
 			alarm->init(tilemap, shaderProgram);
 			alarm->setPosition(glm::vec2(map->getEntity(i).x *map->getTileSize(), map->getEntity(i).y *map->getTileSize()));
@@ -107,7 +109,6 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 			tileMapDispl = tileMapPos;
 			alarms->push_back(alarm);
 		}
-		*/
 		else if (entityType == AXE) {
 			Axe* axe = new Axe();
 			axe->init(tilemap, shaderProgram);
@@ -250,11 +251,10 @@ void Entities::render()
 	for (int i = 0; i < diamonds->size(); ++i) {
 		(*diamonds)[i]->render();
 	}
-	/*
-	for (int i = 0; i < alarms->size(); ++i) {
-		alarms->render();
-		}
 	*/
+	for (int i = 0; i < alarms->size(); ++i) {
+		(*alarms)[i]->render();
+	}
 	for (int i = 0; i < axes->size(); ++i) {
 		(*axes)[i]->render();
 	}

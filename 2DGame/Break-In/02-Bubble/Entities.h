@@ -11,6 +11,7 @@
 #include "Bag.h"
 #include "MultipleCoins.h"
 #include "Diamond.h"
+#include "Alarm.h"
 #include <vector>
 
 class Entities
@@ -39,8 +40,8 @@ private:
 	vector<Bag*> *bags;
 	vector<MultipleCoins*> *multiple_coins;
 	vector<Diamond*> *diamonds;
-	//vector<Alarm*> alarms;
-
+	*/
+	vector<Alarm*> *alarms;
 	vector<Axe*> *axes;
 
 	TileMap *map;

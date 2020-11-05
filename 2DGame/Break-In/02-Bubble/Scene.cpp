@@ -49,7 +49,6 @@ void Scene::init(int lvl)
 	topBar = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 	topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	bank = lvl;
 	map = TileMap::createTileMap("levels/lvl" + to_string(lvl) + ".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	map->setActualLevel(lvl);
 	map->setActualRoom(1);
@@ -76,6 +75,7 @@ void Scene::init(int lvl)
 		cout << "Could not load font!!!" << endl;
 
 	initVariables();
+	bank = lvl;
 
 	scrolling = false;
 	godMode = false;

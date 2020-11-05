@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Alarm.h" />
     <ClInclude Include="AnimKeyframes.h" />
     <ClInclude Include="Axe.h" />
     <ClInclude Include="Bag.h" />
@@ -26,6 +27,7 @@
     <ClInclude Include="MultipleCoins.h" />
     <ClInclude Include="Password.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Police.h" />
     <ClInclude Include="Quad.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
@@ -38,6 +40,7 @@
     <ClInclude Include="Wood.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Alarm.cpp" />
     <ClCompile Include="Axe.cpp" />
     <ClCompile Include="Bag.cpp" />
     <ClCompile Include="Ball.cpp" />
@@ -53,6 +56,7 @@
     <ClCompile Include="MultipleCoins.cpp" />
     <ClCompile Include="Password.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Police.cpp" />
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
