@@ -298,8 +298,15 @@ vector<bool> TileMap::reviseCollisions(const glm::ivec2& pos, const glm::ivec2& 
 			i++;
 		}
 	}
-	for (int a = i + 1; a < 4; ++a) {
-		collision[a] = collision[a - 2];
+	if (x0 == x1) {
+		for (int a = i + 1; a < 4; ++a) {
+			collision[a] = collision[a - 2];
+		}
+	}
+	else if (y0 == y1) {
+		collision[2] = collision[1];
+		collision[3] = collision[1];
+		collision[1] = collision[0];
 	}
 
 	return collision;

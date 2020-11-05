@@ -63,12 +63,16 @@ void Scene::init()
 
 	scrolling = false;
 	godMode = false;
+	lastGValue = false;
+	lastRPValue = false;
+	lastAPValue = false;
 }
 
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
 
+	// GOD MODE
 	if (Game::instance().getKey(103)) { // G key to enable and disable the god mode!!
 		if (!lastGValue) {
 			godMode = !godMode;
@@ -77,16 +81,15 @@ void Scene::update(int deltaTime)
 	}
 	else lastGValue = false;
 
+
+
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
 	map->setBallAngle(ball->getAngle());
 	entities->update(deltaTime);
 	player->update(deltaTime);
 
-	//check if ball is going to next/previous room & scroll
-	glm::vec2 ballPos = ball->getPosition();
-	int miny = map->getPlayableArea().miny;
-	int maxy = map->getPlayableArea().maxy;
+	
 
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
@@ -107,6 +110,10 @@ void Scene::update(int deltaTime)
 		ball->setNewDirection(dir);
 		ball->setVelocity(vel);
 	}
+	//check if ball is going to next/previous room & scroll
+	glm::vec2 ballPos = ball->getPosition();
+	int miny = map->getPlayableArea().miny;
+	int maxy = map->getPlayableArea().maxy;
 
 	if (ballPos.y + 32 < miny) { // ball touched top border
 		if (room <= 3) {
@@ -122,11 +129,29 @@ void Scene::update(int deltaTime)
 			}
 			else {
 				ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 4));
-				--lives;
+				if(!godMode) --lives;
 			}
 		}
 		else changeRoom(1, ballPos);
 	}
+
+
+	// KEYS TO CHANGE THE ROOM!
+	if (Game::instance().getSpecialKey(104)) { // RePág KEY. GO TO THE NEXT ROOM.
+		if (!lastRPValue) {
+			if (room <= 3 && !scrolling) changeRoom(-1, ballPos);
+			lastRPValue = true;
+		}
+	}
+	else lastRPValue = false;
+
+	if (Game::instance().getSpecialKey(105)) { // AvPág KEY. GO TO THE PREVIOUS ROOM.
+		if (!lastAPValue) {
+			if (room != 1 && !scrolling) changeRoom(1, ballPos);
+			lastAPValue = true;
+		}
+	}
+	else lastAPValue = false;
 
 }
 
