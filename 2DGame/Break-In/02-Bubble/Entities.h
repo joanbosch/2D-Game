@@ -22,10 +22,13 @@ public:
 	bool ballHasColided();
 	glm::vec2 getN();
 
+	int getNewCoins();
+	int getNewPoints();
 private:
 	glm::ivec2 tileMapDispl, posPlayer;
 
 	bool ballColided;
+	int coins, points;
 	glm::vec2 N;
 
 	vector<Block*> *blocks;

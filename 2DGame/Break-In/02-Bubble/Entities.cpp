@@ -11,6 +11,12 @@ using namespace std;
 #define SCREEN_X 32
 #define SCREEN_Y 42
 
+#define BLOCK_POINTS 100;
+#define COIN_MONEY 100;
+#define BAG_MONEY 200;
+#define SOME_COINS_MONEY 400;
+#define DIAMON_MONEY 1500;
+
 void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap)
 {
 	ballColided = false;
@@ -116,13 +122,18 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 void Entities::update(int deltaTime)
 {
 	ballColided = false;
+	coins = 0;
+	points = 0;
 
 	for (int i = 0; i < blocks->size(); ++i) {
 		if (!ballColided) {
 			(*blocks)[i]->update(deltaTime);
 			bool aux = (*blocks)[i]->getBallColidad();
 			ballColided |= aux;
-			if (aux) N = (*blocks)[i]->getN();
+			if (aux) {
+				if (!(*blocks)[i]->isVisible()) points += BLOCK_POINTS;
+				N = (*blocks)[i]->getN();
+			}
 		}
 		
 	}
@@ -163,7 +174,15 @@ void Entities::update(int deltaTime)
 	}
 
 	for (int i = 0; i < single_coins->size(); ++i) {
-		(*single_coins)[i]->update(deltaTime);
+		if (!ballColided) {
+			(*single_coins)[i]->update(deltaTime);
+			bool aux = (*single_coins)[i]->getBallColided();
+			ballColided |= aux;
+			if (aux) {
+				if (!(*single_coins)[i]->isVisible()) coins += COIN_MONEY;
+				N = (*single_coins)[i]->getN();
+			}
+		}
 	}
 	for (int i = 0; i < bags->size(); ++i) {
 		(*bags)[i]->update(deltaTime);
@@ -225,6 +244,16 @@ bool Entities::ballHasColided()
 glm::vec2 Entities::getN()
 {
 	return N;
+}
+
+int Entities::getNewCoins()
+{
+	return coins;
+}
+
+int Entities::getNewPoints()
+{
+	return points;
 }
 
 
