@@ -85,7 +85,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 			bag->setTileMap(map);
 			bags->push_back(bag);
 		}
-		/*else if (entityType == MULTIPLE_COINS) {
+		else if (entityType == MULTIPLE_COINS) {
 			MultipleCoins *coins = new MultipleCoins();
 			coins->init(tilemap, shaderProgram);
 			coins->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
@@ -99,7 +99,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 			diam->setTileMap(map);
 			diamonds->push_back(diam);
 		}
-		else if (entityType == ALARM) {
+		/*else if (entityType == ALARM) {
 			Alarm* alarm = new Alarm();
 			alarm->init(tilemap, shaderProgram);
 			alarm->setPosition(glm::vec2(map->getEntity(i).x *map->getTileSize(), map->getEntity(i).y *map->getTileSize()));
@@ -185,16 +185,39 @@ void Entities::update(int deltaTime)
 		}
 	}
 	for (int i = 0; i < bags->size(); ++i) {
-		(*bags)[i]->update(deltaTime);
+		if (!ballColided) {
+			(*bags)[i]->update(deltaTime);
+			bool aux = (*bags)[i]->getBallColided();
+			ballColided |= aux;
+			if (aux) {
+				if (!(*bags)[i]->isVisible()) coins += BAG_MONEY;
+				N = (*bags)[i]->getN();
+			}
+		}
 	}
-	/*
 	for (int i = 0; i < multiple_coins->size(); ++i) {
-		(*multiple_coins)[i]->update(deltaTime);
+		if (!ballColided) {
+			(*multiple_coins)[i]->update(deltaTime);
+			bool aux = (*multiple_coins)[i]->getBallColided();
+			ballColided |= aux;
+			if (aux) {
+				if (!(*multiple_coins)[i]->isVisible()) coins += SOME_COINS_MONEY;
+				N = (*multiple_coins)[i]->getN();
+			}
+		}
 	}
 	for (int i = 0; i < diamonds->size(); ++i) {
-		(*diamonds)[i]->update(deltaTime);
+		if (!ballColided) {
+			(*diamonds)[i]->update(deltaTime);
+			bool aux = (*diamonds)[i]->getBallColided();
+			ballColided |= aux;
+			if (aux) {
+				if (!(*diamonds)[i]->isVisible()) coins += DIAMON_MONEY;
+				N = (*diamonds)[i]->getN();
+			}
+		}
 	}
-	*/
+
 	for (int i = 0; i < axes->size(); ++i) {
 		if (!ballColided) {
 			(*axes)[i]->update(deltaTime);
@@ -220,13 +243,14 @@ void Entities::render()
 	for (int i = 0; i < bags->size(); ++i) {
 		(*bags)[i]->render();
 	}
-	/*
+
 	for (int i = 0; i < multiple_coins->size(); ++i) {
 		(*multiple_coins)[i]->render();
 	}
 	for (int i = 0; i < diamonds->size(); ++i) {
 		(*diamonds)[i]->render();
 	}
+	/*
 	for (int i = 0; i < alarms->size(); ++i) {
 		alarms->render();
 		}

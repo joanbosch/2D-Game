@@ -1,5 +1,5 @@
-#ifndef _BAG_INCLUDE
-#define _BAG_INCLUDE
+#ifndef _DIAMOND_INCLUDE
+#define _DIAMOND_INCLUDE
 
 
 #include "Sprite.h"
@@ -10,7 +10,7 @@
 // all properties it needs to track its movement, jumping, and collisions.
 
 
-class Bag
+class Diamond
 {
 
 public:
@@ -37,7 +37,7 @@ private:
 };
 
 
-#endif // _BAG_INCLUDE
+#endif // _DIAMOND_INCLUDE
 
 
 
