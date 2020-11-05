@@ -32,6 +32,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 	multiple_coins = new vector<MultipleCoins*>();
 	diamonds = new vector<Diamond*>();
 	alarms = new vector<Alarm*>();
+	polices = new vector<Police*>(2, NULL);
 	axes = new vector<Axe*>();
 
 
@@ -216,6 +217,26 @@ void Entities::update(int deltaTime)
 		}
 	}
 
+	for (int i = 0; i < alarms->size(); ++i) {
+		if (!ballColided) {
+			(*alarms)[i]->update(deltaTime);
+			bool aux = (*alarms)[i]->getBallColided();
+			ballColided |= aux;
+			if (aux) {
+				if (!(*alarms)[i]->isOn()) {
+					(*polices)[i] = new Police();
+					(*polices)[i]->setPosition( glm::vec2(10.f * map->getTileSize(), map->getPlayableArea().maxy + 10.f * map->getTileSize() ));
+				}
+				N = (*alarms)[i]->getN();
+			}
+		}
+		if ((*alarms)[i]->isOn()) {
+			N = (*alarms)[i]->getN();
+		}
+	}
+
+	// TODO: check police (only on movement the activated polices (their room == acutal room)
+
 	for (int i = 0; i < axes->size(); ++i) {
 		if (!ballColided) {
 			(*axes)[i]->update(deltaTime);
@@ -241,7 +262,6 @@ void Entities::render()
 	for (int i = 0; i < bags->size(); ++i) {
 		(*bags)[i]->render();
 	}
-
 	for (int i = 0; i < multiple_coins->size(); ++i) {
 		(*multiple_coins)[i]->render();
 	}
@@ -250,6 +270,9 @@ void Entities::render()
 	}
 	for (int i = 0; i < alarms->size(); ++i) {
 		(*alarms)[i]->render();
+	}
+	for (int i = 0; i < polices->size(); ++i) {
+		if ((*polices)[i] != NULL) (*polices)[i]->render();
 	}
 	for (int i = 0; i < axes->size(); ++i) {
 		(*axes)[i]->render();
@@ -275,5 +298,6 @@ int Entities::getNewPoints()
 {
 	return points;
 }
+
 
 

@@ -41,7 +41,7 @@ private:
 	Player *player;
 	
 	ShaderProgram texProgram;
-	float currentTime;
+	float currentTime, markTime, startTime;
 	glm::mat4 projection;
 
 	Texture backgroundImage, topBarImage;
