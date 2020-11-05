@@ -71,6 +71,6 @@ glm::vec2 Wood::getN()
 
 void Wood::setVisibility(bool v) { visible = v; }
 
-
+bool Wood::isVisible() { return visible; }
 
 

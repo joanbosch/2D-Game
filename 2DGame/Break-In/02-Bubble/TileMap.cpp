@@ -411,5 +411,10 @@ float TileMap::getBallAngle()
 
 void TileMap::setActualRoom(int room)
 {
-	sublvl = room;
+	actualRoom = room;
+}
+
+void TileMap::setActualLevel(int lvl)
+{
+	actualLevel = lvl;
 }

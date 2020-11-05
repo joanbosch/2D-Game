@@ -33,7 +33,7 @@ Scene::~Scene()
 }
 
 
-void Scene::init()
+void Scene::init(int lvl)
 {
 	initShaders();
 	left = 0.f;
@@ -49,7 +49,24 @@ void Scene::init()
 	topBar = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 	topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	loadLvl(1);
+	bank = lvl;
+	map = TileMap::createTileMap("levels/lvl" + to_string(lvl) + ".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	map->setActualLevel(lvl);
+	map->setActualRoom(1);
+	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize() - 2, float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
+
+	entities = new Entities();
+	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
+
+	player = new Player();
+	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
+	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
+
+	ball = new Ball();
+	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, -8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
+	ball->setTileMap(map);
+	ball->setGameStarted(false);
 
 	// init camera position
 	projection = glm::ortho(left, right, bottom, top);
@@ -88,7 +105,7 @@ void Scene::update(int deltaTime)
 	entities->update(deltaTime);
 	player->update(deltaTime);
 
-	
+
 
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
@@ -102,7 +119,7 @@ void Scene::update(int deltaTime)
 			vel = 8.f;
 			ball->setNewDirection(dir);
 			ball->setVelocity(vel);
-		} 
+		}
 		else {
 			dir = player->getN();
 			vel = player->getNewBallVelocity();
@@ -110,33 +127,35 @@ void Scene::update(int deltaTime)
 				ball->setNewDirection(dir);
 				ball->setVelocity(vel);
 			}
-		} 
+		}
 
-		
+
 	}
 	//check if ball is going to next/previous room & scroll
 	glm::vec2 ballPos = ball->getPosition();
 	int miny = map->getPlayableArea().miny;
 	int maxy = map->getPlayableArea().maxy;
 
-	if (ballPos.y + 32 < miny) { // ball touched top border
-		if (room <= 3) {
-			changeRoom(-1, ballPos);
-		}
-	}
-	if (ballPos.y > (maxy + 2.7 * map->getTileSize()) ) {   // ball touches bottom border
-		if (room == 1 && !scrolling) {
-			ball->setVelocity(0);
-			// TODO: set dead animation in player
-			if (lives == 0) {
-				// TODO: gameover
-			}
-			else {
-				ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 4));
-				if(!godMode) --lives;
+	if (!entities->ballHasColided()) {
+		if (ballPos.y + 32 < miny) { // ball touched top border
+			if (room <= 3) {
+				changeRoom(-1, ballPos);
 			}
 		}
-		else changeRoom(1, ballPos);
+		if (ballPos.y > (maxy + 2.7 * map->getTileSize())) {   // ball touches bottom border
+			if (room == 1 && !scrolling) {
+				ball->setVelocity(0);
+				// TODO: set dead animation in player
+				if (lives == 0) {
+					// TODO: gameover
+				}
+				else {
+					ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 4));
+					if (!godMode) --lives;
+				}
+			}
+			else changeRoom(1, ballPos);
+		}
 	}
 
 	if (room <= 3 && scrollingUp)
@@ -232,7 +251,7 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 		if ( (dir == -1 && top > next_margin) || (dir == 1 && top < next_margin)) scroll(dir);
 		else {
 			scrolling = false;
-			map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
+			map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize() - 4, float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 			
 			glm::vec2 playerPos = player->getPosition();
 			player->setPosition(glm::vec2(playerPos.x, playerPos.y + dir * 24 * map->getTileSize()));
@@ -245,28 +264,6 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 			ball->setVisibility(true);
 		}
 	}
-}
-
-void Scene::loadLvl(int lvl)
-{
-	bank = lvl;
-	map = TileMap::createTileMap("levels/lvl"+to_string(lvl)+".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	map->setActualRoom(1);
-	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
-
-	entities = new Entities();
-	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
-
-	player = new Player();
-	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
-
-	ball = new Ball();
-	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, - 8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
-	ball->setTileMap(map);
-	ball->setGameStarted(false);
-	currentTime = 0.f;
 }
 
 void Scene::initVariables()

@@ -66,7 +66,10 @@ public:
 	int getNEntities() { return entities->size(); };
 
 	void setActualRoom(int room);
-	int getActualRoom() const { return sublvl; };
+	int getActualRoom() const { return actualRoom; };
+
+	void setActualLevel(int lvl);
+	int getActualLevel() { return actualLevel; };
 
 private:
 	bool loadLevel(const string &levelFile);
@@ -77,7 +80,7 @@ private:
 	GLuint vbo;
 	GLint posLocation, texCoordLocation;
 	glm::ivec2 position, mapSize, tilesheetSize;
-	int tileSize, blockSize, sublvl;
+	int tileSize, blockSize, actualRoom, actualLevel;
 	Texture tilesheet;
 	glm::vec2 tileTexSize;
 	int *map;

@@ -24,10 +24,9 @@ public:
 	Scene();
 	~Scene();
 
-	void init();
+	void init(int lvl);
 	void update(int deltaTime);
 	void render();
-	void loadLvl(int lvl);
 	void initVariables();
 
 private:
