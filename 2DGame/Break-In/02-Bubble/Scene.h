@@ -61,9 +61,9 @@ private:
 	float left, right, bottom, top;
 
 	float next_margin, prev_vel;
-	bool scrolling;
+	bool scrolling, scrollingUp;
 	bool godMode;
-	bool lastGValue, lastRPValue, lastAPValue;
+	bool lastGValue, lastRPValue;
 };
 
 

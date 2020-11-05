@@ -64,7 +64,7 @@ void Scene::init()
 	godMode = false;
 	lastGValue = false;
 	lastRPValue = false;
-	lastAPValue = false;
+	scrollingUp = false;
 }
 
 void Scene::update(int deltaTime)
@@ -139,23 +139,20 @@ void Scene::update(int deltaTime)
 		else changeRoom(1, ballPos);
 	}
 
+	if (room <= 3 && scrollingUp)
+	{
+		changeRoom(-1, ballPos);
+		scrollingUp = scrolling;
+	}
 
 	// KEYS TO CHANGE THE ROOM!
-	if (Game::instance().getSpecialKey(104)) { // RePág KEY. GO TO THE NEXT ROOM.
-		if (!lastRPValue) {
-			if (room <= 3) changeRoom(-1, ballPos);
+	if (Game::instance().getKey(119)) { // 'W' KEY: GO TO THE NEXT ROOM.
+		if (!lastRPValue && !scrollingUp) {
+			scrollingUp = true;
 			lastRPValue = true;
 		}
 	}
 	else lastRPValue = false;
-
-	if (Game::instance().getSpecialKey(105)) { // AvPág KEY. GO TO THE PREVIOUS ROOM.
-		if (!lastAPValue) {
-			if (room != 1 && !scrolling) changeRoom(1, ballPos);
-			lastAPValue = true;
-		}
-	}
-	else lastAPValue = false;
 
 }
 
@@ -239,9 +236,11 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 			
 			glm::vec2 playerPos = player->getPosition();
 			player->setPosition(glm::vec2(playerPos.x, playerPos.y + dir * 24 * map->getTileSize()));
+			if (scrollingUp) player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 			player->setVisibility(true);
 
 			ball->setPosition(glm::vec2(ballPos.x, ballPos.y + dir * 5 * map->getTileSize()));
+			if (scrollingUp) ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, -8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 			ball->setVelocity(prev_vel);
 			ball->setVisibility(true);
 		}
