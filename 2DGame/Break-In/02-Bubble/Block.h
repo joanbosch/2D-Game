@@ -20,8 +20,10 @@ public:
 
 	void setTileMap(TileMap* tileMap);
 	void setPosition(const glm::vec2& pos);
+
 	bool getBallColidad();
 	glm::vec2 getN();
+	bool isVisible();
 
 private:
 

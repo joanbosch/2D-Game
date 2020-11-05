@@ -15,7 +15,8 @@ enum PlayerAnims
 
 void Bag::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
-	bJumping = false;
+	visible = true;
+	ballColided = false;
 	spritesheet.loadFromFile("images/Bag.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(32 * ESCALAT, 32 * ESCALAT), glm::vec2(1, 1), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(1);
@@ -31,13 +32,16 @@ void Bag::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 void Bag::update(int deltaTime)
 {
+	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posPlayer, glm::vec2(32 * ESCALAT, 32 * ESCALAT));
+	ballColided &= visible;
+	if (ballColided) visible = false;
 	sprite->update(deltaTime);
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
 void Bag::render()
 {
-	sprite->render();
+	if(visible) sprite->render();
 }
 
 void Bag::setTileMap(TileMap* tileMap)
@@ -52,5 +56,19 @@ void Bag::setPosition(const glm::vec2& pos)
 }
 
 
+bool Bag::getBallColided()
+{
+	return ballColided;
+}
+
+glm::vec2 Bag::getN()
+{
+	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), map->getBallAngle(), posPlayer, glm::vec2(32 * ESCALAT, 32 * ESCALAT));
+}
+
+bool Bag::isVisible()
+{
+	return visible;
+}
 
 

@@ -11,6 +11,12 @@ using namespace std;
 #define SCREEN_X 32
 #define SCREEN_Y 42
 
+#define BLOCK_POINTS 100;
+#define COIN_MONEY 100;
+#define BAG_MONEY 200;
+#define SOME_COINS_MONEY 400;
+#define DIAMON_MONEY 1500;
+
 void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap)
 {
 	ballColided = false;
@@ -23,10 +29,8 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 	blocks = new vector<Block*>();
 	single_coins = new vector<Coin*>();
 	bags = new vector<Bag*>();
-	/*
-	multiple_coins = new vector<MultipleCoins>();
-	diamonds = new vector<Diamonds>();
-	*/
+	multiple_coins = new vector<MultipleCoins*>();
+	diamonds = new vector<Diamond*>();
 	alarms = new vector<Alarm*>();
 	axes = new vector<Axe*>();
 
@@ -80,7 +84,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 			bag->setTileMap(map);
 			bags->push_back(bag);
 		}
-		/*else if (entityType == MULTIPLE_COINS) {
+		else if (entityType == MULTIPLE_COINS) {
 			MultipleCoins *coins = new MultipleCoins();
 			coins->init(tilemap, shaderProgram);
 			coins->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
@@ -94,7 +98,6 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 			diam->setTileMap(map);
 			diamonds->push_back(diam);
 		}
-		*/
 		else if (entityType == ALARM) {
 			Alarm* alarm = new Alarm();
 			alarm->init(tilemap, shaderProgram);
@@ -117,13 +120,18 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 void Entities::update(int deltaTime)
 {
 	ballColided = false;
+	coins = 0;
+	points = 0;
 
 	for (int i = 0; i < blocks->size(); ++i) {
 		if (!ballColided) {
 			(*blocks)[i]->update(deltaTime);
 			bool aux = (*blocks)[i]->getBallColidad();
 			ballColided |= aux;
-			if (aux) N = (*blocks)[i]->getN();
+			if (aux) {
+				if (!(*blocks)[i]->isVisible()) points += BLOCK_POINTS;
+				N = (*blocks)[i]->getN();
+			}
 		}
 		
 	}
@@ -164,20 +172,49 @@ void Entities::update(int deltaTime)
 	}
 
 	for (int i = 0; i < single_coins->size(); ++i) {
-		(*single_coins)[i]->update(deltaTime);
+		if (!ballColided) {
+			(*single_coins)[i]->update(deltaTime);
+			bool aux = (*single_coins)[i]->getBallColided();
+			ballColided |= aux;
+			if (aux) {
+				if (!(*single_coins)[i]->isVisible()) coins += COIN_MONEY;
+				N = (*single_coins)[i]->getN();
+			}
+		}
 	}
 	for (int i = 0; i < bags->size(); ++i) {
-		(*bags)[i]->update(deltaTime);
+		if (!ballColided) {
+			(*bags)[i]->update(deltaTime);
+			bool aux = (*bags)[i]->getBallColided();
+			ballColided |= aux;
+			if (aux) {
+				if (!(*bags)[i]->isVisible()) coins += BAG_MONEY;
+				N = (*bags)[i]->getN();
+			}
+		}
 	}
-	/*
 	for (int i = 0; i < multiple_coins->size(); ++i) {
-		(*multiple_coins)[i]->update(deltaTime);
+		if (!ballColided) {
+			(*multiple_coins)[i]->update(deltaTime);
+			bool aux = (*multiple_coins)[i]->getBallColided();
+			ballColided |= aux;
+			if (aux) {
+				if (!(*multiple_coins)[i]->isVisible()) coins += SOME_COINS_MONEY;
+				N = (*multiple_coins)[i]->getN();
+			}
+		}
 	}
 	for (int i = 0; i < diamonds->size(); ++i) {
-		(*diamonds)[i]->update(deltaTime);
+		if (!ballColided) {
+			(*diamonds)[i]->update(deltaTime);
+			bool aux = (*diamonds)[i]->getBallColided();
+			ballColided |= aux;
+			if (aux) {
+				if (!(*diamonds)[i]->isVisible()) coins += DIAMON_MONEY;
+				N = (*diamonds)[i]->getN();
+			}
+		}
 	}
-	*/
-
 
 	for (int i = 0; i < axes->size(); ++i) {
 		if (!ballColided) {
@@ -204,14 +241,13 @@ void Entities::render()
 	for (int i = 0; i < bags->size(); ++i) {
 		(*bags)[i]->render();
 	}
-	/*
+
 	for (int i = 0; i < multiple_coins->size(); ++i) {
 		(*multiple_coins)[i]->render();
 	}
 	for (int i = 0; i < diamonds->size(); ++i) {
 		(*diamonds)[i]->render();
 	}
-	*/
 	for (int i = 0; i < alarms->size(); ++i) {
 		(*alarms)[i]->render();
 	}
@@ -228,6 +264,16 @@ bool Entities::ballHasColided()
 glm::vec2 Entities::getN()
 {
 	return N;
+}
+
+int Entities::getNewCoins()
+{
+	return coins;
+}
+
+int Entities::getNewPoints()
+{
+	return points;
 }
 
 

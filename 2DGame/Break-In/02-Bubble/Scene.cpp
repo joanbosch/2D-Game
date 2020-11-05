@@ -131,6 +131,11 @@ void Scene::update(int deltaTime)
 
 
 	}
+
+	// UPDATE the money and points counter
+	money += entities->getNewCoins();
+	points += entities->getNewPoints();
+
 	//check if ball is going to next/previous room & scroll
 	glm::vec2 ballPos = ball->getPosition();
 	int miny = map->getPlayableArea().miny;
@@ -172,6 +177,7 @@ void Scene::update(int deltaTime)
 		}
 	}
 	else lastRPValue = false;
+
 
 }
 

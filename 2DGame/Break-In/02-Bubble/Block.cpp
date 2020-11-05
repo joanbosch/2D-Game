@@ -94,5 +94,10 @@ glm::vec2 Block::getN()
 	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), map->getBallAngle(), posPlayer, glm::vec2(32 * ESCALAT, 16 * ESCALAT));
 }
 
+bool Block::isVisible()
+{
+	return visible;
+}
+
 
 

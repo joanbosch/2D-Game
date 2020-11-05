@@ -9,6 +9,8 @@
 #include "Wood.h"
 #include "Coin.h"
 #include "Bag.h"
+#include "MultipleCoins.h"
+#include "Diamond.h"
 #include "Alarm.h"
 #include <vector>
 
@@ -23,20 +25,21 @@ public:
 	bool ballHasColided();
 	glm::vec2 getN();
 
+	int getNewCoins();
+	int getNewPoints();
 private:
 	glm::ivec2 tileMapDispl, posPlayer;
 
 	bool ballColided;
+	int coins, points;
 	glm::vec2 N;
 
 	vector<Block*> *blocks;
 	vector<Wood*> *woods;
 	vector<Coin*> *single_coins;
 	vector<Bag*> *bags;
-	/* TODO: implement these sprites too
 	vector<MultipleCoins*> *multiple_coins;
 	vector<Diamond*> *diamonds;
-	*/
 	vector<Alarm*> *alarms;
 	vector<Axe*> *axes;
 
