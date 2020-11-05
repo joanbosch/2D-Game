@@ -328,7 +328,7 @@ glm::vec2 TileMap::getNormalVector(const glm::ivec2& pos, const glm::ivec2& size
 	else if (!c[3] && !c[2] && c[1] && !c[0]) { // Case 0010
 		//return glm::vec2(1, 1);
 		if (angle < 180) return glm::vec2(1, 0);
-		else if (angle <= 240) return glm::vec2(1, 1);
+		else if (angle <= 270) return glm::vec2(1, 1);
 		else return glm::vec2(0, 1);
 	} 
 	else if(!c[3] && !c[2] && c[1] && c[0]) { // Case 0011
@@ -353,7 +353,7 @@ glm::vec2 TileMap::getNormalVector(const glm::ivec2& pos, const glm::ivec2& size
 	else if (c[3] && !c[2] && !c[1] && !c[0]) { // Case 1000
 		//return glm::vec2(-1, 1);
 		if (angle < 90) return glm::vec2(-1, 0);
-		else if (angle <= 240) return glm::vec2(0, 1);
+		else if (angle <= 270) return glm::vec2(0, 1);
 		else return glm::vec2(-1, 1);
 	}
 	else if (c[3] && !c[2] && !c[1] && c[0]) { // Case 1001

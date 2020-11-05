@@ -100,14 +100,19 @@ void Scene::update(int deltaTime)
 		if (godMode) {
 			dir = glm::vec2(0, 1);
 			vel = 8.f;
+			ball->setNewDirection(dir);
+			ball->setVelocity(vel);
 		} 
 		else {
 			dir = player->getN();
 			vel = player->getNewBallVelocity();
+			if (dir.x != 0) {
+				ball->setNewDirection(dir);
+				ball->setVelocity(vel);
+			}
 		} 
 
-		ball->setNewDirection(dir);
-		ball->setVelocity(vel);
+		
 	}
 	//check if ball is going to next/previous room & scroll
 	glm::vec2 ballPos = ball->getPosition();

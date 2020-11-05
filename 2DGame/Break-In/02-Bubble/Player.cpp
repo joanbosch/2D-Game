@@ -184,15 +184,13 @@ glm::vec2 Player::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm
 		if (miny_block <= miny_ball && miny_ball < maxy_block)
 		{
 			if (glm::abs((glm::min(maxy_ball, maxy_block)) - miny_ball) > glm::abs(glm::max(minx_block, minx_ball) - maxx_ball))
-				return glm::vec2(-1, 0);
+				return glm::vec2(0, 0);
 			else
-				// NO POT ARRIBAR MAI AQUI
 				return glm::vec2(0, -1);
 		}
 		else
 		{
 			if (glm::abs(maxx_ball - glm::max(minx_ball, minx_block)) > glm::abs(maxy_ball - miny_block))
-				// TODO
 			{
 				dist = midx_ball - minx_block;
 				newBallVelocity = newVel(dist);
@@ -201,7 +199,7 @@ glm::vec2 Player::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm
 				return glm::vec2(- glm::sin(alpha), 1);
 			}
 			else
-				return glm::vec2(-1, 0);
+				return glm::vec2(0, 0);
 		}
 	}
 	else
@@ -209,22 +207,20 @@ glm::vec2 Player::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm
 		if (miny_block <= miny_ball && miny_ball <= maxy_block)
 		{
 			if (glm::abs(maxy_block - miny_ball) > glm::abs(glm::min(maxx_block, maxx_ball) - minx_ball))
-				return glm::vec2(1, 0);
+				return glm::vec2(0, 0);
 			else
-				// NO POT ARRIBAR MAI AQUI
 				return glm::vec2(0, -1);
 		}
 		else
 		{
 			if (glm::abs(maxx_block - glm::max(minx_block, minx_ball)) > glm::abs(glm::min(maxy_block, maxy_ball) - max(miny_block, miny_ball)))
 			{
-				// TODO
 				dist = minx_ball - minx_block;
 			    alpha = (dist * 3.141592f) / 72.f + 3.141592f / 2.f;
 				return glm::vec2(- glm::sin(alpha), 1);
 			}
 			else
-				return glm::vec2(1, 0);
+				return glm::vec2(0, 0);
 		}
 	}
 }

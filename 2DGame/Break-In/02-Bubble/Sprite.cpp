@@ -154,7 +154,10 @@ glm::vec2 Sprite::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, flo
 		else
 		{
 			if (glm::abs(maxx_ball - glm::max(minx_ball, minx_block)) > glm::abs(maxy_ball - miny_block))
-				return glm::vec2(0, 1);
+				//return glm::vec2(0, 1);
+				if (ballAngle <= 90) return glm::vec2(-1, 0);
+				else /*if (ballAngle <= 240)*/ return glm::vec2(0, 1);
+				//else return glm::vec2(-1, 1);
 			else
 				return glm::vec2(-1, 0); 
 		}
@@ -173,7 +176,10 @@ glm::vec2 Sprite::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, flo
 		else 
 		{
 			if (glm::abs(maxx_block - glm::max(minx_block, minx_ball)) > glm::abs(glm::min(maxy_block, maxy_ball) - max(miny_block, miny_ball)))
-				return glm::vec2(0, 1);
+				//return glm::vec2(0, 1);
+				if (ballAngle < 180) return glm::vec2(1, 0);
+				/*else if (ballAngle <= 240) return glm::vec2(1, 1);*/
+				else return glm::vec2(0, 1);
 			else
 				return glm::vec2(1, 0);
 		}
