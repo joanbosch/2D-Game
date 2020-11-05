@@ -177,6 +177,8 @@ void Entities::update(int deltaTime)
 		(*diamonds)[i]->update(deltaTime);
 	}
 	*/
+
+
 	for (int i = 0; i < axes->size(); ++i) {
 		if (!ballColided) {
 			(*axes)[i]->update(deltaTime);
@@ -209,10 +211,10 @@ void Entities::render()
 	for (int i = 0; i < diamonds->size(); ++i) {
 		(*diamonds)[i]->render();
 	}
-	for (int i = 0; i < alarms->size(); ++i) {
-		alarms->render();
-		}
 	*/
+	for (int i = 0; i < alarms->size(); ++i) {
+		(*alarms)[i]->render();
+	}
 	for (int i = 0; i < axes->size(); ++i) {
 		(*axes)[i]->render();
 	}
