@@ -66,7 +66,7 @@ bool Wood::getBallColidad()
 
 glm::vec2 Wood::getN()
 {
-	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posPlayer, glm::vec2(16 * ESCALAT, 16 * ESCALAT));
+	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), map->getBallAngle(), posPlayer, glm::vec2(16 * ESCALAT, 16 * ESCALAT));
 }
 
 void Wood::setVisibility(bool v) { visible = v; }

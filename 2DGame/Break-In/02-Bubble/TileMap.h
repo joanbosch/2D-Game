@@ -59,6 +59,9 @@ public:
 	void setBallPos(glm::vec2 pos);
 	glm::vec2 getBallPos();
 
+	void setBallAngle(float angle);
+	float getBallAngle();
+
 	infoEntities getEntity(int i) { return (*entities)[i]; };
 	int getNEntities() { return entities->size(); };
 
@@ -80,6 +83,7 @@ private:
 	int *map;
 
 	glm::vec2 ballPos;
+	float ballAngle;
 
 	vector<infoEntities> *entities;
 

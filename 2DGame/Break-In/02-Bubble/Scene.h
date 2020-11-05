@@ -62,6 +62,8 @@ private:
 
 	float next_margin, prev_vel;
 	bool scrolling;
+	bool godMode;
+	bool lastGValue;
 
 };
 

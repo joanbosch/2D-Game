@@ -124,7 +124,7 @@ bool Sprite::ballCollision(glm::vec2 ballPos, glm::vec2 ballSize, glm::vec2 spri
 	return (minx_ball < maxx_block) && (minx_block < maxx_ball) && (miny_ball < maxy_block) && (miny_block < maxy_ball);
 }
 
-glm::vec2 Sprite::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm::vec2 spritePosition, glm::vec2 spriteSize)
+glm::vec2 Sprite::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, float ballAngle, glm::vec2 spritePosition, glm::vec2 spriteSize)
 {
 	int minx_ball, miny_ball, maxx_ball, maxy_ball;
 	int minx_block, miny_block, maxx_block, maxy_block;
@@ -144,7 +144,10 @@ glm::vec2 Sprite::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm
 		if (miny_block <= miny_ball && miny_ball < maxy_block)
 		{
 			if (glm::abs((glm::min(maxy_ball, maxy_block)) - miny_ball) > glm::abs(glm::max(minx_block, minx_ball) - maxx_ball))
-				return glm::vec2(-1, 0);
+				if(ballAngle < 90) return glm::vec2(-1, -1);
+				else if(ballAngle <= 180) return glm::vec2(0, -1);
+				else return glm::vec2(-1, 0);
+				
 			else 
 				return glm::vec2(0, -1);
 		}
@@ -161,7 +164,9 @@ glm::vec2 Sprite::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm
 		if (miny_block <= miny_ball && miny_ball <= maxy_block)
 		{
 			if (glm::abs(maxy_block - miny_ball) > glm::abs(glm::min(maxx_block, maxx_ball) - minx_ball))
-				return glm::vec2(1, 0);
+				if (ballAngle < 90) return glm::vec2(0, -1);
+				else if (ballAngle <= 180) return glm::vec2(1, -1);
+				else return glm::vec2(1, 0);
 			else
 				return glm::vec2(0, -1); 
 		}

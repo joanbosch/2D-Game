@@ -62,13 +62,24 @@ void Scene::init()
 	initVariables();
 
 	scrolling = false;
+	godMode = false;
 }
 
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
+
+	if (Game::instance().getKey(103)) { // G key to enable and disable the god mode!!
+		if (!lastGValue) {
+			godMode = !godMode;
+			lastGValue = true;
+		}
+	}
+	else lastGValue = false;
+
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
+	map->setBallAngle(ball->getAngle());
 	entities->update(deltaTime);
 	player->update(deltaTime);
 
@@ -80,8 +91,21 @@ void Scene::update(int deltaTime)
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
 	}
-	if (player->getBallColided()) {
-		ball->setNewDirection(player->getN());
+	if (player->getBallColided() && ball->getAngle() >= 180.f) {
+		glm::vec2 dir;
+		float vel;
+
+		if (godMode) {
+			dir = glm::vec2(0, 1);
+			vel = 8.f;
+		} 
+		else {
+			dir = player->getN();
+			vel = player->getNewBallVelocity();
+		} 
+
+		ball->setNewDirection(dir);
+		ball->setVelocity(vel);
 	}
 
 	if (ballPos.y + 32 < miny) { // ball touched top border

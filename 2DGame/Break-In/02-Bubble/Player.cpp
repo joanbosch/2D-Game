@@ -61,6 +61,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 	map = tileMap;
 	visible = true;
 	ballColided = false;
+	newBallVelocity = 4.f;
 }
 
 void Player::update(int deltaTime)
@@ -132,6 +133,11 @@ void Player::setPosition(const glm::vec2& pos)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
+float Player::getNewBallVelocity()
+{
+	return newBallVelocity;
+}
+
 bool Player::getBallColided()
 {
 	return ballColided;
@@ -144,6 +150,12 @@ glm::vec2 Player::getN()
 	return computeNormalVector(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posBar, glm::ivec2(38 * ESCALAT, 10 * ESCALAT));
 }
 
+float Player::newVel(int dist)
+{
+	if (dist <= 14 || dist >= 58) return 8.f;
+	else if (dist <= 30 || dist >= 42) return 6.f;
+	else return 4.f;
+}
 
 glm::vec2 Player::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm::vec2 spritePosition, glm::vec2 spriteSize)
 {
@@ -183,6 +195,8 @@ glm::vec2 Player::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm
 				// TODO
 			{
 				dist = midx_ball - minx_block;
+				newBallVelocity = newVel(dist);
+
 			    alpha = (dist * 3.141592f) / 72.f + 3.141592f / 2.f;
 				return glm::vec2(- glm::sin(alpha), 1);
 			}

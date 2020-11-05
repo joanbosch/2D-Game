@@ -26,6 +26,7 @@ public:
 	void setNewDirection(glm::vec2 ref);
 	void setVisibility(bool vis);
 	float getVelocity();
+	float getAngle();
 	void setVelocity(float v);
 
 private:

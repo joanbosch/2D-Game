@@ -21,7 +21,7 @@ enum PlayerAnims
 void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
 	bJumping = false;
-	vel = 8;
+	vel = 4;
 	angle = 60.f;
 	spritesheet.loadFromFile("images/ball.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(16 * ESCALAT, 16 * ESCALAT), glm::vec2(1, 1), &spritesheet, &shaderProgram);
@@ -107,6 +107,11 @@ void Ball::setVisibility(bool vis)
 float Ball::getVelocity()
 {
 	return vel;
+}
+
+float Ball::getAngle()
+{
+	return angle;
 }
 
 void Ball::setVelocity(float v)

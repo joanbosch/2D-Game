@@ -376,6 +376,16 @@ glm::vec2 TileMap::getBallPos()
 	return ballPos;
 }
 
+void TileMap::setBallAngle(float angle)
+{
+	this->ballAngle = angle;
+}
+
+float TileMap::getBallAngle()
+{
+	return ballAngle;
+}
+
 void TileMap::setActualRoom(int room)
 {
 	sublvl = room;
