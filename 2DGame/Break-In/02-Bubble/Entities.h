@@ -40,7 +40,6 @@ private:
 	vector<Bag*> *bags;
 	vector<MultipleCoins*> *multiple_coins;
 	vector<Diamond*> *diamonds;
-	*/
 	vector<Alarm*> *alarms;
 	vector<Axe*> *axes;
 
