@@ -9,6 +9,7 @@
 #include "Wood.h"
 #include "Coin.h"
 #include "Bag.h"
+#include "Alarm.h"
 #include <vector>
 
 class Entities
@@ -35,8 +36,8 @@ private:
 	/* TODO: implement these sprites too
 	vector<MultipleCoins*> *multiple_coins;
 	vector<Diamond*> *diamonds;
-	vector<Alarm*> alarms;
 	*/
+	vector<Alarm*> *alarms;
 	vector<Axe*> *axes;
 
 	TileMap *map;

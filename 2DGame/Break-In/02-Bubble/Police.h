@@ -16,10 +16,6 @@ public:
 	void setPosition(const glm::vec2& pos);
 	glm::vec2 getPosition() { return posPolice; };
 
-	bool getBallColided();
-	glm::vec2 getN();
-	glm::vec2 computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm::vec2 spritePosition, glm::vec2 spriteSize);
-
 	void setVisibility(bool vis);
 
 private:
