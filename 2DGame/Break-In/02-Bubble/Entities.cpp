@@ -20,6 +20,7 @@ using namespace std;
 void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap)
 {
 	ballColided = false;
+	playerColided = false;
 
 	map = tileMap;
 	sP = shaderProgram;
@@ -253,13 +254,19 @@ void Entities::update(int deltaTime)
 		}
 	}
 
-	// TODO: check police (only on movement the activated polices (their room == acutal room)
 	for (int i = 0; i < polices->size(); ++i) {
-		bool prev_visible = (*polices)[i]->isVisible();
 		(*polices)[i]->update(deltaTime);
-		if (prev_visible != (*polices)[i]->isVisible()) {
-			(*polices)[i]->init(glm::vec2(64, 84), sP, map, 3 - room);
-			(*polices)[i]->setPosition(glm::vec2(2.f * map->getTileSize(), map->getPlayableArea().maxy));
+		if ((*polices)[i]->getCollisionPlayer()) {
+			(*polices)[i]->setVelocity(0);
+			playerColided = true;
+		}
+		else {
+			if (map->getScrolling()) {
+				(*polices)[i]->setVelocity(0);
+			}
+			else {
+				(*polices)[i]->setVelocity(1.5);
+			}
 		}
 	}
 
@@ -294,14 +301,14 @@ void Entities::render()
 	for (int i = 0; i < diamonds->size(); ++i) {
 		(*diamonds)[i]->render();
 	}
+	for (int i = 0; i < axes->size(); ++i) {
+		(*axes)[i]->render();
+	}
 	for (int i = 0; i < alarms->size(); ++i) {
 		(*alarms)[i]->render();
 	}
 	for (int i = 0; i < polices->size(); ++i) {
 		(*polices)[i]->render();
-	}
-	for (int i = 0; i < axes->size(); ++i) {
-		(*axes)[i]->render();
 	}
 }
 
@@ -339,4 +346,3 @@ void Entities::setPlayerDead() {
 	}
 	polices = new vector<Police*>();
 }
-

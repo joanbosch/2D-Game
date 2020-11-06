@@ -24,6 +24,7 @@ public:
 	void render();
 
 	bool ballHasColided();
+	bool playerHasColided() { return playerColided; };
 	glm::vec2 getN();
 
 	int getNewCoins();
@@ -36,7 +37,7 @@ private:
 	glm::ivec2 tileMapDispl, posPlayer;
 	ShaderProgram sP;
 
-	bool ballColided;
+	bool ballColided, playerColided;
 	int coins, points, moneyEntities;
 	glm::vec2 N;
 

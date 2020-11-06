@@ -23,14 +23,15 @@ public:
 
 	void setSearching();
 
+	bool getCollisionPlayer() { return playerColided; };
+
 private:
 	glm::ivec2 tileMapDispl, posPolice, policeSize;
 	Texture spritesheet;
 	Sprite* sprite;
 	TileMap* map;
 
-	bool ballColided, isOnScreen, moving;
-	int policeState;
+	bool playerColided, isOnScreen, moving;
 
 	int room;
 	float vel, currentTime, markTime;

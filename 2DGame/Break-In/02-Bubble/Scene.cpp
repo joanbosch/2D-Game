@@ -88,7 +88,6 @@ void Scene::init(int lvl, int points, int coins, int lives)
 	initVariables(points, coins, lives);
 	bank = lvl;
 
-	scrolling = false;
 	godMode = false;
 	lastGValue = false;
 	lastRPValue = false;
@@ -122,6 +121,9 @@ void Scene::update(int deltaTime)
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
 	}
+	if (entities->playerHasColided()) {
+
+	}
 	if (player->getBallColided() && ball->getAngle() >= 180.f) {
 		glm::vec2 dir;
 		float vel;
@@ -140,8 +142,6 @@ void Scene::update(int deltaTime)
 				ball->setVelocity(vel);
 			}
 		}
-
-
 	}
 
 	// UPDATE the money and points counter
@@ -163,7 +163,7 @@ void Scene::update(int deltaTime)
 			}
 		}
 		if (ballPos.y > (maxy + 2.93 * map->getTileSize())) {   // ball touches bottom border
-			if (room == 1 && !scrolling) {
+			if (room == 1 && !map->getScrolling()) {
 				prev_vel = ball->getVelocity();
 				ball->setVelocity(0);
 				if (lives == 0) {
@@ -196,11 +196,11 @@ void Scene::update(int deltaTime)
 	if (room <= 3 && scrollingUp)
 	{
 		changeRoom(-1, ballPos);
-		scrollingUp = scrolling;
+		scrollingUp = map->getScrolling();
 	}
 
 	// KEYS TO CHANGE THE ROOM!
-	if (Game::instance().getKey(119)) { // 'W' KEY: GO TO THE NEXT ROOM.
+	if (Game::instance().getKey(119) && !map->getScrolling()) { // 'W' KEY: GO TO THE NEXT ROOM.
 		if (!lastRPValue && !scrollingUp) {
 			scrollingUp = true;
 			lastRPValue = true;
@@ -270,14 +270,15 @@ void Scene::scroll(int direction)
 
 void Scene::changeRoom(int dir, glm::vec2 ballPos)
 {
-	if (!scrolling) {
+	if (!map->getScrolling()) {
 		player->setVisibility(false);
 
 		ball->setVisibility(false);
 		prev_vel = ball->getVelocity();
 		ball->setVelocity(0);
+		map->setScrolling(true);
 
-		scrolling = true;
+		map->setScrolling(true);
 		next_margin = top + dir * 24 * map->getTileSize();
 		room -= dir;
 		map->setActualRoom(room);
@@ -285,7 +286,7 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 	else {
 		if ( (dir == -1 && top > next_margin) || (dir == 1 && top < next_margin)) scroll(dir);
 		else {
-			scrolling = false;
+			map->setScrolling(false);
 			map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize() - 2, float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 			
 			glm::vec2 playerPos = player->getPosition();
@@ -301,6 +302,9 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 	}
 }
 
+void Scene::playerDies() {
+	//player dying
+}
 
 
 void Scene::initShaders()

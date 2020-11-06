@@ -51,7 +51,6 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 
 	map = tileMap;
 	room = r;
-	policeState = NULL;
 	vel = VEL;
 	currentTime = 0.0f;
 	markTime = ANIMATION_TIME;
@@ -99,10 +98,10 @@ void Police::update(int deltaTime)
 		}
 	}	
 
-	/*glm::vec2 posBar = posPolice;
+	glm::vec2 posBar = posPolice;
 	posBar.y += 28;
 
-	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posBar, glm::ivec2(64 * ESCALAT, 32 * ESCALAT));*/
+	playerColided = sprite->ballCollision(map->getPlayerPos(), glm::vec2(38 * ESCALAT, 64 * ESCALAT), posBar, policeSize);
 
 	sprite->update(deltaTime);
 

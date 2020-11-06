@@ -74,6 +74,9 @@ public:
 	void setActualLevel(int lvl);
 	int getActualLevel() { return actualLevel; };
 
+	void setScrolling(bool b);
+	bool getScrolling() { return scrolling; };
+
 private:
 	bool loadLevel(const string &levelFile);
 	void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
@@ -87,6 +90,7 @@ private:
 	Texture tilesheet;
 	glm::vec2 tileTexSize;
 	int *map;
+	bool scrolling;
 
 	glm::vec2 ballPos, playerPos;
 	float ballAngle;

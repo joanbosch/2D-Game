@@ -20,6 +20,7 @@ TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProg
 	loadLevel(levelFile);
 	prepareArrays(minCoords, program);
 	setPlayableArea(1 * tileSize, 2 * tileSize, 20.5 * tileSize, 20 * tileSize);
+	setScrolling(false);
 }
 
 TileMap::~TileMap()
@@ -427,4 +428,9 @@ void TileMap::setActualRoom(int room)
 void TileMap::setActualLevel(int lvl)
 {
 	actualLevel = lvl;
+}
+
+void TileMap::setScrolling(bool b)
+{
+	scrolling = b;
 }
