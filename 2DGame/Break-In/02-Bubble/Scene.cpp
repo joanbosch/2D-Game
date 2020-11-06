@@ -14,6 +14,7 @@
 
 #define SCROLL_VEL 6
 #define TIME_TO_SRTART 3000
+#define TIME_CHANGING_LEVEL 12000
 
 Scene::Scene()
 {
@@ -93,11 +94,21 @@ void Scene::init(int lvl, int points, int coins, int lives)
 	lastGValue = false;
 	lastRPValue = false;
 	scrollingUp = false;
+	changingLevel = false;
 }
 
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
+
+	if (changingLevel) {
+		thief->update(deltaTime);
+	}
+
+	// Change the level if it is necesary
+	if (changingLevel && currentTime > win_time + TIME_CHANGING_LEVEL) {
+		init(map->getActualLevel() + 1, points, money, lives);
+	}
 
 	// GOD MODE
 	if (Game::instance().getKey(103)) { // G key to enable and disable the god mode!!
@@ -148,7 +159,14 @@ void Scene::update(int deltaTime)
 	points += entities->getNewPoints();
 
 	// If no one money entities remaining, go to next level.
-	if (entities->getRemainingMoneyEntities() == 0) init(map->getActualLevel()+ 1, points, money, lives);
+	if (entities->getRemainingMoneyEntities() == 0 && !changingLevel) {
+		changingLevel = true;
+		win_time = currentTime;
+		backgroundImage.loadFromFile("images/nextLvl.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		thief = new Thief();
+		thief->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
+		thief->setPosition(glm::vec2(5*map->getTileSize(), 16*map->getTileSize()));
+	}
 
 	//check if ball is going to next/previous room & scroll
 	glm::vec2 ballPos = ball->getPosition();
@@ -221,11 +239,15 @@ void Scene::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
 	background->render(backgroundImage);
-	map->render();
-	topBar->render(topBarImage);
-	entities->render();
-	ball->render();
-	player->render();
+
+	if (!changingLevel) {
+		map->render();
+		topBar->render(topBarImage);
+		entities->render();
+		ball->render();
+		player->render();
+	}
+	else thief->render();
 	
 	// Rendender text
 	text.render("MONEY", glm::vec2(455*ESCALAT, (42+30)*ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
