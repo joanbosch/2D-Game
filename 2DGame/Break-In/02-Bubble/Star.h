@@ -1,5 +1,5 @@
-#ifndef _BLOCK_INCLUDE
-#define _BLOCK_INCLUDE
+#ifndef _STAR_INCLUDE
+#define _STAR_INCLUDE
 
 
 #include "Sprite.h"
@@ -10,27 +10,24 @@
 // all properties it needs to track its movement, jumping, and collisions.
 
 
-class Block
+class Star
 {
 
 public:
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram);
-	void update(int deltaTime, bool starMode);
+	void update(int deltaTime);
 	void render();
 
 	void setTileMap(TileMap* tileMap);
 	void setPosition(const glm::vec2& pos);
 
-	bool getBallColidad();
+	bool getBallColided();
 	glm::vec2 getN();
 	bool isVisible();
 
 private:
-
 	bool visible;
 	bool ballColided;
-
-	int level;
 	glm::ivec2 tileMapDispl, posPlayer;
 	int jumpAngle, startY;
 	Texture spritesheet;
@@ -40,6 +37,6 @@ private:
 };
 
 
-#endif // _BLOCK_INCLUDE
+#endif // _Star_INCLUDE
 
 

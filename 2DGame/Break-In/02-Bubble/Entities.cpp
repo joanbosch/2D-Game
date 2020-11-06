@@ -17,6 +17,8 @@ using namespace std;
 #define SOME_COINS_MONEY 400;
 #define DIAMON_MONEY 1500;
 
+#define TIME_STAR 8000;
+
 void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap)
 {
 	ballColided = false;
@@ -35,7 +37,10 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 	alarms = new vector<Alarm*>();
 	polices = new vector<Police*>();
 	axes = new vector<Axe*>();
+	stars = new vector<Star*>();
 	moneyEntities = 0;
+	starMode = false;
+	starInitTime = 0;
 
 	for (int i = 0; i < numEntities; ++i) {
 		int entityType = map->getEntity(i).type;
@@ -120,7 +125,16 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 			tileMapDispl = tileMapPos;
 			axes->push_back(axe);
 		}
+		else if (entityType == STAR) {
+			Star* star = new Star();
+			star->init(tilemap, sP);
+			star->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
+			star->setTileMap(map);
+			tileMapDispl = tileMapPos;
+			stars->push_back(star);
+		}
 	}
+
 }
 
 void Entities::update(int deltaTime)
@@ -129,11 +143,19 @@ void Entities::update(int deltaTime)
 	coins = 0;
 	points = 0;
 
+	if (starMode) {
+		if (starInitTime > 8000) {
+			starMode = false;
+			starInitTime = 0;
+		}
+		starInitTime += deltaTime;
+	}
+
 	for (int i = 0; i < blocks->size(); ++i) {
 		if (!ballColided) {
-			(*blocks)[i]->update(deltaTime);
+			(*blocks)[i]->update(deltaTime, starMode);
 			bool aux = (*blocks)[i]->getBallColidad();
-			ballColided |= aux;
+			ballColided |= (aux && !starMode);
 			if (aux) {
 				if (!(*blocks)[i]->isVisible()) points += BLOCK_POINTS;
 				N = (*blocks)[i]->getN();
@@ -265,6 +287,18 @@ void Entities::update(int deltaTime)
 		}
 	}
 
+	for (int i = 0; i < stars->size(); ++i) {
+		if (!ballColided) {
+			(*stars)[i]->update(deltaTime);
+			bool aux = (*stars)[i]->getBallColided();
+			ballColided |= aux;
+			if (aux) {
+				N = (*stars)[i]->getN();
+				starMode = true;
+			}
+		}
+	}
+
 }
 
 void Entities::render()
@@ -295,6 +329,9 @@ void Entities::render()
 	}
 	for (int i = 0; i < axes->size(); ++i) {
 		(*axes)[i]->render();
+	}
+	for (int i = 0; i < stars->size(); ++i) {
+		(*stars)[i]->render();
 	}
 }
 

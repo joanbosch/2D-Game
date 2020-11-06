@@ -13,6 +13,7 @@
 #include "Diamond.h"
 #include "Alarm.h"
 #include "Police.h"
+#include "Star.h"
 #include <vector>
 
 class Entities
@@ -33,8 +34,8 @@ private:
 	glm::ivec2 tileMapDispl, posPlayer;
 	ShaderProgram sP;
 
-	bool ballColided;
-	int coins, points, moneyEntities;
+	bool ballColided, starMode;
+	int coins, points, moneyEntities, starInitTime;
 	glm::vec2 N;
 
 	vector<Block*> *blocks;
@@ -46,6 +47,7 @@ private:
 	vector<Alarm*> *alarms;
 	vector<Police*> *polices;
 	vector<Axe*> *axes;
+	vector<Star*> *stars;
 
 	TileMap *map;
 };

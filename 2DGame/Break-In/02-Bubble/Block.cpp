@@ -42,7 +42,7 @@ void Block::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 }
 
-void Block::update(int deltaTime)
+void Block::update(int deltaTime, bool starMode)
 {
 	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posPlayer, glm::vec2(32 * ESCALAT, 16 * ESCALAT));
 	ballColided &= visible;
@@ -60,7 +60,7 @@ void Block::update(int deltaTime)
 			spritesheet.loadFromFile("images/Blue_Block.png", TEXTURE_PIXEL_FORMAT_RGBA);
 			break;
 		}
-		if (level < 0) {
+		if (level < 0 || starMode) {
 			visible = false;
 		}
 	}
