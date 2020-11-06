@@ -33,7 +33,16 @@ Scene::~Scene()
 }
 
 
-void Scene::init(int lvl)
+void Scene::initVariables(int points, int coins, int lives)
+{
+	money = coins;
+	this->points = points;
+	this->lives = lives;
+	bank = 1;
+	room = 1;
+}
+
+void Scene::init(int lvl, int points, int coins, int lives)
 {
 	initShaders();
 	left = 0.f;
@@ -44,7 +53,7 @@ void Scene::init(int lvl)
 	glm::vec2 geom[2] = { glm::vec2(left, top), glm::vec2(right, bottom) };
 	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 	background = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
-	backgroundImage.loadFromFile("images/bkgLvl1.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	backgroundImage.loadFromFile("images/bkgLvl" + to_string(lvl) + ".png", TEXTURE_PIXEL_FORMAT_RGBA);
 
 	topBar = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 	topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
@@ -76,7 +85,7 @@ void Scene::init(int lvl)
 	if (!text.init("fonts/AnimalCrossing.ttf"))
 		cout << "Could not load font!!!" << endl;
 
-	initVariables();
+	initVariables(points, coins, lives);
 	bank = lvl;
 
 	scrolling = false;
@@ -138,6 +147,9 @@ void Scene::update(int deltaTime)
 	money += entities->getNewCoins();
 	points += entities->getNewPoints();
 
+	// If no one money entities remaining, go to next level.
+	if (entities->getRemainingMoneyEntities() == 0) init(map->getActualLevel()+ 1, points, money, lives);
+
 	//check if ball is going to next/previous room & scroll
 	glm::vec2 ballPos = ball->getPosition();
 	int miny = map->getPlayableArea().miny;
@@ -194,6 +206,17 @@ void Scene::update(int deltaTime)
 	}
 	else lastRPValue = false;
 
+	// KEYS TO CHANGE THE LEVEL!
+
+	if (Game::instance().getKey(49)) { // '1' KEY: GO TO THE LEVEL1.
+		init(1, points, money, lives);
+	}
+	if (Game::instance().getKey(50)) { // '2' KEY: GO TO THE LEVEL2.
+		init(2, points, money, lives);
+	}
+	if (Game::instance().getKey(51)) { // '3' KEY: GO TO THE LEVEL3.
+		init(3, points, money, lives);
+	}
 
 }
 
@@ -288,14 +311,7 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 	}
 }
 
-void Scene::initVariables()
-{
-	money = 0;
-	points = 0;
-	lives = 4;
-	bank = 1;
-	room = 1;
-}
+
 
 void Scene::initShaders()
 {

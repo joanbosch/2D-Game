@@ -24,10 +24,10 @@ public:
 	Scene();
 	~Scene();
 
-	void init(int lvl);
+	void init(int lvl, int points, int coins, int lives);
 	void update(int deltaTime);
 	void render();
-	void initVariables();
+	void initVariables(int points, int coins, int lives);
 
 private:
 	void initShaders();

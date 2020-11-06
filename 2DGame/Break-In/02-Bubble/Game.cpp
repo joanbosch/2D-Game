@@ -8,7 +8,7 @@ void Game::init()
 	bPlay = true;
 	state = MENU;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
-	scene.init(1);
+	scene.init(1, 0, 0, 4);
 	instructions.init();
 	credits.init();
 	menu.init();
@@ -123,7 +123,7 @@ void Game::setState(int s)
 
 void Game::setLvl(int l)
 {
-	scene.init(l);
+	scene.init(l, 0 , 0, 0);
 }
 
 
