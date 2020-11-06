@@ -79,15 +79,15 @@ void Password::update(int deltaTime)
 	if (Game::instance().getKey(13)) {
 		underscorePos = 700;
 		if (pwd == "NEWLEAF") {
-			Game::instance().setLvl(1);
+			Game::instance().setLvl(1, 0, 0, 4);
 			Game::instance().setState(PLAY);
 		}
 		else if (pwd == "TOMNOOK") {
-			Game::instance().setLvl(2);
+			Game::instance().setLvl(2, 0, 0, 4);
 			Game::instance().setState(PLAY);
 		}
 		else if (pwd == "ANTONI") {
-			Game::instance().setLvl(3);
+			Game::instance().setLvl(3, 0, 0, 4);
 			Game::instance().setState(PLAY);
 		}
 		pwd = "";

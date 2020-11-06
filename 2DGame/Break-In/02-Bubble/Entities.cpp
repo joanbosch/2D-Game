@@ -236,13 +236,14 @@ void Entities::update(int deltaTime)
 
 	for (int i = 0; i < alarms->size(); ++i) {
 		if (!ballColided) {
+			bool aux_activ = (*alarms)[i]->isOn();
 			(*alarms)[i]->update(deltaTime);
 			bool aux = (*alarms)[i]->getBallColided();
 			ballColided |= aux;
 			if (aux) {
-				if ((*alarms)[i]->hasBeenActivated()) {
+				if (aux_activ != (*alarms)[i]->isOn()) {
 					Police *pol_aux = new Police();
-					(*polices)[i]->init(glm::vec2(10.f * map->getTileSize()+64, map->getPlayableArea().maxy - 10.f * map->getTileSize()+84), sP, map, room);
+					pol_aux->init(glm::vec2(10.f * map->getTileSize()+64, map->getPlayableArea().maxy - 10.f * map->getTileSize()+84), sP, map, room);
 					polices->push_back(pol_aux);
 				}
 				N = (*alarms)[i]->getN();
@@ -290,7 +291,7 @@ void Entities::render()
 		(*alarms)[i]->render();
 	}
 	for (int i = 0; i < polices->size(); ++i) {
-		if ((*polices)[i] != NULL) (*polices)[i]->render();
+		(*polices)[i]->render();
 	}
 	for (int i = 0; i < axes->size(); ++i) {
 		(*axes)[i]->render();
