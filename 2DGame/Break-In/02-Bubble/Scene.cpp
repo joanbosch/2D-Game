@@ -14,6 +14,7 @@
 
 #define SCROLL_VEL 6
 #define TIME_TO_SRTART 3000
+#define TIME_CHANGING_LEVEL 12000
 
 Scene::Scene()
 {
@@ -92,11 +93,22 @@ void Scene::init(int lvl, int points, int coins, int lives)
 	lastGValue = false;
 	lastRPValue = false;
 	scrollingUp = false;
+	changingLevel = false;
+	gameOver = false;
 }
 
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
+
+	if (changingLevel) {
+		thief->update(deltaTime);
+	}
+
+	// Change the level if it is necesary
+	if (changingLevel && currentTime > win_time + TIME_CHANGING_LEVEL) {
+		init(map->getActualLevel() + 1, points, money, lives);
+	}
 
 	// GOD MODE
 	if (Game::instance().getKey(103)) { // G key to enable and disable the god mode!!
@@ -149,7 +161,14 @@ void Scene::update(int deltaTime)
 	points += entities->getNewPoints();
 
 	// If no one money entities remaining, go to next level.
-	if (entities->getRemainingMoneyEntities() == 0) init(map->getActualLevel()+ 1, points, money, lives);
+	if (entities->getRemainingMoneyEntities() == 0 && !changingLevel) {
+		changingLevel = true;
+		win_time = currentTime;
+		backgroundImage.loadFromFile("images/nextLvl.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		thief = new Thief();
+		thief->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
+		thief->setPosition(glm::vec2(5*map->getTileSize(), 16*map->getTileSize()));
+	}
 
 	//check if ball is going to next/previous room & scroll
 	glm::vec2 ballPos = ball->getPosition();
@@ -167,7 +186,8 @@ void Scene::update(int deltaTime)
 				prev_vel = ball->getVelocity();
 				ball->setVelocity(0);
 				if (lives == 0) {
-					// TODO: gameover
+					backgroundImage.loadFromFile("images/GameOver.png", TEXTURE_PIXEL_FORMAT_RGBA);
+					gameOver = true;
 				}
 				else {
 					ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 3));
@@ -207,7 +227,12 @@ void Scene::update(int deltaTime)
 		}
 	}
 	else lastRPValue = false;
-
+	if (gameOver) {
+		if (Game::instance().getKey(13)) {
+			Game::instance().setLvl(1, 0, 0, 4);
+			Game::instance().setState(PLAY);
+		}
+	}
 }
 
 void Scene::render()
@@ -223,28 +248,53 @@ void Scene::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
 	background->render(backgroundImage);
-	map->render();
-	topBar->render(topBarImage);
-	entities->render();
-	ball->render();
-	player->render();
-	
-	// Rendender text
-	text.render("MONEY", glm::vec2(455*ESCALAT, (42+30)*ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render( to_string_zeros(money, 8), glm::vec2(455*ESCALAT, (42 + 2 * 33) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+	if (!gameOver) {
+		if (!changingLevel) {
+			map->render();
+			topBar->render(topBarImage);
+			entities->render();
+			ball->render();
+			player->render();
+		}
+		else thief->render();
 
-	text.render("POINTS", glm::vec2(455 * ESCALAT, (42 + 3*39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(points, 8), glm::vec2(455 * ESCALAT, (42 + 4 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+		// Rendender text
+		text.render("MONEY", glm::vec2(455 * ESCALAT, (42 + 30) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(money, 8), glm::vec2(455 * ESCALAT, (42 + 2 * 33) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
 
-	text.render("LIVES", glm::vec2(455 * ESCALAT, (42 + 5 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(lives, 2), glm::vec2(455 * ESCALAT, (42 + 6 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+		text.render("POINTS", glm::vec2(455 * ESCALAT, (42 + 3 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(points, 8), glm::vec2(455 * ESCALAT, (42 + 4 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
 
-	text.render("BANK", glm::vec2(455 * ESCALAT, (42 + 7 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(bank,2), glm::vec2(455 * ESCALAT, (42 + 8 * 38.5) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+		text.render("LIVES", glm::vec2(455 * ESCALAT, (42 + 5 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(lives, 2), glm::vec2(455 * ESCALAT, (42 + 6 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
 
-	text.render("ROOM", glm::vec2(455 * ESCALAT, (42 + 9 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(room,2), glm::vec2(455 * ESCALAT, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
-	
+		text.render("BANK", glm::vec2(455 * ESCALAT, (42 + 7 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(bank, 2), glm::vec2(455 * ESCALAT, (42 + 8 * 38.5) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+
+		text.render("ROOM", glm::vec2(455 * ESCALAT, (42 + 9 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(room, 2), glm::vec2(455 * ESCALAT, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+
+		if (changingLevel) {
+			text.render("PASSWORD   " + to_string(bank) + "   IS", glm::vec2(70, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 0.7, 0.5, 1));
+			text.render(getPassword(bank), glm::vec2(500, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(0.5, 1, 0, 1));
+		}
+	}
+}
+
+string Scene::getPassword(int level) 
+{
+	switch (level) {
+	case 1:
+		return "NEWLEAF";
+	case 2:
+		return "TOMNOOK";
+	case 3:
+		return "ANTONI";
+	default:
+		return "LMAO";
+
+	}
+
 }
 
 string Scene::to_string_zeros(int number, int num_zeros)

@@ -12,6 +12,7 @@
 #include "Text.h"
 #include "Entities.h"
 #include "Ball.h"
+#include "Thief.h"
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
@@ -33,12 +34,14 @@ private:
 	void initShaders();
 	string to_string_zeros(int number, int num_zeros);
 	void changeRoom(int direction, glm::vec2 ballPos);
+	string getPassword(int lvl);
 	void playerDies();
 
 private:
 	TileMap *map;
 	Ball *ball;
 	Entities *entities;
+	Thief* thief;
 	Player *player;
 	
 	ShaderProgram texProgram;
@@ -64,6 +67,11 @@ private:
 	bool scrolling, scrollingUp;
 	bool godMode;
 	bool lastGValue, lastRPValue;
+
+	// Variables to change the level
+	bool changingLevel, gameOver;
+	int win_time;
+
 };
 
 
