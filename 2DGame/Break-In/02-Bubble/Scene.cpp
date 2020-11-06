@@ -33,7 +33,16 @@ Scene::~Scene()
 }
 
 
-void Scene::init()
+void Scene::initVariables(int points, int coins, int lives)
+{
+	money = coins;
+	this->points = points;
+	this->lives = lives;
+	bank = 1;
+	room = 1;
+}
+
+void Scene::init(int lvl, int points, int coins, int lives)
 {
 	initShaders();
 	left = 0.f;
@@ -44,27 +53,46 @@ void Scene::init()
 	glm::vec2 geom[2] = { glm::vec2(left, top), glm::vec2(right, bottom) };
 	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 	background = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
-	backgroundImage.loadFromFile("images/bkgLvl1.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	backgroundImage.loadFromFile("images/bkgLvl" + to_string(lvl) + ".png", TEXTURE_PIXEL_FORMAT_RGBA);
 
 	topBar = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 	topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	loadLvl(1);
+	map = TileMap::createTileMap("levels/lvl" + to_string(lvl) + ".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	map->setActualLevel(lvl);
+	map->setActualRoom(1);
+	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize() - 2, float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
+
+	entities = new Entities();
+	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
+
+	player = new Player();
+	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
+	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
+
+	ball = new Ball();
+	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, -8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
+	ball->setTileMap(map);
+	ball->setGameStarted(false);
 
 	// init camera position
 	projection = glm::ortho(left, right, bottom, top);
 	currentTime = 0.0f;
+	markTime = 0.0f;
+	startTime = TIME_TO_SRTART;
 
 	if (!text.init("fonts/AnimalCrossing.ttf"))
 		cout << "Could not load font!!!" << endl;
 
-	initVariables();
+	initVariables(points, coins, lives);
+	bank = lvl;
 
 	scrolling = false;
 	godMode = false;
 	lastGValue = false;
 	lastRPValue = false;
-	lastAPValue = false;
+	scrollingUp = false;
 }
 
 void Scene::update(int deltaTime)
@@ -80,7 +108,7 @@ void Scene::update(int deltaTime)
 	}
 	else lastGValue = false;
 
-	if (currentTime >= TIME_TO_SRTART) ball->setGameStarted(true);
+	if (currentTime >= startTime) ball->setGameStarted(true);
 
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
@@ -88,7 +116,7 @@ void Scene::update(int deltaTime)
 	entities->update(deltaTime);
 	player->update(deltaTime);
 
-	
+
 
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
@@ -102,7 +130,7 @@ void Scene::update(int deltaTime)
 			vel = 8.f;
 			ball->setNewDirection(dir);
 			ball->setVelocity(vel);
-		} 
+		}
 		else {
 			dir = player->getN();
 			vel = player->getNewBallVelocity();
@@ -110,52 +138,85 @@ void Scene::update(int deltaTime)
 				ball->setNewDirection(dir);
 				ball->setVelocity(vel);
 			}
-		} 
+		}
 
-		
+
 	}
+
+	// UPDATE the money and points counter
+	money += entities->getNewCoins();
+	points += entities->getNewPoints();
+
+	// If no one money entities remaining, go to next level.
+	if (entities->getRemainingMoneyEntities() == 0) init(map->getActualLevel()+ 1, points, money, lives);
+
 	//check if ball is going to next/previous room & scroll
 	glm::vec2 ballPos = ball->getPosition();
 	int miny = map->getPlayableArea().miny;
 	int maxy = map->getPlayableArea().maxy;
 
-	if (ballPos.y + 32 < miny) { // ball touched top border
-		if (room <= 3) {
-			changeRoom(-1, ballPos);
-		}
-	}
-	if (ballPos.y > (maxy + 2.7 * map->getTileSize()) ) {   // ball touches bottom border
-		if (room == 1 && !scrolling) {
-			ball->setVelocity(0);
-			// TODO: set dead animation in player
-			if (lives == 0) {
-				// TODO: gameover
-			}
-			else {
-				ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 4));
-				if(!godMode) --lives;
+	if (!entities->ballHasColided()) {
+		if (ballPos.y + 32 < miny) { // ball touched top border
+			if (room <= 3) {
+				changeRoom(-1, ballPos);
 			}
 		}
-		else changeRoom(1, ballPos);
+		if (ballPos.y > (maxy + 2.93 * map->getTileSize())) {   // ball touches bottom border
+			if (room == 1 && !scrolling) {
+				prev_vel = ball->getVelocity();
+				ball->setVelocity(0);
+				if (lives == 0) {
+					// TODO: gameover
+				}
+				else {
+					ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 3));
+					if (!godMode) {
+						--lives;
+						player->setDead(true);
+						markTime = currentTime + 1300; // set timeout for animation to run
+					}
+				}
+			}
+			else changeRoom(1, ballPos);
+		}
 	}
 
+	if (markTime != NULL && currentTime >= markTime) {
+		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
+		ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, -8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
+		ball->setGameStarted(false);
+		ball->setVelocity(prev_vel);
+		player->setDead(false);
+		startTime = currentTime + TIME_TO_SRTART;
+		markTime = NULL;
+	}
+
+	if (room <= 3 && scrollingUp)
+	{
+		changeRoom(-1, ballPos);
+		scrollingUp = scrolling;
+	}
 
 	// KEYS TO CHANGE THE ROOM!
-	if (Game::instance().getSpecialKey(104)) { // RePág KEY. GO TO THE NEXT ROOM.
-		if (!lastRPValue) {
-			if (room <= 3) changeRoom(-1, ballPos);
+	if (Game::instance().getKey(119)) { // 'W' KEY: GO TO THE NEXT ROOM.
+		if (!lastRPValue && !scrollingUp) {
+			scrollingUp = true;
 			lastRPValue = true;
 		}
 	}
 	else lastRPValue = false;
 
-	if (Game::instance().getSpecialKey(105)) { // AvPág KEY. GO TO THE PREVIOUS ROOM.
-		if (!lastAPValue) {
-			if (room != 1 && !scrolling) changeRoom(1, ballPos);
-			lastAPValue = true;
-		}
+	// KEYS TO CHANGE THE LEVEL!
+
+	if (Game::instance().getKey(49)) { // '1' KEY: GO TO THE LEVEL1.
+		init(1, points, money, lives);
 	}
-	else lastAPValue = false;
+	if (Game::instance().getKey(50)) { // '2' KEY: GO TO THE LEVEL2.
+		init(2, points, money, lives);
+	}
+	if (Game::instance().getKey(51)) { // '3' KEY: GO TO THE LEVEL3.
+		init(3, points, money, lives);
+	}
 
 }
 
@@ -235,49 +296,22 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 		if ( (dir == -1 && top > next_margin) || (dir == 1 && top < next_margin)) scroll(dir);
 		else {
 			scrolling = false;
-			map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
+			map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize() - 2, float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 			
 			glm::vec2 playerPos = player->getPosition();
 			player->setPosition(glm::vec2(playerPos.x, playerPos.y + dir * 24 * map->getTileSize()));
+			if (scrollingUp) player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 			player->setVisibility(true);
 
 			ball->setPosition(glm::vec2(ballPos.x, ballPos.y + dir * 5 * map->getTileSize()));
+			if (scrollingUp) ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, -8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 			ball->setVelocity(prev_vel);
 			ball->setVisibility(true);
 		}
 	}
 }
 
-void Scene::loadLvl(int lvl)
-{
-	bank = lvl;
-	map = TileMap::createTileMap("levels/lvl"+to_string(lvl)+".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	map->setActualRoom(1);
-	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize(), float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 
-	entities = new Entities();
-	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
-
-	player = new Player();
-	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
-
-	ball = new Ball();
-	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, - 8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
-	ball->setTileMap(map);
-	ball->setGameStarted(false);
-	currentTime = 0.f;
-}
-
-void Scene::initVariables()
-{
-	money = 0;
-	points = 0;
-	lives = 4;
-	bank = 1;
-	room = 1;
-}
 
 void Scene::initShaders()
 {

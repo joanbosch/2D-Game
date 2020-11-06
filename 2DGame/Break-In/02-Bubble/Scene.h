@@ -24,11 +24,10 @@ public:
 	Scene();
 	~Scene();
 
-	void init();
+	void init(int lvl, int points, int coins, int lives);
 	void update(int deltaTime);
 	void render();
-	void loadLvl(int lvl);
-	void initVariables();
+	void initVariables(int points, int coins, int lives);
 
 private:
 	void initShaders();
@@ -42,7 +41,7 @@ private:
 	Player *player;
 	
 	ShaderProgram texProgram;
-	float currentTime;
+	float currentTime, markTime, startTime;
 	glm::mat4 projection;
 
 	Texture backgroundImage, topBarImage;
@@ -61,9 +60,9 @@ private:
 	float left, right, bottom, top;
 
 	float next_margin, prev_vel;
-	bool scrolling;
+	bool scrolling, scrollingUp;
 	bool godMode;
-	bool lastGValue, lastRPValue, lastAPValue;
+	bool lastGValue, lastRPValue;
 };
 
 

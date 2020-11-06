@@ -21,8 +21,13 @@ public:
 	void setTileMap(TileMap* tileMap);
 	void setPosition(const glm::vec2& pos);
 
+	bool getBallColided();
+	glm::vec2 getN();
+	bool isVisible();
+
 private:
-	bool bJumping;
+	bool visible;
+	bool ballColided;
 	glm::ivec2 tileMapDispl, posPlayer;
 	int jumpAngle, startY;
 	Texture spritesheet;

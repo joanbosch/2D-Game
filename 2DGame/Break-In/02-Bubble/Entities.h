@@ -9,6 +9,10 @@
 #include "Wood.h"
 #include "Coin.h"
 #include "Bag.h"
+#include "MultipleCoins.h"
+#include "Diamond.h"
+#include "Alarm.h"
+#include "Police.h"
 #include <vector>
 
 class Entities
@@ -22,25 +26,27 @@ public:
 	bool ballHasColided();
 	glm::vec2 getN();
 
+	int getNewCoins();
+	int getNewPoints();
+	int getRemainingMoneyEntities();
 private:
 	glm::ivec2 tileMapDispl, posPlayer;
 
 	bool ballColided;
+	int coins, points, moneyEntities;
 	glm::vec2 N;
 
 	vector<Block*> *blocks;
 	vector<Wood*> *woods;
 	vector<Coin*> *single_coins;
 	vector<Bag*> *bags;
-	/* TODO: implement these sprites too
 	vector<MultipleCoins*> *multiple_coins;
 	vector<Diamond*> *diamonds;
-	vector<Alarm*> alarms;
-	*/
+	vector<Alarm*> *alarms;
+	vector<Police*> *polices;
 	vector<Axe*> *axes;
 
 	TileMap *map;
-	// vector<pair<int,int>*> blocks_desp, wood_desp, coin_desp, bag_desp;
 };
 
 
