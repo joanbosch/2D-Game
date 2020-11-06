@@ -23,8 +23,8 @@ void Audio::init()
 {
 	sounds[MENU_MUSIC] = soundEngine->addSoundSourceFromFile("music/menuMusic.mp3");
 	sounds[LEVEL1_MUSIC] = soundEngine->addSoundSourceFromFile("music/lvl1Music.mp3");
-	/*sounds[LEVEL2_MUSIC] = soundEngine->addSoundSourceFromFile("music/lvl2Music.mp3");
-	sounds[LEVEL3_MUSIC] = soundEngine->addSoundSourceFromFile("music/lvl3Music.mp3");
+	sounds[LEVEL2_MUSIC] = soundEngine->addSoundSourceFromFile("music/lvl2Music.mp3");
+	/*sounds[LEVEL3_MUSIC] = soundEngine->addSoundSourceFromFile("music/lvl3Music.mp3");
 	sounds[GAMEOVER_MUSIC] = soundEngine->addSoundSourceFromFile("music/gameoverMusic.mp3");
 	sounds[PLAYER_DEAD_MUSIC] = soundEngine->addSoundSourceFromFile("music/playerdeadSound.mp3");*/
 	sounds[POINTS_SOUND] = soundEngine->addSoundSourceFromFile("music/points.mp3");

@@ -113,7 +113,24 @@ void Scene::update(int deltaTime)
 	// Change the level if it is necesary
 	if (changingLevel && currentTime > win_time + TIME_CHANGING_LEVEL) {
 		int next_level = map->getActualLevel() + 1;
-
+		switch (next_level) {
+		case 1:
+			audioManager->stopAllSounds();
+			audioManager->play(LEVEL1_MUSIC, true);
+			break;
+		case 2:
+			audioManager->stopAllSounds();
+			audioManager->play(LEVEL2_MUSIC, true);
+			break;
+		case 3:
+			audioManager->stopAllSounds();
+			audioManager->play(LEVEL3_MUSIC, true);
+			break;
+		default:
+			audioManager->stopAllSounds();
+			audioManager->play(LEVEL3_MUSIC, true);
+			break;
+		}
 		init(glm::min(next_level, 3), points, money, lives, audioManager);
 	}
 
