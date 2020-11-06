@@ -25,7 +25,7 @@ public:
 	Scene();
 	~Scene();
 
-	void init(int lvl, int points, int coins, int lives);
+	void init(int lvl, int points, int coins, int lives, Audio* audio);
 	void update(int deltaTime);
 	void render();
 	void initVariables(int points, int coins, int lives);
@@ -43,6 +43,7 @@ private:
 	Entities *entities;
 	Thief* thief;
 	Player *player;
+	Audio* audioManager;
 	
 	ShaderProgram texProgram;
 	float currentTime, markTime, startTime;

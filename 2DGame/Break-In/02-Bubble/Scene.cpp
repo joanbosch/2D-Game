@@ -4,6 +4,8 @@
 #include "Scene.h"
 #include "Game.h"
 
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+
 #define ESCALAT 2.f
 
 #define SCREEN_X 32 * ESCALAT
@@ -43,7 +45,7 @@ void Scene::initVariables(int points, int coins, int lives)
 	room = 1;
 }
 
-void Scene::init(int lvl, int points, int coins, int lives)
+void Scene::init(int lvl, int points, int coins, int lives, Audio* audio)
 {
 	initShaders();
 	left = 0.f;
@@ -64,8 +66,10 @@ void Scene::init(int lvl, int points, int coins, int lives)
 	map->setActualRoom(1);
 	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize() - 2, float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 
+	audioManager = audio;
+
 	entities = new Entities();
-	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
+	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map, audioManager);
 
 	player = new Player();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
@@ -110,7 +114,7 @@ void Scene::update(int deltaTime)
 	if (changingLevel && currentTime > win_time + TIME_CHANGING_LEVEL) {
 		int next_level = map->getActualLevel() + 1;
 
-		init(glm::min(next_level, 3), points, money, lives);
+		init(glm::min(next_level, 3), points, money, lives, audioManager);
 	}
 
 	// GOD MODE

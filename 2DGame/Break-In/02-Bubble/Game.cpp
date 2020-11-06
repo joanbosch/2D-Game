@@ -2,16 +2,20 @@
 #include <GL/glut.h>
 #include "Game.h"
 
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
 void Game::init()
 {
 	bPlay = true;
 	state = MENU;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
-	scene.init(1, 0, 0, 4);
+
+	audio = new Audio();
+
+	scene.init(1, 0, 0, 4, audio);
 	instructions.init();
 	credits.init();
-	menu.init();
+	menu.init(audio);
 	password.init();
 
 }
@@ -73,6 +77,8 @@ void Game::keyPressed(int key)
 {
 	if (key == 27) { // Escape code
 		//bPlay = false;
+		audio->stopAllSounds();
+		audio->play(MENU_MUSIC, true);
 		state = MENU;
 	}
 
@@ -80,15 +86,15 @@ void Game::keyPressed(int key)
 
 	if (key == 49) { // '1' KEY: GO TO THE LEVEL1.
 		state = PLAY;
-		scene.init(1, 0, 0, 4);
+		scene.init(1, 0, 0, 4, audio);
 	}
 	if (key == 50) { // '2' KEY: GO TO THE LEVEL2.
 		state = PLAY;
-		scene.init(2, 0, 0, 4);
+		scene.init(2, 0, 0, 4, audio);
 	}
 	if (key ==51) { // '3' KEY: GO TO THE LEVEL3.
 		state = PLAY;
-		scene.init(3, 0, 0, 4);
+		scene.init(3, 0, 0, 4, audio);
 	}
 	keys[key] = true;
 }
@@ -139,7 +145,7 @@ void Game::setState(int s)
 void Game::setLvl(int l, int points, int money, int lives)
 {
 
-	scene.init(l, points, money, lives);
+	scene.init(l, points, money, lives, audio);
 }
 
 

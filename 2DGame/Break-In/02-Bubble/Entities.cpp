@@ -8,6 +8,8 @@
 
 using namespace std;
 
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+
 #define SCREEN_X 32
 #define SCREEN_Y 42
 
@@ -19,13 +21,14 @@ using namespace std;
 
 #define TIME_STAR 8000;
 
-void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap)
+void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap, Audio* audio)
 {
 	ballColided = false;
 	playerColided = false;
 
 	map = tileMap;
 	sP = shaderProgram;
+	audioManager = audio;
 
 	int numEntities = map->getNEntities();
 
@@ -158,7 +161,10 @@ void Entities::update(int deltaTime)
 			bool aux = (*blocks)[i]->getBallColidad();
 			ballColided |= (aux && !starMode);
 			if (aux) {
-				if (!(*blocks)[i]->isVisible()) points += BLOCK_POINTS;
+				if (!(*blocks)[i]->isVisible()) {
+					audioManager->play(POINTS_SOUND, false);
+					points += BLOCK_POINTS;
+				}
 				N = (*blocks)[i]->getN();
 			}
 		}
