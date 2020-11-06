@@ -34,6 +34,7 @@ private:
 	void initShaders();
 	string to_string_zeros(int number, int num_zeros);
 	void changeRoom(int direction, glm::vec2 ballPos);
+	string getPassword(int lvl);
 
 private:
 	TileMap *map;

@@ -264,7 +264,30 @@ void Scene::render()
 
 	text.render("ROOM", glm::vec2(455 * ESCALAT, (42 + 9 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
 	text.render(to_string_zeros(room,2), glm::vec2(455 * ESCALAT, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+
+	if (changingLevel) {
+		text.render("PASSWORD   " + to_string(bank) + "   IS", glm::vec2(70, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 0.7, 0.5, 1));
+		text.render(getPassword(bank), glm::vec2(500, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(0.5, 1, 0, 1));
+		
+
+	} 
 	
+}
+
+string Scene::getPassword(int level) 
+{
+	switch (level) {
+	case 1:
+		return "NEWLEAF";
+	case 2:
+		return "TOMNOOK";
+	case 3:
+		return "ANTONI";
+	default:
+		return "LMAO";
+
+	}
+
 }
 
 string Scene::to_string_zeros(int number, int num_zeros)
