@@ -56,7 +56,7 @@ public:
 
 	// Change the state of the game
 	void setState(int s);
-	void setLvl(int l);
+	void setLvl(int l, int points, int money, int lives);
 
 private:
 	bool bPlay;                       // Continue to play game?

@@ -206,18 +206,6 @@ void Scene::update(int deltaTime)
 	}
 	else lastRPValue = false;
 
-	// KEYS TO CHANGE THE LEVEL!
-
-	if (Game::instance().getKey(49)) { // '1' KEY: GO TO THE LEVEL1.
-		init(1, points, money, lives);
-	}
-	if (Game::instance().getKey(50)) { // '2' KEY: GO TO THE LEVEL2.
-		init(2, points, money, lives);
-	}
-	if (Game::instance().getKey(51)) { // '3' KEY: GO TO THE LEVEL3.
-		init(3, points, money, lives);
-	}
-
 }
 
 void Scene::render()

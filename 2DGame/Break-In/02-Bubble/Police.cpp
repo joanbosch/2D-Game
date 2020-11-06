@@ -15,8 +15,9 @@ enum PoliceAnims
 
 void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap, int r)
 {
+	policeSize = glm::vec2(32 * ESCALAT, 16 * ESCALAT);
 	spritesheet.loadFromFile("images/police.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(64 * ESCALAT, 32 * ESCALAT), glm::vec2(0.33, 0.5), &spritesheet, &shaderProgram);
+	sprite = Sprite::createSprite(glm::ivec2(32 * ESCALAT, 32 * ESCALAT), glm::vec2(0.33, 0.5), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(5);
 
 	sprite->setAnimationSpeed(LOOK_FRONT, 8);
@@ -37,6 +38,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 	sprite->setAnimationSpeed(DEAD, 3);
 	sprite->addKeyframe(DEAD, glm::vec2(0.f, 0.f));
 	sprite->addKeyframe(DEAD, glm::vec2(0.f, 0.5f));
+	sprite->addKeyframe(DEAD, glm::vec2(0.33f, 0.5f));
 	sprite->addKeyframe(DEAD, glm::vec2(0.33f, 0.5f));
 
 	sprite->changeAnimation(LOOK_FRONT);
