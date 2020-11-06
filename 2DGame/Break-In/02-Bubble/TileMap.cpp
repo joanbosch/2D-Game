@@ -123,6 +123,9 @@ bool TileMap::loadLevel(const string &levelFile)
 				case 11: // axe
 					type = AXE;
 					break;
+				case 12: //star
+					type = STAR;
+					break;
 				}
 				if (tile != 0) {
 					entities->push_back(infoEntities());
