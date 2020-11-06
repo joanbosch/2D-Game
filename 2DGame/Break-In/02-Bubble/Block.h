@@ -14,7 +14,7 @@ class Block
 {
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int level);
 	void update(int deltaTime, bool starMode);
 	void render();
 
