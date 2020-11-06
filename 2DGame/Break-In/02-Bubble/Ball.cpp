@@ -10,6 +10,8 @@
 #define JUMP_HEIGHT 96
 #define FALL_STEP 4
 
+#define PLAYER_VEL 6
+
 #define ESCALAT 2.f
 
 enum PlayerAnims
@@ -62,18 +64,18 @@ void Ball::update(int deltaTime)
 		int maxy = map->getPlayableArea().maxy;
 		if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 		{
-			posPlayer.x -= 4;
+			posPlayer.x -= PLAYER_VEL;
 			if (posPlayer.x < minx)
 			{
-				posPlayer.x += 4;
+				posPlayer.x += PLAYER_VEL;
 			}
 		}
 		if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
 		{
-			posPlayer.x += 4;
+			posPlayer.x += PLAYER_VEL;
 			if (posPlayer.x > maxx)
 			{
-				posPlayer.x -= 4;
+				posPlayer.x -= PLAYER_VEL;
 			}
 		}
 		if (Game::instance().getSpecialKey(GLUT_KEY_UP))
@@ -82,10 +84,10 @@ void Ball::update(int deltaTime)
 		}
 		if (Game::instance().getSpecialKey(GLUT_KEY_DOWN))
 		{
-			posPlayer.y += 4;
+			posPlayer.y += PLAYER_VEL;
 			if (posPlayer.y > maxy)
 			{
-				posPlayer.y -= 4;
+				posPlayer.y -= PLAYER_VEL;
 			}
 		}
 		x_pos = float(posPlayer.x);

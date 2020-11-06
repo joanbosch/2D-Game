@@ -59,6 +59,9 @@ public:
 	void setBallPos(glm::vec2 pos);
 	glm::vec2 getBallPos();
 
+	void setPlayerPos(glm::vec2 pos);
+	glm::vec2 getPlayerPos();
+
 	void setBallAngle(float angle);
 	float getBallAngle();
 
@@ -70,6 +73,9 @@ public:
 
 	void setActualLevel(int lvl);
 	int getActualLevel() { return actualLevel; };
+
+	void setScrolling(bool b);
+	bool getScrolling() { return scrolling; };
 
 private:
 	bool loadLevel(const string &levelFile);
@@ -84,8 +90,9 @@ private:
 	Texture tilesheet;
 	glm::vec2 tileTexSize;
 	int *map;
+	bool scrolling;
 
-	glm::vec2 ballPos;
+	glm::vec2 ballPos, playerPos;
 	float ballAngle;
 
 	vector<infoEntities> *entities;

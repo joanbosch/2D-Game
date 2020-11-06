@@ -20,8 +20,10 @@ using namespace std;
 void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap)
 {
 	ballColided = false;
+	playerColided = false;
 
 	map = tileMap;
+	sP = shaderProgram;
 
 	int numEntities = map->getNEntities();
 
@@ -32,7 +34,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 	multiple_coins = new vector<MultipleCoins*>();
 	diamonds = new vector<Diamond*>();
 	alarms = new vector<Alarm*>();
-	polices = new vector<Police*>(2, NULL);
+	polices = new vector<Police*>();
 	axes = new vector<Axe*>();
 	moneyEntities = 0;
 
@@ -42,7 +44,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 
 		if (entityType == WOOD) {
 			Wood* aux = new Wood();
-			aux->init(tilemap, shaderProgram);
+			aux->init(tilemap, sP);
 			aux->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			aux->setTileMap(map);
 			woods->push_back(aux);
@@ -50,7 +52,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 		else if (entityType == ORANGE_BLOCK) {
 			Block* or_block = new Block();
 			// TODO: init block's resistance
-			or_block->init(tilemap, shaderProgram);
+			or_block->init(tilemap, sP);
 			or_block->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			or_block->setTileMap(map);
 			blocks->push_back(or_block);
@@ -58,7 +60,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 		else if (entityType == GREEN_BLOCK) {
 			Block* gr_block = new Block();
 			// TODO: init block's resistance
-			gr_block->init(tilemap, shaderProgram);
+			gr_block->init(tilemap, sP);
 			gr_block->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			gr_block->setTileMap(map);
 			blocks->push_back(gr_block);
@@ -66,14 +68,14 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 		else if (entityType == BLUE_BLOCK) {
 			Block* bl_block = new Block();
 			// TODO: init block's resistance
-			bl_block->init(tilemap, shaderProgram);
+			bl_block->init(tilemap, sP);
 			bl_block->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			bl_block->setTileMap(map);
 			blocks->push_back(bl_block);
 		}
 		else if (entityType == SINGLE_COIN) {
 			Coin* coin = new Coin();
-			coin->init(tilemap, shaderProgram);
+			coin->init(tilemap, sP);
 			coin->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			coin->setTileMap(map);
 			single_coins->push_back(coin);
@@ -81,7 +83,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 		}
 		else if (entityType == COINS_BAG) {
 			Bag* bag = new Bag();
-			bag->init(tilemap, shaderProgram);
+			bag->init(tilemap, sP);
 			bag->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			bag->setTileMap(map);
 			bags->push_back(bag);
@@ -89,7 +91,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 		}
 		else if (entityType == MULTIPLE_COINS) {
 			MultipleCoins *coins = new MultipleCoins();
-			coins->init(tilemap, shaderProgram);
+			coins->init(tilemap, sP);
 			coins->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			coins->setTileMap(map);
 			multiple_coins->push_back(coins);
@@ -97,7 +99,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 		}
 		else if (entityType == DIAMOND) {
 			Diamond *diam = new Diamond();
-			diam->init(tilemap, shaderProgram);
+			diam->init(tilemap, sP);
 			diam->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			diam->setTileMap(map);
 			diamonds->push_back(diam);
@@ -105,7 +107,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 		}
 		else if (entityType == ALARM) {
 			Alarm* alarm = new Alarm();
-			alarm->init(tilemap, shaderProgram);
+			alarm->init(tilemap, sP);
 			alarm->setPosition(glm::vec2(map->getEntity(i).x *map->getTileSize(), map->getEntity(i).y *map->getTileSize()));
 			alarm->setTileMap(map);
 			tileMapDispl = tileMapPos;
@@ -113,7 +115,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 		}
 		else if (entityType == AXE) {
 			Axe* axe = new Axe();
-			axe->init(tilemap, shaderProgram);
+			axe->init(tilemap, sP);
 			axe->setPosition(glm::vec2(map->getEntity(i).x *map->getTileSize(), map->getEntity(i).y *map->getTileSize()));
 			axe->setTileMap(map);
 			tileMapDispl = tileMapPos;
@@ -235,23 +237,38 @@ void Entities::update(int deltaTime)
 
 	for (int i = 0; i < alarms->size(); ++i) {
 		if (!ballColided) {
+			bool aux_activ = (*alarms)[i]->isOn();
 			(*alarms)[i]->update(deltaTime);
 			bool aux = (*alarms)[i]->getBallColided();
 			ballColided |= aux;
 			if (aux) {
-				if (!(*alarms)[i]->isOn()) {
-					(*polices)[i] = new Police();
-					(*polices)[i]->setPosition( glm::vec2(10.f * map->getTileSize(), map->getPlayableArea().maxy + 10.f * map->getTileSize() ));
+				if (aux_activ != (*alarms)[i]->isOn()) {
+					Police *pol_aux = new Police();
+					pol_aux->init(glm::vec2(64, 84 ), sP, map, 3-room);
+					pol_aux->setPosition(glm::vec2(2.f * map->getTileSize(), map->getPlayableArea().maxy));
+					pol_aux->setSearching();
+					polices->push_back(pol_aux);
 				}
 				N = (*alarms)[i]->getN();
 			}
 		}
-		if ((*alarms)[i]->isOn()) {
-			N = (*alarms)[i]->getN();
-		}
 	}
 
-	// TODO: check police (only on movement the activated polices (their room == acutal room)
+	for (int i = 0; i < polices->size(); ++i) {
+		(*polices)[i]->update(deltaTime);
+		if ((*polices)[i]->getCollisionPlayer()) {
+			(*polices)[i]->setVelocity(0);
+			playerColided = true;
+		}
+		else {
+			if (map->getScrolling()) {
+				(*polices)[i]->setVelocity(0);
+			}
+			else {
+				(*polices)[i]->setVelocity(1.5);
+			}
+		}
+	}
 
 	for (int i = 0; i < axes->size(); ++i) {
 		if (!ballColided) {
@@ -284,14 +301,14 @@ void Entities::render()
 	for (int i = 0; i < diamonds->size(); ++i) {
 		(*diamonds)[i]->render();
 	}
+	for (int i = 0; i < axes->size(); ++i) {
+		(*axes)[i]->render();
+	}
 	for (int i = 0; i < alarms->size(); ++i) {
 		(*alarms)[i]->render();
 	}
 	for (int i = 0; i < polices->size(); ++i) {
-		if ((*polices)[i] != NULL) (*polices)[i]->render();
-	}
-	for (int i = 0; i < axes->size(); ++i) {
-		(*axes)[i]->render();
+		(*polices)[i]->render();
 	}
 }
 
@@ -320,5 +337,17 @@ int Entities::getRemainingMoneyEntities()
 	return moneyEntities;
 }
 
+void Entities::setPlayerDead() {
+	for (int i = 0; i < polices->size(); ++i) {
+		(*polices)[i]->setVelocity(0);
+	}
+	for (int i = 0; i < alarms->size(); ++i) {
+		(*alarms)[i]->deactivate();
+	}
+	polices = new vector<Police*>();
+}
 
-
+void Entities::setPlayerColided(bool b) 
+{
+	playerColided = b;
+}

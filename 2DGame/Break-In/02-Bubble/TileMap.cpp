@@ -20,6 +20,7 @@ TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProg
 	loadLevel(levelFile);
 	prepareArrays(minCoords, program);
 	setPlayableArea(1 * tileSize, 2 * tileSize, 20.5 * tileSize, 20 * tileSize);
+	setScrolling(false);
 }
 
 TileMap::~TileMap()
@@ -399,6 +400,16 @@ glm::vec2 TileMap::getBallPos()
 	return ballPos;
 }
 
+void TileMap::setPlayerPos(glm::vec2 pos)
+{
+	playerPos = pos;
+}
+
+glm::vec2 TileMap::getPlayerPos()
+{
+	return playerPos;
+}
+
 void TileMap::setBallAngle(float angle)
 {
 	this->ballAngle = angle;
@@ -417,4 +428,9 @@ void TileMap::setActualRoom(int room)
 void TileMap::setActualLevel(int lvl)
 {
 	actualLevel = lvl;
+}
+
+void TileMap::setScrolling(bool b)
+{
+	scrolling = b;
 }

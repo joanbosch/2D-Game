@@ -16,18 +16,26 @@ public:
 	void setPosition(const glm::vec2& pos);
 	glm::vec2 getPosition() { return posPolice; };
 
-	void setVisibility(bool vis);
+	void setVelocity(float v);
+
+	int getRoom() { return room; };
+	bool isVisible() { return isOnScreen; };
+
+	void setSearching();
+
+	bool getCollisionPlayer() { return playerColided; };
 
 private:
-	glm::ivec2 tileMapDispl, posPolice;
+	glm::ivec2 tileMapDispl, posPolice, policeSize;
 	Texture spritesheet;
 	Sprite* sprite;
 	TileMap* map;
 
-	bool visible;
-	bool ballColided;
+	bool playerColided, isOnScreen, moving;
 
 	int room;
+	float vel, currentTime, markTime;
+	glm::vec2 goalPos;
 
 	glm::vec2 N;
 };

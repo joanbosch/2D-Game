@@ -24,15 +24,21 @@ public:
 	void render();
 
 	bool ballHasColided();
+	void setPlayerColided(bool b);
+	bool playerHasColided() { return playerColided; };
 	glm::vec2 getN();
 
 	int getNewCoins();
 	int getNewPoints();
 	int getRemainingMoneyEntities();
+
+	void setPlayerDead();
+
 private:
 	glm::ivec2 tileMapDispl, posPlayer;
+	ShaderProgram sP;
 
-	bool ballColided;
+	bool ballColided, playerColided;
 	int coins, points, moneyEntities;
 	glm::vec2 N;
 

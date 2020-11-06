@@ -14,6 +14,7 @@
 
 #define SCROLL_VEL 6
 #define TIME_TO_SRTART 3000
+#define TIME_CHANGING_LEVEL 12000
 
 Scene::Scene()
 {
@@ -88,16 +89,27 @@ void Scene::init(int lvl, int points, int coins, int lives)
 	initVariables(points, coins, lives);
 	bank = lvl;
 
-	scrolling = false;
 	godMode = false;
 	lastGValue = false;
 	lastRPValue = false;
 	scrollingUp = false;
+	changingLevel = false;
+	gameOver = false;
+	playerDying = false;
 }
 
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
+
+	if (changingLevel) {
+		thief->update(deltaTime);
+	}
+
+	// Change the level if it is necesary
+	if (changingLevel && currentTime > win_time + TIME_CHANGING_LEVEL) {
+		init(map->getActualLevel() + 1, points, money, lives);
+	}
 
 	// GOD MODE
 	if (Game::instance().getKey(103)) { // G key to enable and disable the god mode!!
@@ -112,6 +124,7 @@ void Scene::update(int deltaTime)
 
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
+	map->setPlayerPos(player->getPosition());
 	map->setBallAngle(ball->getAngle());
 	entities->update(deltaTime);
 	player->update(deltaTime);
@@ -120,6 +133,10 @@ void Scene::update(int deltaTime)
 
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
+	}
+	if (entities->playerHasColided() && !playerDying) {
+		playerDying = true;
+		playerDies();
 	}
 	if (player->getBallColided() && ball->getAngle() >= 180.f) {
 		glm::vec2 dir;
@@ -139,8 +156,6 @@ void Scene::update(int deltaTime)
 				ball->setVelocity(vel);
 			}
 		}
-
-
 	}
 
 	// UPDATE the money and points counter
@@ -148,7 +163,14 @@ void Scene::update(int deltaTime)
 	points += entities->getNewPoints();
 
 	// If no one money entities remaining, go to next level.
-	if (entities->getRemainingMoneyEntities() == 0) init(map->getActualLevel()+ 1, points, money, lives);
+	if (entities->getRemainingMoneyEntities() == 0 && !changingLevel) {
+		changingLevel = true;
+		win_time = currentTime;
+		backgroundImage.loadFromFile("images/nextLvl.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		thief = new Thief();
+		thief->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
+		thief->setPosition(glm::vec2(5*map->getTileSize(), 16*map->getTileSize()));
+	}
 
 	//check if ball is going to next/previous room & scroll
 	glm::vec2 ballPos = ball->getPosition();
@@ -162,26 +184,16 @@ void Scene::update(int deltaTime)
 			}
 		}
 		if (ballPos.y > (maxy + 2.93 * map->getTileSize())) {   // ball touches bottom border
-			if (room == 1 && !scrolling) {
-				prev_vel = ball->getVelocity();
-				ball->setVelocity(0);
-				if (lives == 0) {
-					// TODO: gameover
-				}
-				else {
-					ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 3));
-					if (!godMode) {
-						--lives;
-						player->setDead(true);
-						markTime = currentTime + 1300; // set timeout for animation to run
-					}
-				}
+			if (room == 1 && !map->getScrolling()) {
+				playerDying = true;
+				playerDies();
 			}
 			else changeRoom(1, ballPos);
 		}
 	}
 
 	if (markTime != NULL && currentTime >= markTime) {
+		entities->setPlayerDead();
 		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 		ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, -8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 		ball->setGameStarted(false);
@@ -189,35 +201,30 @@ void Scene::update(int deltaTime)
 		player->setDead(false);
 		startTime = currentTime + TIME_TO_SRTART;
 		markTime = NULL;
+		playerDying = false;
+		entities->setPlayerColided(false);
 	}
 
 	if (room <= 3 && scrollingUp)
 	{
 		changeRoom(-1, ballPos);
-		scrollingUp = scrolling;
+		scrollingUp = map->getScrolling();
 	}
 
 	// KEYS TO CHANGE THE ROOM!
-	if (Game::instance().getKey(119)) { // 'W' KEY: GO TO THE NEXT ROOM.
+	if (Game::instance().getKey(119) && !map->getScrolling()) { // 'W' KEY: GO TO THE NEXT ROOM.
 		if (!lastRPValue && !scrollingUp) {
 			scrollingUp = true;
 			lastRPValue = true;
 		}
 	}
 	else lastRPValue = false;
-
-	// KEYS TO CHANGE THE LEVEL!
-
-	if (Game::instance().getKey(49)) { // '1' KEY: GO TO THE LEVEL1.
-		init(1, points, money, lives);
+	if (gameOver) {
+		if (Game::instance().getKey(13)) {
+			Game::instance().setLvl(1, 0, 0, 4);
+			Game::instance().setState(PLAY);
+		}
 	}
-	if (Game::instance().getKey(50)) { // '2' KEY: GO TO THE LEVEL2.
-		init(2, points, money, lives);
-	}
-	if (Game::instance().getKey(51)) { // '3' KEY: GO TO THE LEVEL3.
-		init(3, points, money, lives);
-	}
-
 }
 
 void Scene::render()
@@ -233,28 +240,53 @@ void Scene::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
 	background->render(backgroundImage);
-	map->render();
-	topBar->render(topBarImage);
-	entities->render();
-	ball->render();
-	player->render();
-	
-	// Rendender text
-	text.render("MONEY", glm::vec2(455*ESCALAT, (42+30)*ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render( to_string_zeros(money, 8), glm::vec2(455*ESCALAT, (42 + 2 * 33) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+	if (!gameOver) {
+		if (!changingLevel) {
+			map->render();
+			topBar->render(topBarImage);
+			entities->render();
+			ball->render();
+			player->render();
+		}
+		else thief->render();
 
-	text.render("POINTS", glm::vec2(455 * ESCALAT, (42 + 3*39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(points, 8), glm::vec2(455 * ESCALAT, (42 + 4 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+		// Rendender text
+		text.render("MONEY", glm::vec2(455 * ESCALAT, (42 + 30) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(money, 8), glm::vec2(455 * ESCALAT, (42 + 2 * 33) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
 
-	text.render("LIVES", glm::vec2(455 * ESCALAT, (42 + 5 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(lives, 2), glm::vec2(455 * ESCALAT, (42 + 6 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+		text.render("POINTS", glm::vec2(455 * ESCALAT, (42 + 3 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(points, 8), glm::vec2(455 * ESCALAT, (42 + 4 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
 
-	text.render("BANK", glm::vec2(455 * ESCALAT, (42 + 7 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(bank,2), glm::vec2(455 * ESCALAT, (42 + 8 * 38.5) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+		text.render("LIVES", glm::vec2(455 * ESCALAT, (42 + 5 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(lives, 2), glm::vec2(455 * ESCALAT, (42 + 6 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
 
-	text.render("ROOM", glm::vec2(455 * ESCALAT, (42 + 9 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(room,2), glm::vec2(455 * ESCALAT, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
-	
+		text.render("BANK", glm::vec2(455 * ESCALAT, (42 + 7 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(bank, 2), glm::vec2(455 * ESCALAT, (42 + 8 * 38.5) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+
+		text.render("ROOM", glm::vec2(455 * ESCALAT, (42 + 9 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(room, 2), glm::vec2(455 * ESCALAT, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+
+		if (changingLevel) {
+			text.render("PASSWORD   " + to_string(bank) + "   IS", glm::vec2(70, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 0.7, 0.5, 1));
+			text.render(getPassword(bank), glm::vec2(500, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(0.5, 1, 0, 1));
+		}
+	}
+}
+
+string Scene::getPassword(int level) 
+{
+	switch (level) {
+	case 1:
+		return "NEWLEAF";
+	case 2:
+		return "TOMNOOK";
+	case 3:
+		return "ANTONI";
+	default:
+		return "LMAO";
+
+	}
+
 }
 
 string Scene::to_string_zeros(int number, int num_zeros)
@@ -280,14 +312,15 @@ void Scene::scroll(int direction)
 
 void Scene::changeRoom(int dir, glm::vec2 ballPos)
 {
-	if (!scrolling) {
+	if (!map->getScrolling()) {
 		player->setVisibility(false);
 
 		ball->setVisibility(false);
 		prev_vel = ball->getVelocity();
 		ball->setVelocity(0);
+		map->setScrolling(true);
 
-		scrolling = true;
+		map->setScrolling(true);
 		next_margin = top + dir * 24 * map->getTileSize();
 		room -= dir;
 		map->setActualRoom(room);
@@ -295,7 +328,7 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 	else {
 		if ( (dir == -1 && top > next_margin) || (dir == 1 && top < next_margin)) scroll(dir);
 		else {
-			scrolling = false;
+			map->setScrolling(false);
 			map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize() - 2, float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 			
 			glm::vec2 playerPos = player->getPosition();
@@ -311,6 +344,22 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 	}
 }
 
+void Scene::playerDies() {
+	prev_vel = ball->getVelocity();
+	ball->setVelocity(0);
+	if (lives == 0) {
+		backgroundImage.loadFromFile("images/GameOver.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		gameOver = true;
+	}
+	else {
+		ball->setPosition(glm::vec2(ball->getPosition().x, ball->getPosition().y - 3));
+		if (!godMode) {
+			--lives;
+			player->setDead(true);
+			markTime = currentTime + 1300; // set timeout for animation to run
+		}
+	}
+}
 
 
 void Scene::initShaders()

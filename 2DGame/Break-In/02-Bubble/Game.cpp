@@ -75,6 +75,21 @@ void Game::keyPressed(int key)
 		//bPlay = false;
 		state = MENU;
 	}
+
+	// KEYS TO CHANGE THE LEVEL!
+
+	if (key == 49) { // '1' KEY: GO TO THE LEVEL1.
+		state = PLAY;
+		scene.init(1, 0, 0, 4);
+	}
+	if (key == 50) { // '2' KEY: GO TO THE LEVEL2.
+		state = PLAY;
+		scene.init(2, 0, 0, 4);
+	}
+	if (key ==51) { // '3' KEY: GO TO THE LEVEL3.
+		state = PLAY;
+		scene.init(3, 0, 0, 4);
+	}
 	keys[key] = true;
 }
 
@@ -121,9 +136,10 @@ void Game::setState(int s)
 }
 
 
-void Game::setLvl(int l)
+void Game::setLvl(int l, int points, int money, int lives)
 {
-	scene.init(l, 0 , 0, 0);
+
+	scene.init(l, points, money, lives);
 }
 
 

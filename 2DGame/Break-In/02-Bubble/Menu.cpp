@@ -51,7 +51,7 @@ void Menu::update(int deltaTime)
 		bopt = !bopt;
 	}
 	if (Game::instance().getKey(13)) {
-		Game::instance().setLvl(1);
+		Game::instance().setLvl(1, 0, 0, 4);
 		Game::instance().setState(PLAY);
 	}
 	if (Game::instance().getSpecialKey(GLUT_KEY_F1)) {
