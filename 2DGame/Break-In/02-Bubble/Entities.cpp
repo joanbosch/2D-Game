@@ -277,7 +277,7 @@ void Entities::update(int deltaTime)
 	}
 
 	for (int i = 0; i < polices->size(); ++i) {
-		(*polices)[i]->update(deltaTime);
+		(*polices)[i]->update(deltaTime, starMode);
 		if ((*polices)[i]->getCollisionPlayer()) {
 			(*polices)[i]->setVelocity(0);
 			playerColided = true;
@@ -373,6 +373,11 @@ int Entities::getNewPoints()
 int Entities::getRemainingMoneyEntities()
 {
 	return moneyEntities;
+}
+
+bool Entities::isStarMode()
+{
+	return starMode;
 }
 
 void Entities::setPlayerDead() {
