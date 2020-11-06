@@ -10,7 +10,7 @@ class Police
 
 public:
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap, int r);
-	void update(int deltaTime);
+	void update(int deltaTime, bool starMode);
 	void render();
 
 	void setPosition(const glm::vec2& pos);
@@ -31,7 +31,7 @@ private:
 	Sprite* sprite;
 	TileMap* map;
 
-	bool playerColided, isOnScreen, moving;
+	bool playerColided, ballColided, isOnScreen, moving, visible;
 
 	int room;
 	float vel, currentTime, markTime;

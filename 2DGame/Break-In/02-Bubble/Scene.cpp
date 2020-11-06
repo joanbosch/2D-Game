@@ -108,7 +108,9 @@ void Scene::update(int deltaTime)
 
 	// Change the level if it is necesary
 	if (changingLevel && currentTime > win_time + TIME_CHANGING_LEVEL) {
-		init(map->getActualLevel() + 1, points, money, lives);
+		int next_level = map->getActualLevel() + 1;
+
+		init(glm::min(next_level, 3), points, money, lives);
 	}
 
 	// GOD MODE
@@ -121,15 +123,17 @@ void Scene::update(int deltaTime)
 	else lastGValue = false;
 
 	if (currentTime >= startTime) ball->setGameStarted(true);
+	if (!changingLevel) {
+		ball->update(deltaTime);
+		map->setBallPos(ball->getPosition());
+		map->setPlayerPos(player->getPosition());
+		map->setBallAngle(ball->getAngle());
+		entities->update(deltaTime);
+		player->update(deltaTime);
+	}
 
-	ball->update(deltaTime);
-	map->setBallPos(ball->getPosition());
-	map->setPlayerPos(player->getPosition());
-	map->setBallAngle(ball->getAngle());
-	entities->update(deltaTime);
-	player->update(deltaTime);
-
-
+	// STAR MODE
+	ball->setStarMode(entities->isStarMode());
 
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
@@ -269,6 +273,11 @@ void Scene::render()
 		if (changingLevel) {
 			text.render("PASSWORD   " + to_string(bank) + "   IS", glm::vec2(70, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 0.7, 0.5, 1));
 			text.render(getPassword(bank), glm::vec2(500, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(0.5, 1, 0, 1));
+		}
+		else {
+			if (godMode) {
+				text.render("GOD MODE is ENABLED", glm::vec2(70, (65 + 10 * 39) * ESCALAT), 15 * ESCALAT, glm::vec4(1, 0.7, 0.5, 1));
+			}
 		}
 	}
 }

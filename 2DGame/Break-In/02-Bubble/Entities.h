@@ -32,6 +32,7 @@ public:
 	int getNewCoins();
 	int getNewPoints();
 	int getRemainingMoneyEntities();
+	bool isStarMode();
 
 	void setPlayerDead();
 

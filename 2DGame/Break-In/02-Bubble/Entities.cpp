@@ -57,7 +57,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 		else if (entityType == ORANGE_BLOCK) {
 			Block* or_block = new Block();
 			// TODO: init block's resistance
-			or_block->init(tilemap, sP);
+			or_block->init(tilemap, sP, 0);
 			or_block->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			or_block->setTileMap(map);
 			blocks->push_back(or_block);
@@ -65,7 +65,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 		else if (entityType == GREEN_BLOCK) {
 			Block* gr_block = new Block();
 			// TODO: init block's resistance
-			gr_block->init(tilemap, sP);
+			gr_block->init(tilemap, sP, 1);
 			gr_block->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			gr_block->setTileMap(map);
 			blocks->push_back(gr_block);
@@ -73,7 +73,7 @@ void Entities::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 		else if (entityType == BLUE_BLOCK) {
 			Block* bl_block = new Block();
 			// TODO: init block's resistance
-			bl_block->init(tilemap, sP);
+			bl_block->init(tilemap, sP, 2);
 			bl_block->setPosition(glm::vec2(map->getEntity(i).x * map->getTileSize(), map->getEntity(i).y * map->getTileSize()));
 			bl_block->setTileMap(map);
 			blocks->push_back(bl_block);
@@ -277,7 +277,7 @@ void Entities::update(int deltaTime)
 	}
 
 	for (int i = 0; i < polices->size(); ++i) {
-		(*polices)[i]->update(deltaTime);
+		(*polices)[i]->update(deltaTime, starMode);
 		if ((*polices)[i]->getCollisionPlayer()) {
 			(*polices)[i]->setVelocity(0);
 			playerColided = true;
@@ -373,6 +373,11 @@ int Entities::getNewPoints()
 int Entities::getRemainingMoneyEntities()
 {
 	return moneyEntities;
+}
+
+bool Entities::isStarMode()
+{
+	return starMode;
 }
 
 void Entities::setPlayerDead() {

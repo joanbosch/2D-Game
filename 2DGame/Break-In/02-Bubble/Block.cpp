@@ -13,11 +13,10 @@ enum PlayerAnims
 };
 
 
-void Block::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
+void Block::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int level)
 {
 	visible = true;
 	ballColided = false;
-	level = 2;
 	switch (level)
 	{
 	case 0:

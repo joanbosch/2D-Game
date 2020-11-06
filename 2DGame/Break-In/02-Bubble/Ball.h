@@ -29,6 +29,7 @@ public:
 	float getAngle();
 	void setVelocity(float v);
 	void setGameStarted(bool s);
+	void setStarMode(bool s);
 
 private:
 	bool bJumping;
@@ -42,7 +43,7 @@ private:
 	Sprite* sprite;
 	TileMap* map;
 
-	bool visible, gameStarted;
+	bool visible, gameStarted, starMode;
 
 };
 
