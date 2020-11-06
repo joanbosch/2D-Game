@@ -28,6 +28,7 @@ public:
 	glm::vec2 computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm::vec2 spritePosition, glm::vec2 spriteSize);
 
 	void setVisibility(bool vis);
+	void setDead(bool b);
 
 private:
 	glm::ivec2 tileMapDispl, posPlayer, playerSize;
@@ -35,7 +36,7 @@ private:
 	Sprite* sprite;
 	TileMap* map;
 
-	bool visible;
+	bool visible, isDead;
 	bool ballColided;
 
 	float newBallVelocity;

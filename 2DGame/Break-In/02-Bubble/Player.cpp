@@ -53,6 +53,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 	sprite->addKeyframe(DEAD, glm::vec2(0.4f, 0.f));
 	sprite->addKeyframe(DEAD, glm::vec2(0.6f, 0.f));
 	sprite->addKeyframe(DEAD, glm::vec2(0.8f, 0.f));
+	sprite->addKeyframe(DEAD, glm::vec2(0.8f, 0.f));
 
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
@@ -78,44 +79,46 @@ void Player::update(int deltaTime)
 	ballColided &= visible;
 
 	sprite->update(deltaTime);
-	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
-	{
-		/*if(sprite->animation() != DEAD)
-			sprite->changeAnimation(DEAD);*/
-		posPlayer.x -= 4;
-		if (posPlayer.x < minx)
+	if (!isDead) {
+		if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 		{
-			posPlayer.x += 4;
-		}
-	}
-	if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
-	{
-		/*if(sprite->animation() != LOOK_RIGHT)
-			sprite->changeAnimation(LOOK_RIGHT);*/
-		posPlayer.x += 4;
-		if (posPlayer.x > maxx)
-		{
+			/*if(sprite->animation() != DEAD)
+				sprite->changeAnimation(DEAD);*/
 			posPlayer.x -= 4;
+			if (posPlayer.x < minx)
+			{
+				posPlayer.x += 4;
+			}
 		}
-	}
-	if (Game::instance().getSpecialKey(GLUT_KEY_UP))
-	{
-		/*if (sprite->animation() != LOOK_TOP)
-			sprite->changeAnimation(LOOK_TOP);*/
-		posPlayer.y -= 4;
-		if (posPlayer.y < miny)
+		if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
 		{
-			posPlayer.y += 4;
+			/*if(sprite->animation() != LOOK_RIGHT)
+				sprite->changeAnimation(LOOK_RIGHT);*/
+			posPlayer.x += 4;
+			if (posPlayer.x > maxx)
+			{
+				posPlayer.x -= 4;
+			}
 		}
-	}
-	if (Game::instance().getSpecialKey(GLUT_KEY_DOWN))
-	{
-		/*if (sprite->animation() != LOOK_BOTTOM)
-			sprite->changeAnimation(LOOK_BOTTOM);*/
-		posPlayer.y += 4;
-		if (posPlayer.y > maxy)
+		if (Game::instance().getSpecialKey(GLUT_KEY_UP))
 		{
+			/*if (sprite->animation() != LOOK_TOP)
+				sprite->changeAnimation(LOOK_TOP);*/
 			posPlayer.y -= 4;
+			if (posPlayer.y < miny)
+			{
+				posPlayer.y += 4;
+			}
+		}
+		if (Game::instance().getSpecialKey(GLUT_KEY_DOWN))
+		{
+			/*if (sprite->animation() != LOOK_BOTTOM)
+				sprite->changeAnimation(LOOK_BOTTOM);*/
+			posPlayer.y += 4;
+			if (posPlayer.y > maxy)
+			{
+				posPlayer.y -= 4;
+			}
 		}
 	}
 
@@ -227,4 +230,18 @@ glm::vec2 Player::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm
 void Player::setVisibility(bool vis)
 {
 	visible = vis;
+}
+
+void Player::setDead(bool b)
+{
+	isDead = b;
+	if (b) {
+		if (sprite->animation() != DEAD)
+			sprite->changeAnimation(DEAD);
+	}
+	else {
+		if (sprite->animation() != LOOK_FRONT)
+			sprite->changeAnimation(LOOK_FRONT);
+	}
+	
 }

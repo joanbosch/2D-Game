@@ -79,6 +79,8 @@ void Scene::init(int lvl, int points, int coins, int lives)
 	// init camera position
 	projection = glm::ortho(left, right, bottom, top);
 	currentTime = 0.0f;
+	markTime = 0.0f;
+	startTime = TIME_TO_SRTART;
 
 	if (!text.init("fonts/AnimalCrossing.ttf"))
 		cout << "Could not load font!!!" << endl;
@@ -106,7 +108,7 @@ void Scene::update(int deltaTime)
 	}
 	else lastGValue = false;
 
-	if (currentTime >= TIME_TO_SRTART) ball->setGameStarted(true);
+	if (currentTime >= startTime) ball->setGameStarted(true);
 
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
@@ -159,20 +161,34 @@ void Scene::update(int deltaTime)
 				changeRoom(-1, ballPos);
 			}
 		}
-		if (ballPos.y > (maxy + 2.7 * map->getTileSize())) {   // ball touches bottom border
+		if (ballPos.y > (maxy + 2.93 * map->getTileSize())) {   // ball touches bottom border
 			if (room == 1 && !scrolling) {
+				prev_vel = ball->getVelocity();
 				ball->setVelocity(0);
-				// TODO: set dead animation in player
 				if (lives == 0) {
 					// TODO: gameover
 				}
 				else {
-					ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 4));
-					if (!godMode) --lives;
+					ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 3));
+					if (!godMode) {
+						--lives;
+						player->setDead(true);
+						markTime = currentTime + 1300; // set timeout for animation to run
+					}
 				}
 			}
 			else changeRoom(1, ballPos);
 		}
+	}
+
+	if (markTime != NULL && currentTime >= markTime) {
+		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
+		ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, -8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
+		ball->setGameStarted(false);
+		ball->setVelocity(prev_vel);
+		player->setDead(false);
+		startTime = currentTime + TIME_TO_SRTART;
+		markTime = NULL;
 	}
 
 	if (room <= 3 && scrollingUp)
@@ -280,7 +296,7 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 		if ( (dir == -1 && top > next_margin) || (dir == 1 && top < next_margin)) scroll(dir);
 		else {
 			scrolling = false;
-			map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize() - 4, float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
+			map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize() - 2, float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 			
 			glm::vec2 playerPos = player->getPosition();
 			player->setPosition(glm::vec2(playerPos.x, playerPos.y + dir * 24 * map->getTileSize()));

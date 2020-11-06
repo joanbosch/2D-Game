@@ -16,12 +16,14 @@ public:
 
 	void setTileMap(TileMap* tileMap);
 	void setPosition(const glm::vec2& pos);
-	bool getBallColidad();
+	bool getBallColided();
 	glm::vec2 getN();
+
+	bool isOn() { return activated; };
 
 private:
 
-	bool visible;
+	bool activated;
 	bool ballColided;
 
 	glm::ivec2 tileMapDispl, posPlayer;

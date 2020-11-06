@@ -7,20 +7,17 @@
 
 #define ESCALAT 2.f
 
-#define INIT_POLICE_X_TILES 10
-#define INIT_POLICE_Y_TILES 10
-
 enum PoliceAnims
 {
 	LOOK_FRONT, LOOK_RIGHT, LOOK_LEFT, DEAD, SEARCH
 };
 
 
-void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap)
+void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap, int r)
 {
 	spritesheet.loadFromFile("images/police.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(64 * ESCALAT, 32 * ESCALAT), glm::vec2(0.33, 0.5), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(10);
+	sprite->setNumberAnimations(5);
 
 	sprite->setAnimationSpeed(LOOK_FRONT, 8);
 	sprite->addKeyframe(LOOK_FRONT, glm::vec2(0.f, 0.f));
@@ -48,6 +45,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 
 	map = tileMap;
 	visible = false;
+	room = r;
 }
 
 void Police::update(int deltaTime)

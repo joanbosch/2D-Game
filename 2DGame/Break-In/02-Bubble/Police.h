@@ -9,7 +9,7 @@ class Police
 {
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap, int r);
 	void update(int deltaTime);
 	void render();
 
@@ -26,6 +26,8 @@ private:
 
 	bool visible;
 	bool ballColided;
+
+	int room;
 
 	glm::vec2 N;
 };

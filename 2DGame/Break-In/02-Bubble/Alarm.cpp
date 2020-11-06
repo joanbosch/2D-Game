@@ -9,13 +9,13 @@
 
 enum AlarmAnims
 {
-	VISIBLE, INVISIBLE, ALARMON
+	VISIBLE, ALARMON
 };
 
 
 void Alarm::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
-	visible = true;
+	activated = false;
 	ballColided = false;
 	spritesheet.loadFromFile("images/alarm.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
@@ -23,13 +23,13 @@ void Alarm::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	sprite->setNumberAnimations(2);
 
 	sprite->setAnimationSpeed(VISIBLE, 8);
-	sprite->addKeyframe(VISIBLE, glm::vec2(0.f, 0.f));
+	sprite->addKeyframe(VISIBLE, glm::vec2(0.5f, 0.f));
 
-	sprite->setAnimationSpeed(ALARMON, 4);
-	sprite->addKeyframe(ALARMON, glm::vec2(0.f, 0.f));
-	sprite->addKeyframe(ALARMON, glm::vec2(1.f, 0.f));
+	sprite->setAnimationSpeed(ALARMON, 16);
+	sprite->addKeyframe(ALARMON, glm::vec2(0.0f, 0.f));
+	sprite->addKeyframe(ALARMON, glm::vec2(0.5f, 0.f));
 
-	sprite->changeAnimation(0);
+	sprite->changeAnimation(VISIBLE);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 
@@ -37,11 +37,11 @@ void Alarm::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 void Alarm::update(int deltaTime)
 {
-	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posPlayer, glm::vec2(32 * ESCALAT, 16 * ESCALAT));
-	// activar animación alarmon
+	ballColided = sprite->ballCollision(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), posPlayer, glm::vec2(32 * ESCALAT, 32 * ESCALAT));
 	if (ballColided) {
-		sprite->changeAnimation(1);
-		// hacer aparecer policia
+		activated = true;
+		if (sprite->animation() != ALARMON)
+			sprite->changeAnimation(ALARMON);
 	}
 	sprite->update(deltaTime);
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
@@ -49,7 +49,7 @@ void Alarm::update(int deltaTime)
 
 void Alarm::render()
 {
-	if (visible) sprite->render();
+	sprite->render();
 }
 
 void Alarm::setTileMap(TileMap* tileMap)
@@ -63,9 +63,10 @@ void Alarm::setPosition(const glm::vec2& pos)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
-bool Alarm::getBallColidad()
+bool Alarm::getBallColided()
 {
-	return ballColided;
+	if (activated) return false;
+	else return ballColided;
 }
 
 glm::vec2 Alarm::getN()
