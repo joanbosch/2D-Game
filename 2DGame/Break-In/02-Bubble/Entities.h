@@ -31,6 +31,7 @@ public:
 
 private:
 	glm::ivec2 tileMapDispl, posPlayer;
+	ShaderProgram sP;
 
 	bool ballColided;
 	int coins, points;

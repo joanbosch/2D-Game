@@ -16,7 +16,7 @@ public:
 	void setPosition(const glm::vec2& pos);
 	glm::vec2 getPosition() { return posPolice; };
 
-	void setVisibility(bool vis);
+	int getRoom() { return room; };
 
 private:
 	glm::ivec2 tileMapDispl, posPolice;
@@ -24,10 +24,10 @@ private:
 	Sprite* sprite;
 	TileMap* map;
 
-	bool visible;
 	bool ballColided;
 
 	int room;
+	float vel;
 
 	glm::vec2 N;
 };

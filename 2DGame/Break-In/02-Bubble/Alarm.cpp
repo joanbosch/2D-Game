@@ -74,5 +74,10 @@ glm::vec2 Alarm::getN()
 	return sprite->computeNormalVector(map->getBallPos(), glm::vec2(16 * ESCALAT, 16 * ESCALAT), map->getBallAngle(), posPlayer, glm::vec2(32 * ESCALAT, 16 * ESCALAT));
 }
 
+bool Alarm::hasBeenActivated() {
+	if (activated) return false;
+	else return true;
+}
+
 
 

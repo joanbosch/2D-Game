@@ -39,12 +39,11 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 	sprite->addKeyframe(DEAD, glm::vec2(0.f, 0.5f));
 	sprite->addKeyframe(DEAD, glm::vec2(0.33f, 0.5f));
 
-	sprite->changeAnimation(0);
+	sprite->changeAnimation(LOOK_FRONT);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x), float(tileMapDispl.y + posPolice.y)));
 
 	map = tileMap;
-	visible = false;
 	room = r;
 }
 
@@ -67,17 +66,12 @@ void Police::update(int deltaTime)
 
 void Police::render()
 {
-	if (visible) sprite->render();
+	sprite->render();
 }
 
 void Police::setPosition(const glm::vec2& pos)
 {
 	posPolice = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x), float(tileMapDispl.y + posPolice.y)));
-}
-
-void Police::setVisibility(bool vis)
-{
-	visible = vis;
 }
 

@@ -20,6 +20,7 @@ public:
 	glm::vec2 getN();
 
 	bool isOn() { return activated; };
+	bool hasBeenActivated();
 
 private:
 
