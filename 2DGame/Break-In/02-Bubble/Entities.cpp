@@ -346,3 +346,8 @@ void Entities::setPlayerDead() {
 	}
 	polices = new vector<Police*>();
 }
+
+void Entities::setPlayerColided(bool b) 
+{
+	playerColided = b;
+}

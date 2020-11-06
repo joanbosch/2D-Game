@@ -64,7 +64,7 @@ private:
 	float left, right, bottom, top;
 
 	float next_margin, prev_vel;
-	bool scrolling, scrollingUp;
+	bool scrolling, scrollingUp, playerDying;
 	bool godMode;
 	bool lastGValue, lastRPValue;
 

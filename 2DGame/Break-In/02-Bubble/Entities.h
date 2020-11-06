@@ -24,6 +24,7 @@ public:
 	void render();
 
 	bool ballHasColided();
+	void setPlayerColided(bool b);
 	bool playerHasColided() { return playerColided; };
 	glm::vec2 getN();
 

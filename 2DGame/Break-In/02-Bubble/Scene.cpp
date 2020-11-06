@@ -95,6 +95,7 @@ void Scene::init(int lvl, int points, int coins, int lives)
 	scrollingUp = false;
 	changingLevel = false;
 	gameOver = false;
+	playerDying = false;
 }
 
 void Scene::update(int deltaTime)
@@ -133,8 +134,9 @@ void Scene::update(int deltaTime)
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
 	}
-	if (entities->playerHasColided()) {
-
+	if (entities->playerHasColided() && !playerDying) {
+		playerDying = true;
+		playerDies();
 	}
 	if (player->getBallColided() && ball->getAngle() >= 180.f) {
 		glm::vec2 dir;
@@ -183,20 +185,8 @@ void Scene::update(int deltaTime)
 		}
 		if (ballPos.y > (maxy + 2.93 * map->getTileSize())) {   // ball touches bottom border
 			if (room == 1 && !map->getScrolling()) {
-				prev_vel = ball->getVelocity();
-				ball->setVelocity(0);
-				if (lives == 0) {
-					backgroundImage.loadFromFile("images/GameOver.png", TEXTURE_PIXEL_FORMAT_RGBA);
-					gameOver = true;
-				}
-				else {
-					ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 3));
-					if (!godMode) {
-						--lives;
-						player->setDead(true);
-						markTime = currentTime + 1300; // set timeout for animation to run
-					}
-				}
+				playerDying = true;
+				playerDies();
 			}
 			else changeRoom(1, ballPos);
 		}
@@ -211,6 +201,8 @@ void Scene::update(int deltaTime)
 		player->setDead(false);
 		startTime = currentTime + TIME_TO_SRTART;
 		markTime = NULL;
+		playerDying = false;
+		entities->setPlayerColided(false);
 	}
 
 	if (room <= 3 && scrollingUp)
@@ -353,7 +345,20 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 }
 
 void Scene::playerDies() {
-	//player dying
+	prev_vel = ball->getVelocity();
+	ball->setVelocity(0);
+	if (lives == 0) {
+		backgroundImage.loadFromFile("images/GameOver.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		gameOver = true;
+	}
+	else {
+		ball->setPosition(glm::vec2(ball->getPosition().x, ball->getPosition().y - 3));
+		if (!godMode) {
+			--lives;
+			player->setDead(true);
+			markTime = currentTime + 1300; // set timeout for animation to run
+		}
+	}
 }
 
 
