@@ -5,7 +5,7 @@
 
 using namespace irrklang;
 
-#define NUM_SOUNDS 3
+#define NUM_SOUNDS 10
 
 enum AUDIOS {
 	MENU_MUSIC, LEVEL1_MUSIC, LEVEL2_MUSIC, LEVEL3_MUSIC, GAMEOVER_MUSIC, PLAYER_DEAD_MUSIC, 
@@ -19,7 +19,6 @@ class Audio
 		~Audio();
 
 		void init();
-		void bindAudio(const char* file, int i);
 		void play(int i, bool loop);
 		void stopAllSounds();
 
