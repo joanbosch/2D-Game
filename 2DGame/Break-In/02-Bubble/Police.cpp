@@ -7,6 +7,8 @@
 
 #define ESCALAT 2.f
 
+#define VEL 4
+
 enum PoliceAnims
 {
 	LOOK_FRONT, LOOK_RIGHT, LOOK_LEFT, DEAD, SEARCH
@@ -29,7 +31,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 	sprite->setAnimationSpeed(LOOK_LEFT, 8);
 	sprite->addKeyframe(LOOK_LEFT, glm::vec2(0.66f, 0.f));
 
-	sprite->setAnimationSpeed(SEARCH, 4);
+	sprite->setAnimationSpeed(SEARCH, 8);
 	sprite->addKeyframe(SEARCH, glm::vec2(0.f, 0.f));
 	sprite->addKeyframe(SEARCH, glm::vec2(0.33f, 0.f));
 	sprite->addKeyframe(SEARCH, glm::vec2(0.f, 0.f));
@@ -47,6 +49,8 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 
 	map = tileMap;
 	room = r;
+	policeState = NULL;
+	vel = 0;
 }
 
 void Police::update(int deltaTime)
@@ -55,6 +59,17 @@ void Police::update(int deltaTime)
 	int miny = map->getPlayableArea().miny;
 	int maxx = map->getPlayableArea().maxx;
 	int maxy = map->getPlayableArea().maxy;
+
+	isOnScreen = (room == map->getActualRoom());
+
+	if (isOnScreen) {
+		// search player and move to their position
+		vel = VEL;
+		
+	}
+	else {
+		vel = 0;
+	}
 
 	/*glm::vec2 posBar = posPolice;
 	posBar.y += 28;
@@ -77,3 +92,10 @@ void Police::setPosition(const glm::vec2& pos)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x), float(tileMapDispl.y + posPolice.y)));
 }
 
+void Police::setSearching() {
+	if (sprite->animation() != SEARCH) sprite->changeAnimation(SEARCH);
+}
+
+void Police::setVelocity(float v) {
+	vel = v;
+}

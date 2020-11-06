@@ -5,6 +5,9 @@
 #include "Sprite.h"
 #include "TileMap.h"
 
+#define SEARCHING 0
+#define MOVING 1
+
 class Police
 {
 
@@ -16,7 +19,11 @@ public:
 	void setPosition(const glm::vec2& pos);
 	glm::vec2 getPosition() { return posPolice; };
 
+	void setVelocity(float v);
+
 	int getRoom() { return room; };
+
+	void setSearching();
 
 private:
 	glm::ivec2 tileMapDispl, posPolice, policeSize;
@@ -24,7 +31,8 @@ private:
 	Sprite* sprite;
 	TileMap* map;
 
-	bool ballColided;
+	bool ballColided, isOnScreen;
+	int policeState;
 
 	int room;
 	float vel;

@@ -182,6 +182,7 @@ void Scene::update(int deltaTime)
 	}
 
 	if (markTime != NULL && currentTime >= markTime) {
+		entities->setPlayerDead();
 		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 		ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, -8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 		ball->setGameStarted(false);

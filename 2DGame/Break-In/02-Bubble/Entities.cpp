@@ -243,7 +243,8 @@ void Entities::update(int deltaTime)
 			if (aux) {
 				if (aux_activ != (*alarms)[i]->isOn()) {
 					Police *pol_aux = new Police();
-					pol_aux->init(glm::vec2(3.5f * map->getTileSize(), map->getPlayableArea().maxy + 84 ), sP, map, room);
+					pol_aux->init(glm::vec2(3.5f * map->getTileSize(), map->getPlayableArea().maxy + 84 ), sP, map, room+3);
+					pol_aux->setSearching();
 					polices->push_back(pol_aux);
 				}
 				N = (*alarms)[i]->getN();
@@ -323,5 +324,13 @@ int Entities::getRemainingMoneyEntities()
 	return moneyEntities;
 }
 
-
+void Entities::setPlayerDead() {
+	for (int i = 0; i < polices->size(); ++i) {
+		(*polices)[i]->setVelocity(0);
+	}
+	for (int i = 0; i < alarms->size(); ++i) {
+		(*alarms)[i]->deactivate();
+	}
+	polices = new vector<Police*>();
+}
 

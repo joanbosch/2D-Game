@@ -29,6 +29,9 @@ public:
 	int getNewCoins();
 	int getNewPoints();
 	int getRemainingMoneyEntities();
+
+	void setPlayerDead();
+
 private:
 	glm::ivec2 tileMapDispl, posPlayer;
 	ShaderProgram sP;
