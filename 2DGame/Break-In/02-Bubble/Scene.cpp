@@ -95,6 +95,7 @@ void Scene::init(int lvl, int points, int coins, int lives)
 	lastRPValue = false;
 	scrollingUp = false;
 	changingLevel = false;
+	gameOver = false;
 }
 
 void Scene::update(int deltaTime)
@@ -184,7 +185,8 @@ void Scene::update(int deltaTime)
 				prev_vel = ball->getVelocity();
 				ball->setVelocity(0);
 				if (lives == 0) {
-					// TODO: gameover
+					backgroundImage.loadFromFile("images/GameOver.png", TEXTURE_PIXEL_FORMAT_RGBA);
+					gameOver = true;
 				}
 				else {
 					ball->setPosition(glm::vec2(ballPos.x, ballPos.y - 3));
@@ -223,7 +225,12 @@ void Scene::update(int deltaTime)
 		}
 	}
 	else lastRPValue = false;
-
+	if (gameOver) {
+		if (Game::instance().getKey(13)) {
+			Game::instance().setLvl(1, 0, 0, 4);
+			Game::instance().setState(PLAY);
+		}
+	}
 }
 
 void Scene::render()
@@ -239,39 +246,37 @@ void Scene::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
 	background->render(backgroundImage);
+	if (!gameOver) {
+		if (!changingLevel) {
+			map->render();
+			topBar->render(topBarImage);
+			entities->render();
+			ball->render();
+			player->render();
+		}
+		else thief->render();
 
-	if (!changingLevel) {
-		map->render();
-		topBar->render(topBarImage);
-		entities->render();
-		ball->render();
-		player->render();
+		// Rendender text
+		text.render("MONEY", glm::vec2(455 * ESCALAT, (42 + 30) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(money, 8), glm::vec2(455 * ESCALAT, (42 + 2 * 33) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+
+		text.render("POINTS", glm::vec2(455 * ESCALAT, (42 + 3 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(points, 8), glm::vec2(455 * ESCALAT, (42 + 4 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+
+		text.render("LIVES", glm::vec2(455 * ESCALAT, (42 + 5 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(lives, 2), glm::vec2(455 * ESCALAT, (42 + 6 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+
+		text.render("BANK", glm::vec2(455 * ESCALAT, (42 + 7 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(bank, 2), glm::vec2(455 * ESCALAT, (42 + 8 * 38.5) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+
+		text.render("ROOM", glm::vec2(455 * ESCALAT, (42 + 9 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
+		text.render(to_string_zeros(room, 2), glm::vec2(455 * ESCALAT, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
+
+		if (changingLevel) {
+			text.render("PASSWORD   " + to_string(bank) + "   IS", glm::vec2(70, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 0.7, 0.5, 1));
+			text.render(getPassword(bank), glm::vec2(500, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(0.5, 1, 0, 1));
+		}
 	}
-	else thief->render();
-	
-	// Rendender text
-	text.render("MONEY", glm::vec2(455*ESCALAT, (42+30)*ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render( to_string_zeros(money, 8), glm::vec2(455*ESCALAT, (42 + 2 * 33) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
-
-	text.render("POINTS", glm::vec2(455 * ESCALAT, (42 + 3*39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(points, 8), glm::vec2(455 * ESCALAT, (42 + 4 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
-
-	text.render("LIVES", glm::vec2(455 * ESCALAT, (42 + 5 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(lives, 2), glm::vec2(455 * ESCALAT, (42 + 6 * 38) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
-
-	text.render("BANK", glm::vec2(455 * ESCALAT, (42 + 7 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(bank,2), glm::vec2(455 * ESCALAT, (42 + 8 * 38.5) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
-
-	text.render("ROOM", glm::vec2(455 * ESCALAT, (42 + 9 * 39.6) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
-	text.render(to_string_zeros(room,2), glm::vec2(455 * ESCALAT, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 1, 1, 1));
-
-	if (changingLevel) {
-		text.render("PASSWORD   " + to_string(bank) + "   IS", glm::vec2(70, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(1, 0.7, 0.5, 1));
-		text.render(getPassword(bank), glm::vec2(500, (42 + 10 * 39) * ESCALAT), 30 * ESCALAT, glm::vec4(0.5, 1, 0, 1));
-		
-
-	} 
-	
 }
 
 string Scene::getPassword(int level) 

@@ -68,7 +68,7 @@ private:
 	bool lastGValue, lastRPValue;
 
 	// Variables to change the level
-	bool changingLevel;
+	bool changingLevel, gameOver;
 	int win_time;
 
 };
