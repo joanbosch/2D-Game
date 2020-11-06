@@ -50,7 +50,9 @@ private:
 	glm::mat4 projection;
 
 	Texture backgroundImage, topBarImage;
-	TexturedQuad *background, *topBar;
+	TexturedQuad *background;
+
+	Sprite *topBar;
 
 	Text text;
 

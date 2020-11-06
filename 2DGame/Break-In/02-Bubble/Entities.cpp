@@ -189,7 +189,7 @@ void Entities::update(int deltaTime)
 		break;
 	}
 
-	if (room != 0){
+	if (room > 0 && room <3){
 		for (int i = 0; i < num_woods; ++i) {
 			int pos = (room-1) * num_woods + i;
 			if (!(*axes)[room - 1]->isVisible()) {

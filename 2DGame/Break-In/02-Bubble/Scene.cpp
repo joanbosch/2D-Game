@@ -58,8 +58,9 @@ void Scene::init(int lvl, int points, int coins, int lives, Audio* audio)
 	background = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 	backgroundImage.loadFromFile("images/bkgLvl" + to_string(lvl) + ".png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	topBar = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 	topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	topBar = Sprite::createSprite(glm::ivec2(SCREEN_WIDTH, SCREEN_HEIGHT), glm::vec2(1, 1), &topBarImage, &texProgram);
+	topBar->setPosition(glm::vec2(0, top));
 
 	map = TileMap::createTileMap("levels/lvl" + to_string(lvl) + ".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	map->setActualLevel(lvl);
@@ -128,7 +129,7 @@ void Scene::update(int deltaTime)
 			break;
 		default:
 			audioManager->stopAllSounds();
-			audioManager->play(LEVEL3_MUSIC, true);
+			// audioManager->play(LEVEL3_MUSIC, true);
 			break;
 		}
 		init(glm::min(next_level, 3), points, money, lives, audioManager);
@@ -237,7 +238,7 @@ void Scene::update(int deltaTime)
 	}
 
 	// KEYS TO CHANGE THE ROOM!
-	if (Game::instance().getKey(119) && !map->getScrolling()) { // 'W' KEY: GO TO THE NEXT ROOM.
+	if (Game::instance().getKey(119) && !map->getScrolling() && map->getActualRoom()<3) { // 'W' KEY: GO TO THE NEXT ROOM.
 		if (!lastRPValue && !scrollingUp) {
 			scrollingUp = true;
 			lastRPValue = true;
@@ -268,8 +269,8 @@ void Scene::render()
 	if (!gameOver) {
 		if (!changingLevel) {
 			map->render();
-			topBar->render(topBarImage);
 			entities->render();
+			topBar->render();
 			ball->render();
 			player->render();
 		}
@@ -337,7 +338,7 @@ void Scene::scroll(int direction)
 	glm::vec2 geom[2] = { glm::vec2(left, top), glm::vec2(right, bottom) };
 	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 	background->setPosition(geom, texCoords, texProgram);
-	topBar->setPosition(geom, texCoords, texProgram);
+	topBar->setPosition(glm::vec2(0, top));
 }
 
 void Scene::changeRoom(int dir, glm::vec2 ballPos)
