@@ -399,6 +399,16 @@ glm::vec2 TileMap::getBallPos()
 	return ballPos;
 }
 
+void TileMap::setPlayerPos(glm::vec2 pos)
+{
+	playerPos = pos;
+}
+
+glm::vec2 TileMap::getPlayerPos()
+{
+	return playerPos;
+}
+
 void TileMap::setBallAngle(float angle)
 {
 	this->ballAngle = angle;

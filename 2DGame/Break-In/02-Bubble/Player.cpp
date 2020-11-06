@@ -7,6 +7,8 @@
 
 #define ESCALAT 2.f
 
+#define PLAYER_VEL 6
+
 enum PlayerAnims
 {
 	LOOK_FRONT, LOOK_RIGHT, LOOK_LEFT, LOOK_TOP, LOOK_BOTTOM, LOOK_TOPRIGHT, LOOK_TOPLEFT, LOOK_BOTRIGHT, LOOK_BOTLEFT, DEAD
@@ -84,40 +86,40 @@ void Player::update(int deltaTime)
 		{
 			/*if(sprite->animation() != DEAD)
 				sprite->changeAnimation(DEAD);*/
-			posPlayer.x -= 4;
+			posPlayer.x -= PLAYER_VEL;
 			if (posPlayer.x < minx)
 			{
-				posPlayer.x += 4;
+				posPlayer.x += PLAYER_VEL;
 			}
 		}
 		if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
 		{
 			/*if(sprite->animation() != LOOK_RIGHT)
 				sprite->changeAnimation(LOOK_RIGHT);*/
-			posPlayer.x += 4;
+			posPlayer.x += PLAYER_VEL;
 			if (posPlayer.x > maxx)
 			{
-				posPlayer.x -= 4;
+				posPlayer.x -= PLAYER_VEL;
 			}
 		}
 		if (Game::instance().getSpecialKey(GLUT_KEY_UP))
 		{
 			/*if (sprite->animation() != LOOK_TOP)
 				sprite->changeAnimation(LOOK_TOP);*/
-			posPlayer.y -= 4;
+			posPlayer.y -= PLAYER_VEL;
 			if (posPlayer.y < miny)
 			{
-				posPlayer.y += 4;
+				posPlayer.y += PLAYER_VEL;
 			}
 		}
 		if (Game::instance().getSpecialKey(GLUT_KEY_DOWN))
 		{
 			/*if (sprite->animation() != LOOK_BOTTOM)
 				sprite->changeAnimation(LOOK_BOTTOM);*/
-			posPlayer.y += 4;
+			posPlayer.y += PLAYER_VEL;
 			if (posPlayer.y > maxy)
 			{
-				posPlayer.y -= 4;
+				posPlayer.y -= PLAYER_VEL;
 			}
 		}
 	}

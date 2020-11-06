@@ -5,9 +5,6 @@
 #include "Sprite.h"
 #include "TileMap.h"
 
-#define SEARCHING 0
-#define MOVING 1
-
 class Police
 {
 
@@ -22,6 +19,7 @@ public:
 	void setVelocity(float v);
 
 	int getRoom() { return room; };
+	bool isVisible() { return isOnScreen; };
 
 	void setSearching();
 
@@ -31,11 +29,12 @@ private:
 	Sprite* sprite;
 	TileMap* map;
 
-	bool ballColided, isOnScreen;
+	bool ballColided, isOnScreen, moving;
 	int policeState;
 
 	int room;
-	float vel;
+	float vel, currentTime, markTime;
+	glm::vec2 goalPos;
 
 	glm::vec2 N;
 };

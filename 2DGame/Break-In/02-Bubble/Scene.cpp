@@ -112,6 +112,7 @@ void Scene::update(int deltaTime)
 
 	ball->update(deltaTime);
 	map->setBallPos(ball->getPosition());
+	map->setPlayerPos(player->getPosition());
 	map->setBallAngle(ball->getAngle());
 	entities->update(deltaTime);
 	player->update(deltaTime);

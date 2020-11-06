@@ -243,7 +243,8 @@ void Entities::update(int deltaTime)
 			if (aux) {
 				if (aux_activ != (*alarms)[i]->isOn()) {
 					Police *pol_aux = new Police();
-					pol_aux->init(glm::vec2(3.5f * map->getTileSize(), map->getPlayableArea().maxy + 84 ), sP, map, room+3);
+					pol_aux->init(glm::vec2(64, 84 ), sP, map, 3-room);
+					pol_aux->setPosition(glm::vec2(2.f * map->getTileSize(), map->getPlayableArea().maxy));
 					pol_aux->setSearching();
 					polices->push_back(pol_aux);
 				}
@@ -254,7 +255,12 @@ void Entities::update(int deltaTime)
 
 	// TODO: check police (only on movement the activated polices (their room == acutal room)
 	for (int i = 0; i < polices->size(); ++i) {
+		bool prev_visible = (*polices)[i]->isVisible();
 		(*polices)[i]->update(deltaTime);
+		if (prev_visible != (*polices)[i]->isVisible()) {
+			(*polices)[i]->init(glm::vec2(64, 84), sP, map, 3 - room);
+			(*polices)[i]->setPosition(glm::vec2(2.f * map->getTileSize(), map->getPlayableArea().maxy));
+		}
 	}
 
 	for (int i = 0; i < axes->size(); ++i) {

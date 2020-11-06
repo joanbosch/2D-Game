@@ -59,6 +59,9 @@ public:
 	void setBallPos(glm::vec2 pos);
 	glm::vec2 getBallPos();
 
+	void setPlayerPos(glm::vec2 pos);
+	glm::vec2 getPlayerPos();
+
 	void setBallAngle(float angle);
 	float getBallAngle();
 
@@ -85,7 +88,7 @@ private:
 	glm::vec2 tileTexSize;
 	int *map;
 
-	glm::vec2 ballPos;
+	glm::vec2 ballPos, playerPos;
 	float ballAngle;
 
 	vector<infoEntities> *entities;

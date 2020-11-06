@@ -7,7 +7,8 @@
 
 #define ESCALAT 2.f
 
-#define VEL 4
+#define VEL 1.5
+#define ANIMATION_TIME 1300
 
 enum PoliceAnims
 {
@@ -45,31 +46,58 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 
 	sprite->changeAnimation(LOOK_FRONT);
 	tileMapDispl = tileMapPos;
+	posPolice = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x), float(tileMapDispl.y + posPolice.y)));
 
 	map = tileMap;
 	room = r;
 	policeState = NULL;
-	vel = 0;
+	vel = VEL;
+	currentTime = 0.0f;
+	markTime = ANIMATION_TIME;
+	moving = false;
+	isOnScreen = (room == map->getActualRoom());
 }
 
 void Police::update(int deltaTime)
 {
-	int minx = map->getPlayableArea().minx;
-	int miny = map->getPlayableArea().miny;
-	int maxx = map->getPlayableArea().maxx;
-	int maxy = map->getPlayableArea().maxy;
+	currentTime += deltaTime;
+
+	sprite->update(deltaTime);
 
 	isOnScreen = (room == map->getActualRoom());
 
 	if (isOnScreen) {
-		// search player and move to their position
-		vel = VEL;
 		
-	}
-	else {
-		vel = 0;
-	}
+		// time to run animation
+		if (currentTime >= markTime && !moving) {
+			moving = true;
+			goalPos = map->getPlayerPos();
+			if (goalPos.x > posPolice.x) if (sprite->animation() != LOOK_RIGHT) sprite->changeAnimation(LOOK_RIGHT);
+			if (goalPos.x < posPolice.x) if (sprite->animation() != LOOK_LEFT) sprite->changeAnimation(LOOK_LEFT);
+			else {
+				if (sprite->animation() != LOOK_FRONT) sprite->changeAnimation(LOOK_FRONT);
+			}
+		}
+		if (moving) {
+			if ( (posPolice.x != goalPos.x) || (posPolice.y != goalPos.y)) {
+				// tracking
+				float Vx = goalPos.x - posPolice.x;
+				float Vy = goalPos.y - posPolice.y;
+				float length = sqrt(Vx * Vx + Vy * Vy);
+				Vx *= vel / length;
+				Vy *= vel / length;
+
+				posPolice.x += Vx;
+				posPolice.y += Vy;
+			}
+			else {
+				markTime = currentTime + ANIMATION_TIME;
+				if (sprite->animation() != SEARCH) sprite->changeAnimation(SEARCH);
+				moving = false;
+			}
+		}
+	}	
 
 	/*glm::vec2 posBar = posPolice;
 	posBar.y += 28;
