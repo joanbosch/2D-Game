@@ -19,7 +19,7 @@ public:
 	int getRoom() { return room; };
 
 private:
-	glm::ivec2 tileMapDispl, posPolice;
+	glm::ivec2 tileMapDispl, posPolice, policeSize;
 	Texture spritesheet;
 	Sprite* sprite;
 	TileMap* map;

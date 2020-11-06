@@ -243,7 +243,7 @@ void Entities::update(int deltaTime)
 			if (aux) {
 				if (aux_activ != (*alarms)[i]->isOn()) {
 					Police *pol_aux = new Police();
-					pol_aux->init(glm::vec2(10.f * map->getTileSize()+64, map->getPlayableArea().maxy - 10.f * map->getTileSize()+84), sP, map, room);
+					pol_aux->init(glm::vec2(3.5f * map->getTileSize(), map->getPlayableArea().maxy + 84 ), sP, map, room);
 					polices->push_back(pol_aux);
 				}
 				N = (*alarms)[i]->getN();
