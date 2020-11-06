@@ -19,35 +19,35 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 {
 	playerSize = glm::ivec2(38 * ESCALAT, 64 * ESCALAT);
 	spritesheet.loadFromFile("images/player.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(64 * ESCALAT, 64 * ESCALAT), glm::vec2(0.2, 0.33), &spritesheet, &shaderProgram);
+	sprite = Sprite::createSprite(glm::ivec2(64 * ESCALAT, 64 * ESCALAT), glm::vec2(0.2, 0.2), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(10);
 
 	sprite->setAnimationSpeed(LOOK_FRONT, 8);
 	sprite->addKeyframe(LOOK_FRONT, glm::vec2(0.f, 0.f));
 
 	sprite->setAnimationSpeed(LOOK_RIGHT, 8);
-	sprite->addKeyframe(LOOK_RIGHT, glm::vec2(0.f, 0.33f));
+	sprite->addKeyframe(LOOK_RIGHT, glm::vec2(0.f, 0.2f));
 
 	sprite->setAnimationSpeed(LOOK_LEFT, 8);
-	sprite->addKeyframe(LOOK_LEFT, glm::vec2(0.2f, 0.33f));
+	sprite->addKeyframe(LOOK_LEFT, glm::vec2(0.2f, 0.2f));
 
 	sprite->setAnimationSpeed(LOOK_TOP, 8);
-	sprite->addKeyframe(LOOK_TOP, glm::vec2(0.4f, 0.33f));
+	sprite->addKeyframe(LOOK_TOP, glm::vec2(0.4f, 0.2f));
 
 	sprite->setAnimationSpeed(LOOK_BOTTOM, 8);
-	sprite->addKeyframe(LOOK_BOTTOM, glm::vec2(0.6f, 0.33f));
+	sprite->addKeyframe(LOOK_BOTTOM, glm::vec2(0.6f, 0.2f));
 
 	sprite->setAnimationSpeed(LOOK_TOPRIGHT, 8);
-	sprite->addKeyframe(LOOK_TOPRIGHT, glm::vec2(0.8f, 0.33f));
+	sprite->addKeyframe(LOOK_TOPRIGHT, glm::vec2(0.8f, 0.2f));
 
 	sprite->setAnimationSpeed(LOOK_TOPLEFT, 8);
-	sprite->addKeyframe(LOOK_TOPLEFT, glm::vec2(0.f, 0.66f));
+	sprite->addKeyframe(LOOK_TOPLEFT, glm::vec2(0.f, 0.4f));
 
 	sprite->setAnimationSpeed(LOOK_BOTRIGHT, 8);
-	sprite->addKeyframe(LOOK_BOTRIGHT, glm::vec2(0.2f, 0.66f));
+	sprite->addKeyframe(LOOK_BOTRIGHT, glm::vec2(0.2f, 0.4f));
 
 	sprite->setAnimationSpeed(LOOK_BOTLEFT, 8);
-	sprite->addKeyframe(LOOK_BOTLEFT, glm::vec2(0.4f, 0.66f));
+	sprite->addKeyframe(LOOK_BOTLEFT, glm::vec2(0.4f, 0.4f));
 
 	sprite->setAnimationSpeed(DEAD, 4);
 	sprite->addKeyframe(DEAD, glm::vec2(0.f, 0.f));

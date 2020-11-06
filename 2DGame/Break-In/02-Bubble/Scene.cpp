@@ -129,7 +129,8 @@ void Scene::update(int deltaTime)
 	entities->update(deltaTime);
 	player->update(deltaTime);
 
-
+	// STAR MODE
+	ball->setStarMode(entities->isStarMode());
 
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());

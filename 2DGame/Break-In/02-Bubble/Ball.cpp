@@ -16,19 +16,35 @@
 
 enum PlayerAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT
+	NORMAL, STAR_MODE
 };
 
 
 void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
 	bJumping = false;
+	starMode = false;
 	vel = 4;
 	angle = 90.f;
 	spritesheet.loadFromFile("images/ball.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(16 * ESCALAT, 16 * ESCALAT), glm::vec2(1, 1), &spritesheet, &shaderProgram);
+	sprite = Sprite::createSprite(glm::ivec2(16 * ESCALAT, 16 * ESCALAT), glm::vec2(0.125, 1), &spritesheet, &shaderProgram);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+	sprite->setNumberAnimations(2);
+
+	sprite->setAnimationSpeed(NORMAL, 1);
+	sprite->addKeyframe(NORMAL, glm::vec2(0.0f, 0.f));
+
+	sprite->setAnimationSpeed(STAR_MODE, 21);
+	sprite->addKeyframe(STAR_MODE, glm::vec2(0.125f * 1.f, 0.f));
+	sprite->addKeyframe(STAR_MODE, glm::vec2(0.125f * 2.f, 0.f));
+	sprite->addKeyframe(STAR_MODE, glm::vec2(0.125f * 3.f, 0.f));
+	sprite->addKeyframe(STAR_MODE, glm::vec2(0.125f * 4.f, 0.f));
+	sprite->addKeyframe(STAR_MODE, glm::vec2(0.125f * 5.f, 0.f));
+	sprite->addKeyframe(STAR_MODE, glm::vec2(0.125f * 6.f, 0.f));
+	sprite->addKeyframe(STAR_MODE, glm::vec2(0.125f * 7.f, 0.f));
+
+	sprite->changeAnimation(NORMAL);
 	visible = true;
 	gameStarted = false;
 
@@ -37,6 +53,9 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 void Ball::update(int deltaTime)
 {
 	sprite->update(deltaTime);
+
+	if(starMode && (sprite->animation() != STAR_MODE)) sprite->changeAnimation(STAR_MODE);
+	else if(!starMode && (sprite->animation() == STAR_MODE)) sprite->changeAnimation(NORMAL);
 
 	if (gameStarted) {
 		float rel = cos(3.14159f * angle / 180.f) / sin(3.14159f * angle / 180.f);
@@ -165,6 +184,11 @@ void Ball::setVelocity(float v)
 void Ball::setGameStarted(bool s)
 {
 	this->gameStarted = s;
+}
+
+void Ball::setStarMode(bool s)
+{
+	starMode = s;
 }
 
 
