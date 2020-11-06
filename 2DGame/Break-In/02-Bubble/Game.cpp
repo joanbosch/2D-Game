@@ -123,7 +123,7 @@ void Game::setState(int s)
 
 void Game::setLvl(int l)
 {
-	scene.init(l, 0 , 0, 0);
+	scene.init(l, 0 , 0, 4);
 }
 
 
