@@ -4,6 +4,7 @@
 
 #include "Sprite.h"
 #include "TileMap.h"
+#include "Audio.h"
 
 
 // Player is basically a Sprite that represents the player. As such it has
@@ -14,7 +15,7 @@ class Ball
 {
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Audio *audio);
 	void update(int deltaTime);
 	void render();
 
@@ -32,7 +33,6 @@ public:
 	void setStarMode(bool s);
 
 private:
-	bool bJumping;
 	glm::ivec2 tileMapDispl, posPlayer;
 	float x_pos, y_pos;
 
@@ -45,6 +45,7 @@ private:
 
 	bool visible, gameStarted, starMode;
 
+	Audio* audioManager;
 };
 
 

@@ -77,7 +77,7 @@ void Scene::init(int lvl, int points, int coins, int lives, Audio* audio)
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 
 	ball = new Ball();
-	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, audioManager);
 	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, -8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 	ball->setTileMap(map);
 	ball->setGameStarted(false);
@@ -253,6 +253,8 @@ void Scene::update(int deltaTime)
 	else lastRPValue = false;
 	if (gameOver) {
 		if (Game::instance().getKey(13)) {
+			audioManager->stopAllSounds();
+			audioManager->play(LEVEL1_MUSIC, true);
 			Game::instance().setLvl(1, 0, 0, 4);
 			Game::instance().setState(PLAY);
 		}
@@ -391,6 +393,7 @@ void Scene::playerDies() {
 	else {
 		ball->setPosition(glm::vec2(ball->getPosition().x, ball->getPosition().y - 3));
 		if (!godMode) {
+			audioManager->play(PLAYER_DEAD_SOUND, false);
 			--lives;
 			player->setDead(true);
 			markTime = currentTime + 1300; // set timeout for animation to run

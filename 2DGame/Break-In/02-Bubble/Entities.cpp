@@ -200,6 +200,7 @@ void Entities::update(int deltaTime)
 				bool aux = (*woods)[pos]->getBallColidad();
 				ballColided |= aux;
 				if (aux) {
+					audioManager->play(BOUNCE_SOUND, false);
 					N = (*woods)[pos]->getN();
 				} 
 			}
@@ -275,7 +276,7 @@ void Entities::update(int deltaTime)
 			bool b = audioManager->isPlaying(ALARM_SOUND);
 			if (room == i) {
 				if (audioManager->isPlaying(ALARM_SOUND) && !(*alarms)[i]->isOn()) audioManager->stop(ALARM_SOUND);
-				else audioManager->play(ALARM_SOUND, true);
+				else if (!audioManager->isPlaying(ALARM_SOUND) && (*alarms)[i]->isOn()) audioManager->play(ALARM_SOUND, true);
 			}
 
 			bool aux = (*alarms)[i]->getBallColided();
@@ -406,6 +407,7 @@ void Entities::setPlayerDead() {
 	}
 	for (int i = 0; i < alarms->size(); ++i) {
 		(*alarms)[i]->deactivate();
+		audioManager->stop(ALARM_SOUND);
 	}
 	polices = new vector<Police*>();
 }
