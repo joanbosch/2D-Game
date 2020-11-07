@@ -161,8 +161,8 @@ void Entities::update(int deltaTime)
 			bool aux = (*blocks)[i]->getBallColidad();
 			ballColided |= (aux && !starMode);
 			if (aux) {
+				audioManager->play(POINTS_SOUND, false);
 				if (!(*blocks)[i]->isVisible()) {
-					audioManager->play(POINTS_SOUND, false);
 					points += BLOCK_POINTS;
 				}
 				N = (*blocks)[i]->getN();
@@ -213,6 +213,7 @@ void Entities::update(int deltaTime)
 			ballColided |= aux;
 			if (aux) {
 				if (!(*single_coins)[i]->isVisible()) {
+					audioManager->play(COIN_SOUND, false);
 					coins += COIN_MONEY;
 					moneyEntities--;
 				}
@@ -227,6 +228,7 @@ void Entities::update(int deltaTime)
 			ballColided |= aux;
 			if (aux) {
 				if (!(*bags)[i]->isVisible()) {
+					audioManager->play(BAG_SOUND, false);
 					coins += BAG_MONEY;
 					moneyEntities--;
 				}
@@ -241,6 +243,7 @@ void Entities::update(int deltaTime)
 			ballColided |= aux;
 			if (aux) {
 				if (!(*multiple_coins)[i]->isVisible()) {
+					audioManager->play(COIN_SOUND, false);
 					coins += SOME_COINS_MONEY;
 					moneyEntities--;
 				}
@@ -255,6 +258,7 @@ void Entities::update(int deltaTime)
 			ballColided |= aux;
 			if (aux) {
 				if (!(*diamonds)[i]->isVisible()) {
+					audioManager->play(DIAMOND_SOUND, false);
 					coins += DIAMON_MONEY;
 					moneyEntities--;
 				}
@@ -267,10 +271,18 @@ void Entities::update(int deltaTime)
 		if (!ballColided) {
 			bool aux_activ = (*alarms)[i]->isOn();
 			(*alarms)[i]->update(deltaTime);
+			// if actual alarm is off and alarm sound is playing, turn off
+			bool b = audioManager->isPlaying(ALARM_SOUND);
+			if (room == i) {
+				if (audioManager->isPlaying(ALARM_SOUND) && !(*alarms)[i]->isOn()) audioManager->stop(ALARM_SOUND);
+				else audioManager->play(ALARM_SOUND, true);
+			}
+
 			bool aux = (*alarms)[i]->getBallColided();
 			ballColided |= aux;
 			if (aux) {
 				if (aux_activ != (*alarms)[i]->isOn()) {
+					if ((*alarms)[i]->isOn() && (room == i)) audioManager->play(ALARM_SOUND, true);
 					Police *pol_aux = new Police();
 					pol_aux->init(glm::vec2(64, 84 ), sP, map, 3-room);
 					pol_aux->setPosition(glm::vec2(2.f * map->getTileSize(), map->getPlayableArea().maxy));
@@ -313,8 +325,10 @@ void Entities::update(int deltaTime)
 			bool aux = (*stars)[i]->getBallColided();
 			ballColided |= aux;
 			if (aux) {
+				audioManager->play(STAR_SOUND, false);
 				N = (*stars)[i]->getN();
 				starMode = true;
+				audioManager->play(STAR_MODE_MUSIC, false);
 			}
 		}
 	}

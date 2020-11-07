@@ -24,19 +24,35 @@ void Audio::init()
 	sounds[MENU_MUSIC] = soundEngine->addSoundSourceFromFile("music/menuMusic.mp3");
 	sounds[LEVEL1_MUSIC] = soundEngine->addSoundSourceFromFile("music/lvl1Music.mp3");
 	sounds[LEVEL2_MUSIC] = soundEngine->addSoundSourceFromFile("music/lvl2Music.mp3");
-	/*sounds[LEVEL3_MUSIC] = soundEngine->addSoundSourceFromFile("music/lvl3Music.mp3");
-	sounds[GAMEOVER_MUSIC] = soundEngine->addSoundSourceFromFile("music/gameoverMusic.mp3");
-	sounds[PLAYER_DEAD_MUSIC] = soundEngine->addSoundSourceFromFile("music/playerdeadSound.mp3");*/
-	sounds[POINTS_SOUND] = soundEngine->addSoundSourceFromFile("music/points.mp3");
-	/*sounds[MONEY_SOUND] = soundEngine->addSoundSourceFromFile("music/money.mp3");
-	sounds[STAR_MODE_MUSIC] = soundEngine->addSoundSourceFromFile("music/starmodeMusic.mp3");
-	sounds[STAR_SOUND] = soundEngine->addSoundSourceFromFile("music/starSound.mp3");*/
+	sounds[LEVEL3_MUSIC] = soundEngine->addSoundSourceFromFile("music/lvl3Music.mp3");
+	// sounds[GAMEOVER_MUSIC] = soundEngine->addSoundSourceFromFile("music/gameoverMusic.mp3");
+	sounds[PLAYER_DEAD_MUSIC] = soundEngine->addSoundSourceFromFile("music/deadPlayerSound.mp3");
+	sounds[POINTS_SOUND] = soundEngine->addSoundSourceFromFile("music/pointsSound.mp3");
+	sounds[BAG_SOUND] = soundEngine->addSoundSourceFromFile("music/moneyBagSound.wav");
+	sounds[COIN_SOUND] = soundEngine->addSoundSourceFromFile("music/coinSound.wav");
+	sounds[DIAMOND_SOUND] = soundEngine->addSoundSourceFromFile("music/diamondSound.wav");
+	sounds[STAR_MODE_MUSIC] = soundEngine->addSoundSourceFromFile("music/starModeMusic.mp3");
+	sounds[STAR_SOUND] = soundEngine->addSoundSourceFromFile("music/starModeSound.wav");
+	sounds[ALARM_SOUND] = soundEngine->addSoundSourceFromFile("music/alarmSound.flac");
+	sounds[BOUNCE_SOUND] = soundEngine->addSoundSourceFromFile("music/bounceSound.wav");
 }
 
-void Audio::play(int i, bool loop) {
+void Audio::play(int i, bool loop)
+{
 	soundEngine->play2D(sounds[i], loop);
 }
 
-void Audio::stopAllSounds() {
+void Audio::stop(int i)
+{
+	soundEngine->stopAllSoundsOfSoundSource(sounds[i]);
+}
+
+void Audio::stopAllSounds()
+{
 	soundEngine->stopAllSounds();
+}
+
+bool Audio::isPlaying(int i)
+{
+	return soundEngine->isCurrentlyPlaying(sounds[i]);
 }
