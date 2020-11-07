@@ -245,6 +245,7 @@ void Entities::update(int deltaTime)
 			if (aux) {
 				if (!(*multiple_coins)[i]->isVisible()) {
 					audioManager->play(COIN_SOUND, false);
+					audioManager->play(COIN_SOUND, false);
 					coins += SOME_COINS_MONEY;
 					moneyEntities--;
 				}

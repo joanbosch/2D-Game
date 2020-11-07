@@ -7,7 +7,7 @@ Audio::Audio()
 {
 	soundEngine = createIrrKlangDevice();
 	init();
-	soundEngine->setSoundVolume(0.5f);
+	soundEngine->setSoundVolume(0.7f);
 }
 
 
@@ -36,6 +36,8 @@ void Audio::init()
 	sounds[STAR_SOUND] = soundEngine->addSoundSourceFromFile("music/starModeSound.wav");
 	sounds[ALARM_SOUND] = soundEngine->addSoundSourceFromFile("music/alarmSound.flac");
 	sounds[BOUNCE_SOUND] = soundEngine->addSoundSourceFromFile("music/bounceSound.wav");
+	sounds[NOOK_LAUGH] = soundEngine->addSoundSourceFromFile("music/nookLaughSound.mp3");
+	sounds[WIN_MUSIC] = soundEngine->addSoundSourceFromFile("music/winMusic.mp3");
 }
 
 void Audio::play(int i, bool loop)

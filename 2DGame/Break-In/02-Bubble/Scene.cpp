@@ -129,7 +129,7 @@ void Scene::update(int deltaTime)
 			break;
 		default:
 			audioManager->stopAllSounds();
-			// audioManager->play(LEVEL3_MUSIC, true);
+			audioManager->play(LEVEL3_MUSIC, true);
 			break;
 		}
 		init(glm::min(next_level, 3), points, money, lives, audioManager);
@@ -251,13 +251,10 @@ void Scene::update(int deltaTime)
 		}
 	}
 	else lastRPValue = false;
-	if (gameOver) {
-		if (Game::instance().getKey(13)) {
-			audioManager->stopAllSounds();
-			audioManager->play(LEVEL1_MUSIC, true);
-			Game::instance().setLvl(1, 0, 0, 4);
-			Game::instance().setState(PLAY);
-		}
+	if (gameOver && Game::instance().getKey(13)) {
+		audioManager->stopAllSounds();
+		audioManager->play(LEVEL1_MUSIC, true);
+		init(1, 0, 0, 4, audioManager);
 	}
 }
 
@@ -387,6 +384,11 @@ void Scene::playerDies() {
 	prev_vel = ball->getVelocity();
 	ball->setVelocity(0);
 	if (lives == 0) {
+		if (!audioManager->isPlaying(GAMEOVER_MUSIC)) {
+			audioManager->stopAllSounds();
+			audioManager->play(GAMEOVER_MUSIC, true);
+			audioManager->play(NOOK_LAUGH, true);
+		}
 		backgroundImage.loadFromFile("images/GameOver.png", TEXTURE_PIXEL_FORMAT_RGBA);
 		gameOver = true;
 	}

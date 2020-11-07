@@ -101,7 +101,7 @@ void Game::keyPressed(int key)
 	if (key ==51) { // '3' KEY: GO TO THE LEVEL3.
 		state = PLAY;
 		audio->stopAllSounds();
-		// audio->play(LEVEL3_MUSIC, true);
+		audio->play(LEVEL3_MUSIC, true);
 		scene.init(3, 0, 0, 4, audio);
 	}
 	keys[key] = true;
@@ -163,7 +163,7 @@ void Game::setLvl(int l, int points, int money, int lives)
 		break;
 	case 3:
 		audio->stopAllSounds();
-		// audio->play(LEVEL3_MUSIC, true);
+		audio->play(LEVEL3_MUSIC, true);
 		break;
 	}
 	scene.init(l, points, money, lives, audio);
