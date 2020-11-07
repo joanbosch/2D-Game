@@ -154,6 +154,12 @@ void Scene::update(int deltaTime)
 		player->update(deltaTime);
 	}
 
+	// SET ANIMATION TO PLAYER
+	if (!playerDying) {
+		player->updateAnimation(ball->getPosition(), entities->isStarMode());
+	}
+	
+
 	// STAR MODE
 	ball->setStarMode(entities->isStarMode());
 

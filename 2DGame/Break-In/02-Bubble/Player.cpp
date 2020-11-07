@@ -11,7 +11,7 @@
 
 enum PlayerAnims
 {
-	LOOK_FRONT, LOOK_RIGHT, LOOK_LEFT, LOOK_TOP, LOOK_BOTTOM, LOOK_TOPRIGHT, LOOK_TOPLEFT, LOOK_BOTRIGHT, LOOK_BOTLEFT, DEAD
+	LOOK_FRONT, LOOK_RIGHT, LOOK_LEFT, LOOK_TOP, LOOK_BOTTOM, LOOK_TOPRIGHT, LOOK_TOPLEFT, LOOK_BOTRIGHT, LOOK_BOTLEFT, DEAD, LOOK_RIGHT_STAR, LOOK_LEFT_STAR, LOOK_TOP_STAR, LOOK_BOTTOM_STAR, LOOK_TOPRIGHT_STAR, LOOK_TOPLEFT_STAR, LOOK_BOTRIGHT_STAR, LOOK_BOTLEFT_STAR
 };
 
 
@@ -20,10 +20,12 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 	playerSize = glm::ivec2(38 * ESCALAT, 64 * ESCALAT);
 	spritesheet.loadFromFile("images/player.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(64 * ESCALAT, 64 * ESCALAT), glm::vec2(0.2, 0.2), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(10);
+	sprite->setNumberAnimations(18);
 
 	sprite->setAnimationSpeed(LOOK_FRONT, 8);
 	sprite->addKeyframe(LOOK_FRONT, glm::vec2(0.f, 0.f));
+
+
 
 	sprite->setAnimationSpeed(LOOK_RIGHT, 8);
 	sprite->addKeyframe(LOOK_RIGHT, glm::vec2(0.f, 0.2f));
@@ -48,6 +50,34 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Ti
 
 	sprite->setAnimationSpeed(LOOK_BOTLEFT, 8);
 	sprite->addKeyframe(LOOK_BOTLEFT, glm::vec2(0.4f, 0.4f));
+
+
+
+	sprite->setAnimationSpeed(LOOK_RIGHT_STAR, 8);
+	sprite->addKeyframe(LOOK_RIGHT_STAR, glm::vec2(0.6f, 0.4f));
+
+	sprite->setAnimationSpeed(LOOK_LEFT_STAR, 8);
+	sprite->addKeyframe(LOOK_LEFT_STAR, glm::vec2(0.8f, 0.4f));
+
+	sprite->setAnimationSpeed(LOOK_TOP_STAR, 8);
+	sprite->addKeyframe(LOOK_TOP_STAR, glm::vec2(0.f, 0.6f));
+
+	sprite->setAnimationSpeed(LOOK_BOTTOM_STAR, 8);
+	sprite->addKeyframe(LOOK_BOTTOM_STAR, glm::vec2(0.2f, 0.6f));
+
+	sprite->setAnimationSpeed(LOOK_TOPRIGHT_STAR, 8);
+	sprite->addKeyframe(LOOK_TOPRIGHT_STAR, glm::vec2(0.4f, 0.6f));
+
+	sprite->setAnimationSpeed(LOOK_TOPLEFT_STAR, 8);
+	sprite->addKeyframe(LOOK_TOPLEFT_STAR, glm::vec2(0.6f, 0.6f));
+
+	sprite->setAnimationSpeed(LOOK_BOTRIGHT_STAR, 8);
+	sprite->addKeyframe(LOOK_BOTRIGHT_STAR, glm::vec2(0.8f, 0.6f));
+
+	sprite->setAnimationSpeed(LOOK_BOTLEFT_STAR, 8);
+	sprite->addKeyframe(LOOK_BOTLEFT_STAR, glm::vec2(0.f, 0.8f));
+
+
 
 	sprite->setAnimationSpeed(DEAD, 4);
 	sprite->addKeyframe(DEAD, glm::vec2(0.f, 0.f));
@@ -84,8 +114,6 @@ void Player::update(int deltaTime)
 	if (!isDead) {
 		if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 		{
-			/*if(sprite->animation() != DEAD)
-				sprite->changeAnimation(DEAD);*/
 			posPlayer.x -= PLAYER_VEL;
 			if (posPlayer.x < minx)
 			{
@@ -94,8 +122,6 @@ void Player::update(int deltaTime)
 		}
 		if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
 		{
-			/*if(sprite->animation() != LOOK_RIGHT)
-				sprite->changeAnimation(LOOK_RIGHT);*/
 			posPlayer.x += PLAYER_VEL;
 			if (posPlayer.x > maxx)
 			{
@@ -104,8 +130,6 @@ void Player::update(int deltaTime)
 		}
 		if (Game::instance().getSpecialKey(GLUT_KEY_UP))
 		{
-			/*if (sprite->animation() != LOOK_TOP)
-				sprite->changeAnimation(LOOK_TOP);*/
 			posPlayer.y -= PLAYER_VEL;
 			if (posPlayer.y < miny)
 			{
@@ -114,8 +138,6 @@ void Player::update(int deltaTime)
 		}
 		if (Game::instance().getSpecialKey(GLUT_KEY_DOWN))
 		{
-			/*if (sprite->animation() != LOOK_BOTTOM)
-				sprite->changeAnimation(LOOK_BOTTOM);*/
 			posPlayer.y += PLAYER_VEL;
 			if (posPlayer.y > maxy)
 			{
@@ -228,6 +250,41 @@ glm::vec2 Player::computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm
 				return glm::vec2(0, 0);
 		}
 	}
+}
+float Player::computeAngle(glm::vec2 ref)
+{
+	glm::normalize(ref);
+	glm::vec2 initial = glm::normalize(glm::vec2(1.f, 0.f));
+
+	float ang_mid = atan2((initial.x * ref.y) - (ref.x * initial.y), (initial.x * ref.x) + (initial.y * ref.y));
+	if (ang_mid < 0) return 360 + ((ang_mid) * 180.f / 3.14159f);
+	else return (ang_mid) * 180.f / 3.14159f;
+}
+void Player::updateAnimation(glm::vec2 ballPos, bool starMode)
+{
+	glm::vec2 v = glm::vec2(ballPos.x - posPlayer.x, posPlayer.y - ballPos.y);
+	float angle = computeAngle(v);
+	if (!starMode) {
+		if (angle > 337.5f && angle <= 22.5f) sprite->changeAnimation(LOOK_RIGHT);
+		else if (angle > 22.5f && angle <= 67.5f) sprite->changeAnimation(LOOK_TOPRIGHT);
+		else if (angle > 67.5f && angle <= 112.5f) sprite->changeAnimation(LOOK_TOP);
+		else if (angle > 112.5f && angle <= 157.5) sprite->changeAnimation(LOOK_TOPLEFT);
+		else if (angle > 157.5 && angle <= 202.5f) sprite->changeAnimation(LOOK_LEFT);
+		else if (angle > 202.5f && angle <= 247.5f) sprite->changeAnimation(LOOK_BOTLEFT);
+		else if (angle > 247.5f && angle <= 292.5f) sprite->changeAnimation(LOOK_BOTTOM);
+		else if (angle > 292.5f && angle <= 337.5f) sprite->changeAnimation(LOOK_BOTRIGHT);
+	}
+	else {
+		if (angle > 337.5f && angle <= 22.5f) sprite->changeAnimation(LOOK_RIGHT_STAR);
+		else if (angle > 22.5f && angle <= 67.5f) sprite->changeAnimation(LOOK_TOPRIGHT_STAR);
+		else if (angle > 67.5f && angle <= 112.5f) sprite->changeAnimation(LOOK_TOP_STAR);
+		else if (angle > 112.5f && angle <= 157.5) sprite->changeAnimation(LOOK_TOPLEFT_STAR);
+		else if (angle > 157.5 && angle <= 202.5f) sprite->changeAnimation(LOOK_LEFT_STAR);
+		else if (angle > 202.5f && angle <= 247.5f) sprite->changeAnimation(LOOK_BOTLEFT_STAR);
+		else if (angle > 247.5f && angle <= 292.5f) sprite->changeAnimation(LOOK_BOTTOM_STAR);
+		else if (angle > 292.5f && angle <= 337.5f) sprite->changeAnimation(LOOK_BOTRIGHT_STAR);
+	}
+
 }
 void Player::setVisibility(bool vis)
 {
