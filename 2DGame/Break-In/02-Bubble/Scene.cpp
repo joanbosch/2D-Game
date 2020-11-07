@@ -96,7 +96,6 @@ void Scene::init(int lvl, int points, int coins, int lives, Audio* audio)
 
 	godMode = false;
 	lastGValue = false;
-	lastRPValue = false;
 	scrollingUp = false;
 	changingLevel = false;
 	gameOver = false;
@@ -106,34 +105,6 @@ void Scene::init(int lvl, int points, int coins, int lives, Audio* audio)
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
-
-	if (changingLevel) {
-		thief->update(deltaTime);
-	}
-
-	// Change the level if it is necesary
-	if (changingLevel && currentTime > win_time + TIME_CHANGING_LEVEL) {
-		int next_level = map->getActualLevel() + 1;
-		switch (next_level) {
-		case 1:
-			audioManager->stopAllSounds();
-			audioManager->play(LEVEL1_MUSIC, true);
-			break;
-		case 2:
-			audioManager->stopAllSounds();
-			audioManager->play(LEVEL2_MUSIC, true);
-			break;
-		case 3:
-			audioManager->stopAllSounds();
-			audioManager->play(LEVEL3_MUSIC, true);
-			break;
-		default:
-			audioManager->stopAllSounds();
-			audioManager->play(LEVEL3_MUSIC, true);
-			break;
-		}
-		init(glm::min(next_level, 3), points, money, lives, audioManager);
-	}
 
 	// GOD MODE
 	if (Game::instance().getKey(103)) { // G key to enable and disable the god mode!!
@@ -145,7 +116,39 @@ void Scene::update(int deltaTime)
 	else lastGValue = false;
 
 	if (currentTime >= startTime) ball->setGameStarted(true);
-	if (!changingLevel) {
+
+	// changing level
+	if (changingLevel) {
+		if (!audioManager->isPlaying(CHANGE_LEVEL_MUSIC)) {
+			audioManager->stopAllSounds();
+			audioManager->play(CHANGE_LEVEL_MUSIC, true);
+		}
+		thief->update(deltaTime);
+		if (currentTime > win_time + TIME_CHANGING_LEVEL) {
+			int next_level = map->getActualLevel() + 1;
+			switch (next_level) {
+			case 1:
+				audioManager->stopAllSounds();
+				audioManager->play(LEVEL1_MUSIC, true);
+				break;
+			case 2:
+				audioManager->stopAllSounds();
+				audioManager->play(LEVEL2_MUSIC, true);
+				break;
+			case 3:
+				audioManager->stopAllSounds();
+				audioManager->play(LEVEL3_MUSIC, true);
+				break;
+			default:
+				audioManager->stopAllSounds();
+				audioManager->play(LEVEL3_MUSIC, true);
+				break;
+			}
+			init(glm::min(next_level, 3), points, money, lives, audioManager);
+		}
+	}
+	else {
+		// play screen
 		ball->update(deltaTime);
 		map->setBallPos(ball->getPosition());
 		map->setPlayerPos(player->getPosition());
@@ -158,7 +161,6 @@ void Scene::update(int deltaTime)
 	if (!playerDying) {
 		player->updateAnimation(ball->getPosition(), entities->isStarMode());
 	}
-	
 
 	// STAR MODE
 	ball->setStarMode(entities->isStarMode());
@@ -166,10 +168,13 @@ void Scene::update(int deltaTime)
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
 	}
+
+	// check if player colided with police
 	if (entities->playerHasColided() && !playerDying) {
 		playerDying = true;
 		playerDies();
 	}
+
 	if (player->getBallColided() && ball->getAngle() >= 180.f) {
 		glm::vec2 dir;
 		float vel;
@@ -194,7 +199,7 @@ void Scene::update(int deltaTime)
 	money += entities->getNewCoins();
 	points += entities->getNewPoints();
 
-	// If no one money entities remaining, go to next level.
+	// If no money entities remaining, go to next level.
 	if (entities->getRemainingMoneyEntities() == 0 && !changingLevel) {
 		changingLevel = true;
 		win_time = currentTime;
@@ -224,6 +229,7 @@ void Scene::update(int deltaTime)
 		}
 	}
 
+	// player dying animation is over
 	if (markTime != NULL && currentTime >= markTime) {
 		entities->setPlayerDead();
 		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
@@ -244,13 +250,12 @@ void Scene::update(int deltaTime)
 	}
 
 	// KEYS TO CHANGE THE ROOM!
-	if (Game::instance().getKey(119) && !map->getScrolling() && map->getActualRoom()<3) { // 'W' KEY: GO TO THE NEXT ROOM.
-		if (!lastRPValue && !scrollingUp) {
-			scrollingUp = true;
-			lastRPValue = true;
-		}
+	if (Game::instance().getKey(119) && !map->getScrolling() && room<3) { // 'W' KEY: GO TO THE NEXT ROOM.
+		changeRoom(-1, ballPos);
+		scrollingUp = true;
 	}
-	else lastRPValue = false;
+
+	// if on gameover screen and ENTER key pressed, restart game
 	if (gameOver && Game::instance().getKey(13)) {
 		audioManager->stopAllSounds();
 		audioManager->play(LEVEL1_MUSIC, true);
@@ -354,9 +359,9 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 		ball->setVisibility(false);
 		prev_vel = ball->getVelocity();
 		ball->setVelocity(0);
-		map->setScrolling(true);
 
 		map->setScrolling(true);
+
 		next_margin = top + dir * 24 * map->getTileSize();
 		room -= dir;
 		map->setActualRoom(room);

@@ -38,6 +38,7 @@ void Audio::init()
 	sounds[BOUNCE_SOUND] = soundEngine->addSoundSourceFromFile("music/bounceSound.wav");
 	sounds[NOOK_LAUGH] = soundEngine->addSoundSourceFromFile("music/nookLaughSound.mp3");
 	sounds[WIN_MUSIC] = soundEngine->addSoundSourceFromFile("music/winMusic.mp3");
+	sounds[CHANGE_LEVEL_MUSIC] = soundEngine->addSoundSourceFromFile("music/changeLvlMusic.mp3");
 }
 
 void Audio::play(int i, bool loop)

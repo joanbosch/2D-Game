@@ -69,7 +69,7 @@ private:
 	float next_margin, prev_vel;
 	bool scrolling, scrollingUp, playerDying;
 	bool godMode;
-	bool lastGValue, lastRPValue;
+	bool lastGValue;
 
 	// Variables to change the level
 	bool changingLevel, gameOver;
