@@ -100,6 +100,7 @@ void Scene::init(int lvl, int points, int coins, int lives, Audio* audio)
 	changingLevel = false;
 	gameOver = false;
 	playerDying = false;
+	winScreen = false;
 }
 
 void Scene::update(int deltaTime)
@@ -144,7 +145,11 @@ void Scene::update(int deltaTime)
 				audioManager->play(LEVEL3_MUSIC, true);
 				break;
 			}
-			init(glm::min(next_level, 3), points, money, lives, audioManager);
+			if(next_level != 4) init(glm::min(next_level, 3), points, money, lives, audioManager);
+			else {
+				backgroundImage.loadFromFile("images/Win.png", TEXTURE_PIXEL_FORMAT_RGBA);
+				winScreen = true;
+			}
 		}
 	}
 	else {
@@ -256,10 +261,12 @@ void Scene::update(int deltaTime)
 	}
 
 	// if on gameover screen and ENTER key pressed, restart game
-	if (gameOver && Game::instance().getKey(13)) {
-		audioManager->stopAllSounds();
-		audioManager->play(LEVEL1_MUSIC, true);
-		init(1, 0, 0, 4, audioManager);
+	if (Game::instance().getKey(13)) {
+		if (gameOver || winScreen) {
+			audioManager->stopAllSounds();
+			audioManager->play(LEVEL1_MUSIC, true);
+			init(1, 0, 0, 4, audioManager);
+		}
 	}
 }
 
@@ -276,7 +283,7 @@ void Scene::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
 	background->render(backgroundImage);
-	if (!gameOver) {
+	if (!((gameOver && !winScreen) ||(!gameOver && winScreen))) {
 		if (!changingLevel) {
 			map->render();
 			entities->render();
@@ -285,6 +292,7 @@ void Scene::render()
 			player->render();
 		}
 		else thief->render();
+
 
 		// Rendender text
 		text.render("MONEY", glm::vec2(455 * ESCALAT, (42 + 30) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));

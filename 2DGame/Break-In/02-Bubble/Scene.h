@@ -72,7 +72,7 @@ private:
 	bool lastGValue;
 
 	// Variables to change the level
-	bool changingLevel, gameOver;
+	bool changingLevel, gameOver, winScreen;
 	int win_time;
 
 };
