@@ -196,7 +196,7 @@ void Scene::update(int deltaTime)
 	}
 
 	// UPDATE the money and points counter
-	money += entities->getNewCoins();
+	if(!changingLevel) money += entities->getNewCoins();
 	points += entities->getNewPoints();
 
 	// If no money entities remaining, go to next level.
@@ -399,12 +399,10 @@ void Scene::playerDies() {
 	}
 	else {
 		ball->setPosition(glm::vec2(ball->getPosition().x, ball->getPosition().y - 3));
-		if (!godMode) {
-			audioManager->play(PLAYER_DEAD_SOUND, false);
-			--lives;
-			player->setDead(true);
-			markTime = currentTime + 1300; // set timeout for animation to run
-		}
+		audioManager->play(PLAYER_DEAD_SOUND, false);
+		if (!godMode) --lives;
+		player->setDead(true);
+		markTime = currentTime + 1300; // set timeout for animation to run
 	}
 }
 

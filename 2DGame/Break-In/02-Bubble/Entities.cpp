@@ -201,7 +201,7 @@ void Entities::update(int deltaTime)
 				ballColided |= aux;
 				if (aux) {
 					audioManager->play(BOUNCE_SOUND, false);
-					N = (*woods)[pos]->getN();
+					N = glm::vec2(0,-1);
 				} 
 			}
 		}
