@@ -32,9 +32,11 @@ void Instructions::init()
 
 	option_selected = PLAY;
 
-	backgorundImage.loadFromFile("images/menu-background.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	backgorundImage.loadFromFile("images/Inst1.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
+
+	actualScreen = 1;
 
 	// Select which font you want to use
 	if (!text.init("fonts/AnimalCrossing.ttf"))
@@ -47,16 +49,15 @@ void Instructions::update(int deltaTime)
 {
 	currentTime += deltaTime;
 
-	if (Game::instance().getSpecialKey(GLUT_KEY_UP)) {
-		Game::instance().specialKeyReleased(GLUT_KEY_UP);
-		option_selected += 2;
-		option_selected = option_selected % 3;
+	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT)) {
+		actualScreen -= 1;
+		if (actualScreen == 0) actualScreen += 1;
 	}
 
-	if (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) {
-		Game::instance().specialKeyReleased(GLUT_KEY_DOWN);
-		option_selected += 1;
-		option_selected = option_selected % 3;
+	if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT)) {
+		actualScreen += 1;
+		if (actualScreen == 5) actualScreen -= 1;
+		
 	}
 }
 
@@ -70,10 +71,10 @@ void Instructions::render()
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
+	backgorundImage.loadFromFile("images/Inst"+ to_string(actualScreen) + ".png", TEXTURE_PIXEL_FORMAT_RGBA);
 	background->render(backgorundImage);
 
-	// Select the correct option that the user has selected.
-	text.render("INSTRUCTIONS MENU! (TODO)", glm::vec2(260, 380), 20, glm::vec4(1, 1, 1, 1));
+
 
 }
 

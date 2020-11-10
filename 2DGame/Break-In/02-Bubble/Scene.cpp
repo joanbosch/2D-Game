@@ -140,9 +140,9 @@ void Scene::update(int deltaTime)
 				audioManager->stopAllSounds();
 				audioManager->play(LEVEL3_MUSIC, true);
 				break;
-			default:
+			case 4:
 				audioManager->stopAllSounds();
-				audioManager->play(LEVEL3_MUSIC, true);
+				audioManager->play(WIN_MUSIC, true);
 				break;
 			}
 			if(next_level != 4) init(glm::min(next_level, 3), points, money, lives, audioManager);

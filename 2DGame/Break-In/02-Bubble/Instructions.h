@@ -36,6 +36,7 @@ private:
 	int option_selected;
 
 	Text text;
+	int actualScreen = 1;
 };
 
 
