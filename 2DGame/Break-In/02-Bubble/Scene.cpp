@@ -120,13 +120,19 @@ void Scene::update(int deltaTime)
 
 	// changing level
 	if (changingLevel) {
-		if (!audioManager->isPlaying(CHANGE_LEVEL_MUSIC)) {
+		if (!audioManager->isPlaying(CHANGE_LEVEL_MUSIC) && !audioManager->isPlaying(WIN_MUSIC)) {
 			audioManager->stopAllSounds();
 			audioManager->play(CHANGE_LEVEL_MUSIC, true);
 		}
 		thief->update(deltaTime);
 		if (currentTime > win_time + TIME_CHANGING_LEVEL) {
 			int next_level = map->getActualLevel() + 1;
+			if(next_level != 4) init(glm::min(next_level, 3), points, money, lives, audioManager);
+			else {
+				backgroundImage.loadFromFile("images/Win.png", TEXTURE_PIXEL_FORMAT_RGBA);
+				winScreen = true;
+			}
+
 			switch (next_level) {
 			case 1:
 				audioManager->stopAllSounds();
@@ -141,15 +147,13 @@ void Scene::update(int deltaTime)
 				audioManager->play(LEVEL3_MUSIC, true);
 				break;
 			case 4:
-				audioManager->stopAllSounds();
-				audioManager->play(WIN_MUSIC, true);
+				if (!audioManager->isPlaying(WIN_MUSIC) && winScreen) {
+					audioManager->stopAllSounds();
+					audioManager->play(WIN_MUSIC, true);
+				}
 				break;
 			}
-			if(next_level != 4) init(glm::min(next_level, 3), points, money, lives, audioManager);
-			else {
-				backgroundImage.loadFromFile("images/Win.png", TEXTURE_PIXEL_FORMAT_RGBA);
-				winScreen = true;
-			}
+			
 		}
 	}
 	else {

@@ -59,6 +59,7 @@ void Instructions::update(int deltaTime)
 		if (actualScreen == 5) actualScreen -= 1;
 		
 	}
+	backgorundImage.loadFromFile("images/Inst" + to_string(actualScreen) + ".png", TEXTURE_PIXEL_FORMAT_RGBA);
 }
 
 void Instructions::render()
@@ -71,7 +72,6 @@ void Instructions::render()
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
-	backgorundImage.loadFromFile("images/Inst"+ to_string(actualScreen) + ".png", TEXTURE_PIXEL_FORMAT_RGBA);
 	background->render(backgorundImage);
 
 
