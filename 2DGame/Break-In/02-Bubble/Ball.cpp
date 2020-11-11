@@ -20,9 +20,8 @@ enum PlayerAnims
 };
 
 
-void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
+void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Audio *audio)
 {
-	bJumping = false;
 	starMode = false;
 	vel = 4;
 	angle = 90.f;
@@ -47,6 +46,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	sprite->changeAnimation(NORMAL);
 	visible = true;
 	gameStarted = false;
+	audioManager = audio;
 
 }
 
@@ -68,6 +68,7 @@ void Ball::update(int deltaTime)
 		posPlayer.x = int(x_pos);
 		posPlayer.y = int(y_pos);
 		if (map->ballCollision(posPlayer, glm::ivec2(16 * ESCALAT, 16 * ESCALAT))) {
+			audioManager->play(BOUNCE_SOUND, false);
 			treatCollision(map->getNormalVector(posPlayer, glm::ivec2(16 * ESCALAT, 16 * ESCALAT), angle));
 			x_pos -= x1;
 			y_pos += y1;

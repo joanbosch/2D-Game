@@ -14,13 +14,14 @@
 #include "Alarm.h"
 #include "Police.h"
 #include "Star.h"
+#include "Audio.h"
 #include <vector>
 
 class Entities
 {
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, TileMap* tileMap, Audio* audio);
 	void update(int deltaTime);
 	void render();
 
@@ -56,6 +57,8 @@ private:
 	vector<Star*> *stars;
 
 	TileMap *map;
+
+	Audio *audioManager;
 };
 
 

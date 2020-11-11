@@ -73,7 +73,7 @@ void Police::update(int deltaTime, bool starMode)
 			if (starMode && ballColided) visible = false;
 
 			// time to run animation
-			if (currentTime >= markTime && !moving) {
+			if (currentTime >= markTime && !moving && !map->getScrolling()) {
 				moving = true;
 				goalPos = map->getPlayerPos();
 				if (goalPos.x > posPolice.x) if (sprite->animation() != LOOK_RIGHT) sprite->changeAnimation(LOOK_RIGHT);

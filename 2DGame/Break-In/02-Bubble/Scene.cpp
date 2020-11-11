@@ -4,6 +4,8 @@
 #include "Scene.h"
 #include "Game.h"
 
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+
 #define ESCALAT 2.f
 
 #define SCREEN_X 32 * ESCALAT
@@ -43,7 +45,7 @@ void Scene::initVariables(int points, int coins, int lives)
 	room = 1;
 }
 
-void Scene::init(int lvl, int points, int coins, int lives)
+void Scene::init(int lvl, int points, int coins, int lives, Audio* audio)
 {
 	initShaders();
 	left = 0.f;
@@ -56,23 +58,26 @@ void Scene::init(int lvl, int points, int coins, int lives)
 	background = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 	backgroundImage.loadFromFile("images/bkgLvl" + to_string(lvl) + ".png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	topBar = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 	topBarImage.loadFromFile("images/topBar.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	topBar = Sprite::createSprite(glm::ivec2(SCREEN_WIDTH, SCREEN_HEIGHT), glm::vec2(1, 1), &topBarImage, &texProgram);
+	topBar->setPosition(glm::vec2(0, top));
 
 	map = TileMap::createTileMap("levels/lvl" + to_string(lvl) + ".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	map->setActualLevel(lvl);
 	map->setActualRoom(1);
 	map->setPlayableArea(1 * map->getTileSize(), int(top) + 2 * map->getTileSize() - 2, float(20.5) * map->getTileSize(), int(top) + 20 * map->getTileSize());
 
+	audioManager = audio;
+
 	entities = new Entities();
-	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map);
+	entities->init(glm::vec2(SCREEN_X, SCREEN_Y), texProgram, map, audioManager);
 
 	player = new Player();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, map);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 
 	ball = new Ball();
-	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, audioManager);
 	ball->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 22, -8 + top + INIT_PLAYER_Y_TILES * map->getTileSize()));
 	ball->setTileMap(map);
 	ball->setGameStarted(false);
@@ -91,27 +96,16 @@ void Scene::init(int lvl, int points, int coins, int lives)
 
 	godMode = false;
 	lastGValue = false;
-	lastRPValue = false;
 	scrollingUp = false;
 	changingLevel = false;
 	gameOver = false;
 	playerDying = false;
+	winScreen = false;
 }
 
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
-
-	if (changingLevel) {
-		thief->update(deltaTime);
-	}
-
-	// Change the level if it is necesary
-	if (changingLevel && currentTime > win_time + TIME_CHANGING_LEVEL) {
-		int next_level = map->getActualLevel() + 1;
-
-		init(glm::min(next_level, 3), points, money, lives);
-	}
 
 	// GOD MODE
 	if (Game::instance().getKey(103)) { // G key to enable and disable the god mode!!
@@ -123,7 +117,47 @@ void Scene::update(int deltaTime)
 	else lastGValue = false;
 
 	if (currentTime >= startTime) ball->setGameStarted(true);
-	if (!changingLevel) {
+
+	// changing level
+	if (changingLevel) {
+		if (!audioManager->isPlaying(CHANGE_LEVEL_MUSIC) && !audioManager->isPlaying(WIN_MUSIC)) {
+			audioManager->stopAllSounds();
+			audioManager->play(CHANGE_LEVEL_MUSIC, true);
+		}
+		thief->update(deltaTime);
+		if (currentTime > win_time + TIME_CHANGING_LEVEL) {
+			int next_level = map->getActualLevel() + 1;
+			if(next_level != 4) init(glm::min(next_level, 3), points, money, lives, audioManager);
+			else {
+				backgroundImage.loadFromFile("images/Win.png", TEXTURE_PIXEL_FORMAT_RGBA);
+				winScreen = true;
+			}
+
+			switch (next_level) {
+			case 1:
+				audioManager->stopAllSounds();
+				audioManager->play(LEVEL1_MUSIC, true);
+				break;
+			case 2:
+				audioManager->stopAllSounds();
+				audioManager->play(LEVEL2_MUSIC, true);
+				break;
+			case 3:
+				audioManager->stopAllSounds();
+				audioManager->play(LEVEL3_MUSIC, true);
+				break;
+			case 4:
+				if (!audioManager->isPlaying(WIN_MUSIC) && winScreen) {
+					audioManager->stopAllSounds();
+					audioManager->play(WIN_MUSIC, true);
+				}
+				break;
+			}
+			
+		}
+	}
+	else {
+		// play screen
 		ball->update(deltaTime);
 		map->setBallPos(ball->getPosition());
 		map->setPlayerPos(player->getPosition());
@@ -132,16 +166,24 @@ void Scene::update(int deltaTime)
 		player->update(deltaTime);
 	}
 
+	// SET ANIMATION TO PLAYER
+	if (!playerDying) {
+		player->updateAnimation(ball->getPosition(), entities->isStarMode());
+	}
+
 	// STAR MODE
 	ball->setStarMode(entities->isStarMode());
 
 	if (entities->ballHasColided()) {
 		ball->treatCollision(entities->getN());
 	}
+
+	// check if player colided with police
 	if (entities->playerHasColided() && !playerDying) {
 		playerDying = true;
 		playerDies();
 	}
+
 	if (player->getBallColided() && ball->getAngle() >= 180.f) {
 		glm::vec2 dir;
 		float vel;
@@ -163,10 +205,10 @@ void Scene::update(int deltaTime)
 	}
 
 	// UPDATE the money and points counter
-	money += entities->getNewCoins();
+	if(!changingLevel) money += entities->getNewCoins();
 	points += entities->getNewPoints();
 
-	// If no one money entities remaining, go to next level.
+	// If no money entities remaining, go to next level.
 	if (entities->getRemainingMoneyEntities() == 0 && !changingLevel) {
 		changingLevel = true;
 		win_time = currentTime;
@@ -196,6 +238,7 @@ void Scene::update(int deltaTime)
 		}
 	}
 
+	// player dying animation is over
 	if (markTime != NULL && currentTime >= markTime) {
 		entities->setPlayerDead();
 		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), top + INIT_PLAYER_Y_TILES * map->getTileSize()));
@@ -216,17 +259,17 @@ void Scene::update(int deltaTime)
 	}
 
 	// KEYS TO CHANGE THE ROOM!
-	if (Game::instance().getKey(119) && !map->getScrolling()) { // 'W' KEY: GO TO THE NEXT ROOM.
-		if (!lastRPValue && !scrollingUp) {
-			scrollingUp = true;
-			lastRPValue = true;
-		}
+	if (Game::instance().getKey(119) && !map->getScrolling() && room<3) { // 'W' KEY: GO TO THE NEXT ROOM.
+		changeRoom(-1, ballPos);
+		scrollingUp = true;
 	}
-	else lastRPValue = false;
-	if (gameOver) {
-		if (Game::instance().getKey(13)) {
-			Game::instance().setLvl(1, 0, 0, 4);
-			Game::instance().setState(PLAY);
+
+	// if on gameover screen and ENTER key pressed, restart game
+	if (Game::instance().getKey(13)) {
+		if (gameOver || winScreen) {
+			audioManager->stopAllSounds();
+			audioManager->play(LEVEL1_MUSIC, true);
+			init(1, 0, 0, 4, audioManager);
 		}
 	}
 }
@@ -244,15 +287,16 @@ void Scene::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
 	background->render(backgroundImage);
-	if (!gameOver) {
+	if (!((gameOver && !winScreen) ||(!gameOver && winScreen))) {
 		if (!changingLevel) {
 			map->render();
-			topBar->render(topBarImage);
 			entities->render();
+			topBar->render();
 			ball->render();
 			player->render();
 		}
 		else thief->render();
+
 
 		// Rendender text
 		text.render("MONEY", glm::vec2(455 * ESCALAT, (42 + 30) * ESCALAT), 40 * ESCALAT, glm::vec4(1, 0.81, 0.3, 1));
@@ -316,7 +360,7 @@ void Scene::scroll(int direction)
 	glm::vec2 geom[2] = { glm::vec2(left, top), glm::vec2(right, bottom) };
 	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 	background->setPosition(geom, texCoords, texProgram);
-	topBar->setPosition(geom, texCoords, texProgram);
+	topBar->setPosition(glm::vec2(0, top));
 }
 
 void Scene::changeRoom(int dir, glm::vec2 ballPos)
@@ -327,9 +371,9 @@ void Scene::changeRoom(int dir, glm::vec2 ballPos)
 		ball->setVisibility(false);
 		prev_vel = ball->getVelocity();
 		ball->setVelocity(0);
-		map->setScrolling(true);
 
 		map->setScrolling(true);
+
 		next_margin = top + dir * 24 * map->getTileSize();
 		room -= dir;
 		map->setActualRoom(room);
@@ -357,16 +401,20 @@ void Scene::playerDies() {
 	prev_vel = ball->getVelocity();
 	ball->setVelocity(0);
 	if (lives == 0) {
+		if (!audioManager->isPlaying(GAMEOVER_MUSIC)) {
+			audioManager->stopAllSounds();
+			audioManager->play(GAMEOVER_MUSIC, true);
+			audioManager->play(NOOK_LAUGH, true);
+		}
 		backgroundImage.loadFromFile("images/GameOver.png", TEXTURE_PIXEL_FORMAT_RGBA);
 		gameOver = true;
 	}
 	else {
 		ball->setPosition(glm::vec2(ball->getPosition().x, ball->getPosition().y - 3));
-		if (!godMode) {
-			--lives;
-			player->setDead(true);
-			markTime = currentTime + 1300; // set timeout for animation to run
-		}
+		audioManager->play(PLAYER_DEAD_SOUND, false);
+		if (!godMode) --lives;
+		player->setDead(true);
+		markTime = currentTime + 1300; // set timeout for animation to run
 	}
 }
 

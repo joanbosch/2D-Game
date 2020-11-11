@@ -25,7 +25,7 @@ public:
 	Scene();
 	~Scene();
 
-	void init(int lvl, int points, int coins, int lives);
+	void init(int lvl, int points, int coins, int lives, Audio* audio);
 	void update(int deltaTime);
 	void render();
 	void initVariables(int points, int coins, int lives);
@@ -43,13 +43,16 @@ private:
 	Entities *entities;
 	Thief* thief;
 	Player *player;
+	Audio* audioManager;
 	
 	ShaderProgram texProgram;
 	float currentTime, markTime, startTime;
 	glm::mat4 projection;
 
 	Texture backgroundImage, topBarImage;
-	TexturedQuad *background, *topBar;
+	TexturedQuad *background;
+
+	Sprite *topBar;
 
 	Text text;
 
@@ -66,10 +69,10 @@ private:
 	float next_margin, prev_vel;
 	bool scrolling, scrollingUp, playerDying;
 	bool godMode;
-	bool lastGValue, lastRPValue;
+	bool lastGValue;
 
 	// Variables to change the level
-	bool changingLevel, gameOver;
+	bool changingLevel, gameOver, winScreen;
 	int win_time;
 
 };

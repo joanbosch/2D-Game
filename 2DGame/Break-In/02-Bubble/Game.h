@@ -7,6 +7,7 @@
 #include "Instructions.h"
 #include "Credits.h"
 #include "Password.h"
+#include "Audio.h"
 
 
 #define SCREEN_WIDTH 640*2
@@ -65,6 +66,7 @@ private:
 	Credits credits;				  // Credits of the game
 	Scene scene;                      // Scene to render
 	Password password;				  // Password screen
+	Audio *audio;
 	bool keys[256], specialKeys[256]; // Store key states so that 
 	                                  // we can have access at any time
 

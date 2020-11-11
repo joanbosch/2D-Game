@@ -32,7 +32,7 @@ void Credits::init()
 
 	option_selected = PLAY;
 
-	backgorundImage.loadFromFile("images/menu-background.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	backgorundImage.loadFromFile("images/credits.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
 
@@ -71,9 +71,6 @@ void Credits::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	background->render(backgorundImage);
-
-	// Select the correct option that the user has selected.
-	text.render("CREDITS MENU! (TODO)", glm::vec2(260, 380), 20, glm::vec4(1, 1, 1, 1));
 
 }
 

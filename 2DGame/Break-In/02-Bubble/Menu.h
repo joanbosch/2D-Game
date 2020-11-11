@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "TexturedQuad.h"
 #include "Text.h"
+#include "Audio.h"
 
 #define PLAY 0
 #define INSTRUCTIONS 1
@@ -24,7 +25,7 @@ public:
 	Menu();
 	~Menu();
 
-	void init();
+	void init(Audio *audio);
 	void update(int deltaTime);
 	void render();
 
@@ -40,6 +41,8 @@ private:
 
 	Texture backgorundImage;
 	TexturedQuad *background;
+
+	Audio* audioManager;
 
 	int count;
 	bool bopt;

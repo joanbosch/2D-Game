@@ -14,6 +14,7 @@
 
 #define ESCALAT 2.f
 
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
 Menu::Menu()
 {
@@ -24,11 +25,13 @@ Menu::~Menu()
 }
 
 
-void Menu::init()
+void Menu::init(Audio *audio)
 {
 	initShaders();
 	bopt = true;
 	count = 0;
+	audioManager = audio;
+	audioManager->play(MENU_MUSIC, true);
 
 	glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(SCREEN_WIDTH, SCREEN_HEIGHT) };
 	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
@@ -52,6 +55,8 @@ void Menu::update(int deltaTime)
 	}
 	if (Game::instance().getKey(13)) {
 		Game::instance().setLvl(1, 0, 0, 4);
+		audioManager->stopAllSounds();
+		audioManager->play(LEVEL1_MUSIC, true);
 		Game::instance().setState(PLAY);
 	}
 	if (Game::instance().getSpecialKey(GLUT_KEY_F1)) {

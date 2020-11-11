@@ -26,7 +26,8 @@ public:
 	float newVel(int dist);
 	glm::vec2 getN();
 	glm::vec2 computeNormalVector(glm::vec2 ballPos, glm::vec2 ballSize, glm::vec2 spritePosition, glm::vec2 spriteSize);
-
+	float computeAngle(glm::vec2 ballPos);
+	void updateAnimation(glm::vec2 ballPos, bool starMode);
 	void setVisibility(bool vis);
 	void setDead(bool b);
 
