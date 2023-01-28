@@ -2,6 +2,8 @@
 
 This is a clone of the Break-In game.
 
+Presentation of the game in a YouTube video:
+
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/0BtZWmPCz8Y/0.jpg)](https://www.youtube.com/watch?v=0BtZWmPCz8Y)
 
 ## Intallation 🔧
