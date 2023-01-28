@@ -2,6 +2,8 @@
 
 This is a clone of the Break-In game.
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/0BtZWmPCz8Y/0.jpg)](https://www.youtube.com/watch?v=0BtZWmPCz8Y)
+
 ## Intallation 🔧
 
 Check [releases](https://github.com/joanbosch/Break-In/releases/tag/V1) in GitHub project
