@@ -4,6 +4,8 @@ This is a clone of the Break-In game.
 
 ## Intallation 🔧
 
+Check [releases](https://github.com/joanbosch/Break-In/releases/tag/V1) in GitHub project
+
 ## Made with 🛠️
 * [OpenGL](https://www.opengl.org/) - Popular graphics API
 * C++
